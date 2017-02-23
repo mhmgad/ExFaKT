@@ -1,5 +1,5 @@
 [submodule "iris-reasoner"]
 	path = iris-reasoner
-	url = https://github.com/NICTA/iris-reasoner.git
+	url = https://github.molgen.mpg.de/gadelrab/iris-reasoner
 
 
