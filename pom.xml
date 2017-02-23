@@ -9,13 +9,67 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <!--<modules>-->
-        <!--<module>-->
-            <!--iris-reasoner-->
+    <modules>
+        <module>
+            iris-reasoner
+        </module>
+        <module>iris-example</module>
 
-        <!--</module>-->
+    </modules>
 
-    <!--</modules>-->
+
+
+
+    <build>
+        <plugins>
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <!--Plugin to generate running scripts-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>1.10</version>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Extra JVM arguments that will be included in the bin scripts -->
+                    <extraJvmArguments>-Xms10G</extraJvmArguments>
+                    <extraJvmArguments>-Xmx400G</extraJvmArguments>
+                    <!-- set alternative assemble directory -->
+                    <assembleDirectory>assemble</assembleDirectory>
+                    <!--<generateRepository>false</generateRepository>-->
+                    <binFileExtensions>
+                        <unix>.sh</unix>
+                    </binFileExtensions>
+                    <programs>
+                        <program>
+                            <mainClass>iris.Main</mainClass>
+                            <id>iris</id>
+                        </program>
+
+
+                    </programs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>
