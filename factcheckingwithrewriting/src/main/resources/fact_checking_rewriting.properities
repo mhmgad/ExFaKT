@@ -1,0 +1,11 @@
+
+
+factSpotting.method=ELASTIC
+
+
+rewriting.ruleFiles=/home/gadelrab/ideaProjects/RuleBasedFactChecking/iris-example/datalog-examples/family_simple/rules.iris
+factsSource.factsFiles=/home/gadelrab/ideaProjects/RuleBasedFactChecking/iris-example/datalog-examples/family_simple/facts/female.iris,/home/gadelrab/ideaProjects/RuleBasedFactChecking/iris-example/datalog-examples/family_simple/facts/male.iris,/home/gadelrab/ideaProjects/RuleBasedFactChecking/iris-example/datalog-examples/family_simple/facts/parent.iris
+
+
+inputType=IRIS
+queriesFile=/home/gadelrab/ideaProjects/RuleBasedFactChecking/iris-example/datalog-examples/family_simple/queries.iris

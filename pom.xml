@@ -15,6 +15,8 @@
         </module>
         <module>iris-example</module>
         <module>FactChecking</module>
+        <module></module>
+        <module>factcheckingwithrewriting</module>
 
     </modules>
 
@@ -26,49 +28,49 @@
 
 
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<source>1.8</source>-->
+                    <!--<target>1.8</target>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 
-            <!--Plugin to generate running scripts-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>appassembler-maven-plugin</artifactId>
-                <version>1.10</version>
+            <!--&lt;!&ndash;Plugin to generate running scripts&ndash;&gt;-->
+            <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>appassembler-maven-plugin</artifactId>-->
+                <!--<version>1.10</version>-->
 
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>assemble</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- Extra JVM arguments that will be included in the bin scripts -->
-                    <extraJvmArguments>-Xms10G</extraJvmArguments>
-                    <extraJvmArguments>-Xmx400G</extraJvmArguments>
-                    <!-- set alternative assemble directory -->
-                    <assembleDirectory>assemble</assembleDirectory>
-                    <!--<generateRepository>false</generateRepository>-->
-                    <binFileExtensions>
-                        <unix>.sh</unix>
-                    </binFileExtensions>
-                    <programs>
-                        <program>
-                            <mainClass>iris.Main</mainClass>
-                            <id>iris</id>
-                        </program>
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>assemble</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--&lt;!&ndash; Extra JVM arguments that will be included in the bin scripts &ndash;&gt;-->
+                    <!--<extraJvmArguments>-Xms10G</extraJvmArguments>-->
+                    <!--<extraJvmArguments>-Xmx400G</extraJvmArguments>-->
+                    <!--&lt;!&ndash; set alternative assemble directory &ndash;&gt;-->
+                    <!--<assembleDirectory>assemble</assembleDirectory>-->
+                    <!--&lt;!&ndash;<generateRepository>false</generateRepository>&ndash;&gt;-->
+                    <!--<binFileExtensions>-->
+                        <!--<unix>.sh</unix>-->
+                    <!--</binFileExtensions>-->
+                    <!--<programs>-->
+                        <!--&lt;!&ndash;<program>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<mainClass>iris.Main</mainClass>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<id>iris</id>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</program>&ndash;&gt;-->
 
 
-                    </programs>
-                </configuration>
-            </plugin>
+                    <!--</programs>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 
