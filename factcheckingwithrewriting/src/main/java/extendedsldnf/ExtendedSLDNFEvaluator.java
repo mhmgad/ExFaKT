@@ -22,8 +22,11 @@
  */
 package extendedsldnf;
 
+import com.sun.javafx.css.SimpleSelector;
+import config.Configuration;
 import extendedsldnf.datastructure.ExtendedQueryWithSubstitution;
-import extendedsldnf.datastructure.Solution;
+import extendedsldnf.datastructure.IExplanation;
+import extendedsldnf.datastructure.RewritingPath;
 import extendedsldnf.datastructure.Solutions;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.*;
@@ -43,6 +46,8 @@ import org.deri.iris.storage.simple.SimpleRelationFactory;
 import org.deri.iris.utils.TermMatchingAndSubstitution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import text.ITextConnector;
+import text.ITextResult;
 
 import java.util.*;
 
@@ -57,8 +62,10 @@ import java.util.*;
  * @author gigi
  *
  */
-public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
+public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGenerator {
 
+	private  ITextConnector textConnector;
+	private  Configuration.TextCheckingMode textCheckingMode;
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final int _MAX_NESTING_LEVEL = 45;
@@ -78,14 +85,45 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 	 * @param rules list of rules
 	 */
 	public ExtendedSLDNFEvaluator(IFacts facts, List<IRule> rules) {
+		this(facts,rules,null, Configuration.TextCheckingMode.FULL_ONLY);
+	}
+
+
+
+
+
+	/**
+	 * Constructor
+	 *
+	 * @param facts one or many facts
+	 * @param rules list of rules
+	 */
+	public ExtendedSLDNFEvaluator(IFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.TextCheckingMode textCheckingMode) {
 		mFacts = facts;
-		mRules = new LinkedList<IRule>();
+		mRules = getOrderedRules(rules);
+
+
+		// Text connector
+		this.textConnector=textConnector;
+		this.textCheckingMode=textCheckingMode;
+	}
+
+	/**
+	 * Takes a set of rules and sort the body of each according to binding, and sort the rules according to first ordinary literal (Not Clear!).
+	 * @param rules
+	 * @return
+	 */
+	private List<IRule> getOrderedRules(List<IRule> rules) {
+		List<IRule> tmpRules = new LinkedList<>();
 		ReOrderLiteralsOptimiser rolo = new ReOrderLiteralsOptimiser();
+
 		for (IRule rule : rules) {
-			mRules.add(rolo.optimise(rule));
+			tmpRules.add(rolo.optimise(rule));
 		}
+
 		SimpleReOrdering sro = new SimpleReOrdering();
-		mRules = sro.reOrder(mRules);
+		tmpRules = sro.reOrder(tmpRules);
+		return tmpRules;
 	}
 
 	/**
@@ -96,10 +134,13 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 		mInitialQuery = query;
 		ExtendedQueryWithSubstitution extendedQueryWithSubstitution = new ExtendedQueryWithSubstitution(query, new HashMap<IVariable, ITerm>(), ExtendedQueryWithSubstitution.Source.ORG,new HashMap<IVariable,ExtendedQueryWithSubstitution.BindingSource>());
 
-		List<Solution> solutions = findAndSubstitute(extendedQueryWithSubstitution);
+		List<RewritingPath> solutions = findAndSubstitute(extendedQueryWithSubstitution);
 
 		Solutions returnedSoltion=new Solutions(solutions);
 
+		System.out.println("Logger: "+logger.getName());
+
+		System.out.println("Logger debug: "+logger.isDebugEnabled());
 		logger.debug("------------");
 		//logger.debug("Relation " + relation);
 		logger.debug("Original Query: " + query);
@@ -115,9 +156,9 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 		return mInitialQuery.getVariables();
 	}
 
-	private List<Solution> findAndSubstitute(ExtendedQueryWithSubstitution query) throws EvaluationException {
+	private List<RewritingPath> findAndSubstitute(ExtendedQueryWithSubstitution query) throws EvaluationException {
 		//Gad: successful path queries and variables
-		List<Solution> solutions = findAndSubstitute(query, 0, false);//, pathAccum,variablesMapsAccum,variableListAccum);
+		List<RewritingPath> solutions = findAndSubstitute(query, 0, false);//, pathAccum,variablesMapsAccum,variableListAccum);
 //		logger.debug("Path to result: " + pathAccum.toString());
 //		logger.debug("substitutions Path: " + variablesMapsAccum.toString());
 //		logger.debug("Variables Path: " + variableListAccum.toString());
@@ -136,7 +177,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 	 * @throws EvaluationException                   If something went wrong
 	 * @throws MaximumRecursionDepthReachedException since SLDNF evaluation does not detect infinite loops, this exception is thrown at a nesting level of 25
 	 */
-	private List<Solution> findAndSubstitute(final ExtendedQueryWithSubstitution query, int recursionDepth, boolean inNegationAsFailureFlip/*,  List<List<ExtendedQueryWithSubstitution>> pathAccum,Multimap variablesMapsAccum,List<List<List<VariablesBindings>>> variableListAccum*/) throws EvaluationException, MaximumRecursionDepthReachedException {
+	private List<RewritingPath> findAndSubstitute(final ExtendedQueryWithSubstitution query, int recursionDepth, boolean inNegationAsFailureFlip/*,  List<List<ExtendedQueryWithSubstitution>> pathAccum,Multimap variablesMapsAccum,List<List<List<VariablesBindings>>> variableListAccum*/) throws EvaluationException, MaximumRecursionDepthReachedException {
 
 		// To stop infinite loop, remove this later
 		// when tabling is implemented
@@ -176,7 +217,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 
 		int i = 0;
 
-		List<Solution> solutions = new LinkedList<Solution>();
+		List<RewritingPath> solutions = new LinkedList<RewritingPath>();
 
 		for (ExtendedQueryWithSubstitution newQws : subQueryList) { // process new queries
 			IQuery newQuery = newQws.getQuery();
@@ -193,7 +234,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 //				ITuple tuple = TopDownHelper.resolveTuple(query.getQuery(), variableMap);
 //				relationReturned.add(tuple);
 				//solutionsReturned.add(getMappedVariableList(query.getQuery().getVariables(),newVariableMap,query.source));
-				Solution solution = new Solution();
+				RewritingPath solution = new RewritingPath();
 				solution.add(selectedLiteral, query.getSource());
 				solution.setSubstitutions(query.getSubstitution());
 				solution.setSubstitutionsSources(query.getSubstitutionSources());
@@ -204,7 +245,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 
 			// Evaluate the new query (walk the subtree)
 			//IRelation relationFromSubtree =
-			List<Solution> solutionFromSubtree = findAndSubstitute(newQws, ++recursionDepth, inNegationAsFailureFlip/*,pathAccum,variablesMapsAccum,variableListAccum*/);
+			List<RewritingPath> solutionFromSubtree = findAndSubstitute(newQws, ++recursionDepth, inNegationAsFailureFlip/*,pathAccum,variablesMapsAccum,variableListAccum*/);
 
 			logger.debug(debugPrefix + "Old query: " + query.getQuery().getVariables() + query);
 			logger.debug(debugPrefix + "New query: " + newQuery.getVariables() + newQuery + " | " + newVariableMap);
@@ -285,10 +326,10 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 				subQueryList.addAll(subQueries );
 			}
 			//Gad: If still no sub queries neither from DB nor text use rules to answer. (Previously it was always called)
-			if(subQueries.isEmpty()){
+//			if(subQueries.isEmpty()){
 				subQueries = processQueryAgainstRules(query, selectedLiteral);
 				subQueryList.addAll( subQueries );
-			}
+//			}
 
 
 
@@ -296,7 +337,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 		return subQueryList;
 	}
 
-	private List<ExtendedQueryWithSubstitution> processQueryAgainstText(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) {
+	private List<ExtendedQueryWithSubstitution> processQueryAgainstText(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
 
 
 		//TODO Gad: Here we should find possible bindings for ?X in p(a,?X) either:
@@ -305,8 +346,64 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 
 		//TODO: Use the bindings to generate sub-quries.
 
+		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
 
-		return new ArrayList<ExtendedQueryWithSubstitution>();
+
+		//Check according to the level
+		switch (textCheckingMode){
+
+			case FULL_ONLY:
+				if(!queryLiteral.getAtom().isGround())
+					return newQueryList;
+			case NONE:
+				//TODO to be implmented
+			case KG_BIND:
+				// TODO to be implmented  by bind all bariables using KG
+			case PARTIAL:
+				// TODO FIRE partial query
+		}
+
+
+		// Check text
+		ITextResult result = textConnector.queryText(queryLiteral);
+
+		// support is found
+		if(!result.found()){
+			return newQueryList;
+		}
+			List<Map<IVariable, ITerm>> variableMapList = result.getVaribalesMappings();
+
+		for (Map<IVariable, ITerm> variableMap:variableMapList ) {
+			// Substitute the whole query
+			IQuery substitutedQuery = TopDownHelper.substituteVariablesInToQuery(query.getQuery(), variableMap);
+
+			// Since we have only support full matching now we will only return new set without the selectedLiteral
+			// Remove the fact, ...
+			LinkedList<ILiteral> literalsWithoutMatch = new LinkedList<ILiteral>( substitutedQuery.getLiterals() );
+			literalsWithoutMatch.remove( queryLiteral );
+
+			// Add the new query to the query list
+			IQuery newQuery = Factory.BASIC.createQuery( literalsWithoutMatch );
+
+
+
+			variableMap.putAll(query.getSubstitution());
+			//Gad
+			Map<IVariable,ExtendedQueryWithSubstitution.BindingSource> substitutionSourcesMap=new HashMap<>();
+			substitutionSourcesMap.putAll(query.getSubstitutionSources());
+			variableMap.keySet().forEach(k->substitutionSourcesMap.put(k, ExtendedQueryWithSubstitution.BindingSource.TEXT));
+
+			ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery,variableMap, ExtendedQueryWithSubstitution.Source.TEXT,substitutedQuery,substitutionSourcesMap);
+			newQueryList.add( qws );
+
+		}
+
+
+
+		//check bindings
+
+
+		return newQueryList;
 	}
 
 
@@ -326,6 +423,8 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 	private List<ExtendedQueryWithSubstitution> processQueryAgainstRules(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) throws EvaluationException {
 
 		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
+
+		//SimpleSelector
 
 		for (IRule rule : mRules) {
 			ILiteral ruleHead = rule.getHead().get(0);
@@ -569,4 +668,8 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator {
 		return debugPrefix;
 	}
 
+	@Override
+	public IExplanation getExplanation(IQuery query) throws EvaluationException {
+		return (IExplanation) evaluate(query);
+	}
 }

@@ -22,7 +22,8 @@
  */
 package extendedsldnf;
 
-import org.deri.iris.Configuration;
+
+import config.Configuration;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.ProgramNotStratifiedException;
 import org.deri.iris.RuleUnsafeException;
@@ -33,6 +34,7 @@ import org.deri.iris.evaluation.IEvaluationStrategy;
 import org.deri.iris.facts.IFacts;
 import org.deri.iris.storage.IRelation;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -49,7 +51,7 @@ public class ExtendedSLDNFEvaluationStrategy implements IEvaluationStrategy {
 	 * Constructor
 	 * @param facts Given facts.
 	 * @param rules Given rules.
-	 * @param configuration Configuration
+	 * @param configuration config.Configuration
 	 * @throws EvaluationException
 	 */
 	public ExtendedSLDNFEvaluationStrategy(IFacts facts, List<IRule> rules, Configuration configuration ) throws EvaluationException {
@@ -67,6 +69,8 @@ public class ExtendedSLDNFEvaluationStrategy implements IEvaluationStrategy {
 		
 		ExtendedSLDNFEvaluator evaluator = new ExtendedSLDNFEvaluator( mFacts, mRules );
 		IRelation relation = evaluator.evaluate(query);
+		if(outputVariables==null)
+			outputVariables=new LinkedList<>();
  		outputVariables.addAll( evaluator.getOutputVariables() );
  		
 		return relation;

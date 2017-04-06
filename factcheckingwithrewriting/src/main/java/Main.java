@@ -1,6 +1,5 @@
-import de.mpii.datastructures.BinaryFact;
-import de.mpii.datastructures.Fact;
-import extendedsldnf.datastructure.IExplaination;
+import config.Configuration;
+import extendedsldnf.datastructure.IExplanation;
 import mpi.tools.javatools.util.FileUtils;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.IQuery;
@@ -24,7 +23,7 @@ public class Main {
         Configuration configuration=Configuration.getInstance();
 
         RuleBasedChecker rfc=new RuleBasedChecker();
-        List<IExplaination> explainations=new LinkedList<>();
+        List<IExplanation> explainations=new LinkedList<>();
         List<IQuery> queries=new LinkedList<>();
         if(!configuration.getQueiesFiles().isEmpty()){
 
@@ -39,7 +38,7 @@ public class Main {
             }
         }
 
-        Iterator<IExplaination> explansItr=explainations.iterator();
+        Iterator<IExplanation> explansItr=explainations.iterator();
         for (IQuery query:queries) {
             System.out.println(query+":\t"+explansItr.next());
 
@@ -47,7 +46,7 @@ public class Main {
 
     }
 
-    private static List<IExplaination> processList(RuleBasedChecker rfc, List<IQuery> queries) {
-        return queries.parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
+    private static List<IExplanation> processList(RuleBasedChecker rfc, List<IQuery> queries) {
+        return queries.stream().map(q->rfc.check(q)).collect(Collectors.toList());
     }
 }

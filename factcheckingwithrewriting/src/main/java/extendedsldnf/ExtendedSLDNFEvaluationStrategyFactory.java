@@ -22,7 +22,8 @@
  */
 package extendedsldnf;
 
-import org.deri.iris.Configuration;
+
+import config.Configuration;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.evaluation.IEvaluationStrategy;
@@ -45,11 +46,11 @@ public class ExtendedSLDNFEvaluationStrategyFactory implements IEvaluationStrate
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 
-	public IEvaluationStrategy createEvaluator( IFacts facts, List<IRule> rules, Configuration configuration )
+	public IEvaluationStrategy createEvaluator( IFacts facts, List<IRule> rules, org.deri.iris.Configuration configuration )
 	                throws EvaluationException
 	{
 		logger.debug("Creating SLDNF Evaluation");
-		return new ExtendedSLDNFEvaluationStrategy( facts, rules, configuration );
+		return new ExtendedSLDNFEvaluationStrategy( facts, rules, (Configuration) configuration );
 	}
 
 }

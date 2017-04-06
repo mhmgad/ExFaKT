@@ -1,10 +1,8 @@
 package extendedsldnf.datastructure;
 
 import org.deri.iris.api.basics.ILiteral;
-import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
-import org.deri.iris.storage.IRelation;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,7 +14,7 @@ import java.util.stream.Collectors;
  * Created by gadelrab on 3/8/17.
  */
 
-public class Solution{
+public class RewritingPath {
 
     List<ILiteral> literals=new LinkedList<>();
     List<ExtendedQueryWithSubstitution.Source> sources=new LinkedList<>();
@@ -25,12 +23,12 @@ public class Solution{
     private Map<IVariable, ITerm> substitutions;
     private Map<IVariable, ExtendedQueryWithSubstitution.BindingSource> substitutionsSources;
 
-    public Solution() {
+    public RewritingPath() {
         this(new LinkedList<ILiteral>(),new LinkedList<ExtendedQueryWithSubstitution.Source>(),new HashMap<IVariable,ITerm>(),new HashMap<IVariable,ExtendedQueryWithSubstitution.BindingSource>());
 
     }
 
-    public Solution(List<ILiteral> literals, List<ExtendedQueryWithSubstitution.Source> sources, HashMap<IVariable, ITerm> substitutions, HashMap<IVariable, ExtendedQueryWithSubstitution.BindingSource> subtitutionsSources) {
+    public RewritingPath(List<ILiteral> literals, List<ExtendedQueryWithSubstitution.Source> sources, HashMap<IVariable, ITerm> substitutions, HashMap<IVariable, ExtendedQueryWithSubstitution.BindingSource> subtitutionsSources) {
         this.literals = literals;
         this.sources = sources;
         this.substitutions=substitutions;
@@ -45,7 +43,7 @@ public class Solution{
     @Override
     public String toString() {
 
-        StringBuilder sb=new StringBuilder("Solution{ Path:[");
+        StringBuilder sb=new StringBuilder("RewritingPath{ literals:[");
 
 
         for (int i = 0; i < literals.size(); i++) {
@@ -53,7 +51,7 @@ public class Solution{
             if(i!=literals.size()-1)
                 sb.append(", ");
         }
-        sb.append("], Sources:");
+        sb.append("], sources:");
         List<String> subSourcesRep=substitutions.keySet().stream().map(k-> '('+k.toString()+": "+substitutions.get(k).toString()+", "+substitutionsSources.get(k).toString()+')').collect(Collectors.toList());
         sb.append(subSourcesRep.toString());
         sb.append('}');

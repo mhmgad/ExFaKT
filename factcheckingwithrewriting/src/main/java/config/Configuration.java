@@ -1,3 +1,5 @@
+package config;
+
 import de.mpii.factspotting.FactSpotterFactory;
 import extendedsldnf.ExtendedSLDNFEvaluationStrategyFactory;
 
@@ -22,13 +24,16 @@ public class Configuration extends org.deri.iris.Configuration {
     private static final String RULES_FILES = "rewriting.ruleFiles";
     private static final String FACTS_FILES = "factsSource.factsFiles";
     private static final String QUERIES_FILES = "queriesFile";
-    private static final String INPUT_TYPE = "inputType";
+    private static final String FACTS_FORMAT = "factsFormat";
+    private static final String Text_CHECKING_MODE = "textCheckingMode";
+
     private static Configuration instance;
-    private InputType inputType;
 
 
-    enum InputType{RDF, IRIS}
 
+    enum FactsFormat {RDF, IRIS;}
+
+    public enum TextCheckingMode{FULL_ONLY, PARTIAL, NONE, KG_BIND;}
     /**
      * FactSpotting Method
      */
@@ -38,16 +43,25 @@ public class Configuration extends org.deri.iris.Configuration {
      * Files containing rules
      */
     private List<String> rulesFiles;
+
     /**
      * Files containing facts
      */
     private List<String> factsFiles;
-
-
     /**
      * Files containing queries
      */
     private List<String> queiesFiles;
+
+    /**
+     * The format of the input fact, either RDF triples or IRIS facts
+     */
+    private FactsFormat factsFormat;
+
+    /**
+     * The allowed facts to check, either fully grounded or partially
+     */
+    private TextCheckingMode textCheckingMode;
 
     public Configuration(){
         super();
@@ -61,7 +75,7 @@ public class Configuration extends org.deri.iris.Configuration {
         InputStream input = null;
 
         try {
-            // configuration file loaded in resoruces
+            // configuration file loaded in resources
             if (inResources) {
                 input = de.mpii.factspotting.config.Configuration.class.getClassLoader().getResourceAsStream(filename);
 
@@ -83,7 +97,8 @@ public class Configuration extends org.deri.iris.Configuration {
             conf.setRulesFiles(Arrays.asList(prop.getProperty(RULES_FILES, "").split(",")));
             conf.setFactsFiles(Arrays.asList(prop.getProperty(FACTS_FILES, "").split(",")));
             conf.setQueiesFiles(Arrays.asList(prop.getProperty(QUERIES_FILES, "").split(",")));
-            conf.setInputType(InputType.valueOf(prop.getProperty(INPUT_TYPE,InputType.IRIS.toString())));
+            conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
+            conf.setTextCheckingMode(TextCheckingMode.valueOf(prop.getProperty(Text_CHECKING_MODE,TextCheckingMode.FULL_ONLY.toString())));
 
 //                System.out.println(conf);
 
@@ -106,14 +121,14 @@ public class Configuration extends org.deri.iris.Configuration {
         return fromFile(filename,true);
     }
 
-
-
     public synchronized static Configuration getInstance() {
         if(instance==null)
             instance= Configuration.fromFile("fact_checking_rewriting.properities");
 
         return instance;
     }
+
+
 
     public void setSpottingMethod(FactSpotterFactory.SpottingMethod spottingMethod) {
         this.spottingMethod = spottingMethod;
@@ -139,12 +154,12 @@ public class Configuration extends org.deri.iris.Configuration {
         this.queiesFiles = queiesFiles;
     }
 
-    public void setInputType(InputType inputType) {
-        this.inputType = inputType;
+    public void setFactsFormat(FactsFormat factsFormat) {
+        this.factsFormat = factsFormat;
     }
 
-    public InputType getInputType() {
-        return inputType;
+    public FactsFormat getFactsFormat() {
+        return factsFormat;
     }
 
     public FactSpotterFactory.SpottingMethod getSpottingMethod() {
@@ -153,5 +168,13 @@ public class Configuration extends org.deri.iris.Configuration {
 
     public List<String> getQueiesFiles() {
         return queiesFiles;
+    }
+
+    public void setTextCheckingMode(TextCheckingMode textCheckingMode) {
+        this.textCheckingMode = textCheckingMode;
+    }
+
+    public TextCheckingMode getTextCheckingMode() {
+        return textCheckingMode;
     }
 }
