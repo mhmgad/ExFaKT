@@ -25,15 +25,16 @@ public class Configuration extends org.deri.iris.Configuration {
     private static final String FACTS_FILES = "factsSource.factsFiles";
     private static final String QUERIES_FILES = "queriesFile";
     private static final String FACTS_FORMAT = "factsFormat";
-    private static final String Text_CHECKING_MODE = "textCheckingMode";
+    private static final String Partial_BINDING_TYPE = "partialBindingType";
+
 
     private static Configuration instance;
 
-
+    public enum PartialBindingType {GREEDY,TEXT,NONE}
 
     enum FactsFormat {RDF, IRIS;}
 
-    public enum TextCheckingMode{FULL_ONLY, PARTIAL, NONE, KG_BIND;}
+    //public enum TextCheckingMode{GROUNDED, PARTIAL, NONE, KG_BIND;}
     /**
      * FactSpotting Method
      */
@@ -61,7 +62,7 @@ public class Configuration extends org.deri.iris.Configuration {
     /**
      * The allowed facts to check, either fully grounded or partially
      */
-    private TextCheckingMode textCheckingMode;
+    private PartialBindingType partialBindingType;
 
     public Configuration(){
         super();
@@ -98,7 +99,7 @@ public class Configuration extends org.deri.iris.Configuration {
             conf.setFactsFiles(Arrays.asList(prop.getProperty(FACTS_FILES, "").split(",")));
             conf.setQueiesFiles(Arrays.asList(prop.getProperty(QUERIES_FILES, "").split(",")));
             conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
-            conf.setTextCheckingMode(TextCheckingMode.valueOf(prop.getProperty(Text_CHECKING_MODE,TextCheckingMode.FULL_ONLY.toString())));
+            conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(Partial_BINDING_TYPE,"NONE")));
 
 //                System.out.println(conf);
 
@@ -170,11 +171,11 @@ public class Configuration extends org.deri.iris.Configuration {
         return queiesFiles;
     }
 
-    public void setTextCheckingMode(TextCheckingMode textCheckingMode) {
-        this.textCheckingMode = textCheckingMode;
+    public void setPartialBindingType(PartialBindingType partialBindingType) {
+        this.partialBindingType = partialBindingType;
     }
 
-    public TextCheckingMode getTextCheckingMode() {
-        return textCheckingMode;
+    public PartialBindingType getPartialBindingType() {
+        return partialBindingType;
     }
 }

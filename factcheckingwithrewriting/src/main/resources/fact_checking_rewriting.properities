@@ -10,4 +10,6 @@ factsSource.factsFiles=/home/gadelrab/ideaProjects/RuleBasedFactChecking/iris-ex
 factsFormat=IRIS
 queriesFile=/home/gadelrab/ideaProjects/RuleBasedFactChecking/iris-example/datalog-examples/family_simple/queries.iris
 
-#textCheckingMode=FULL_ONLY
+#partialBindingType=true
+#textBinding=true
+

@@ -22,12 +22,8 @@
  */
 package extendedsldnf;
 
-import com.sun.javafx.css.SimpleSelector;
 import config.Configuration;
-import extendedsldnf.datastructure.ExtendedQueryWithSubstitution;
-import extendedsldnf.datastructure.IExplanation;
-import extendedsldnf.datastructure.RewritingPath;
-import extendedsldnf.datastructure.Solutions;
+import extendedsldnf.datastructure.*;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.*;
 import org.deri.iris.api.builtins.IBuiltinAtom;
@@ -37,7 +33,6 @@ import org.deri.iris.builtins.EqualBuiltin;
 import org.deri.iris.builtins.ExactEqualBuiltin;
 import org.deri.iris.evaluation.topdown.*;
 import org.deri.iris.factory.Factory;
-import org.deri.iris.facts.IFacts;
 import org.deri.iris.rules.RuleManipulator;
 import org.deri.iris.rules.optimisation.ReOrderLiteralsOptimiser;
 import org.deri.iris.rules.ordering.SimpleReOrdering;
@@ -65,13 +60,13 @@ import java.util.*;
 public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGenerator {
 
 	private  ITextConnector textConnector;
-	private  Configuration.TextCheckingMode textCheckingMode;
+	private  Configuration.PartialBindingType partialBindingType;
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final int _MAX_NESTING_LEVEL = 45;
 
 	private IQuery mInitialQuery;
-	private IFacts mFacts;
+	private IExtendedFacts mFacts;
 	private List<IRule> mRules;
 
 	private static final SimpleRelationFactory srf = new SimpleRelationFactory();
@@ -84,8 +79,8 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	 * @param facts one or many facts
 	 * @param rules list of rules
 	 */
-	public ExtendedSLDNFEvaluator(IFacts facts, List<IRule> rules) {
-		this(facts,rules,null, Configuration.TextCheckingMode.FULL_ONLY);
+	public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules) {
+		this(facts,rules,null, Configuration.PartialBindingType.NONE);
 	}
 
 
@@ -98,14 +93,14 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	 * @param facts one or many facts
 	 * @param rules list of rules
 	 */
-	public ExtendedSLDNFEvaluator(IFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.TextCheckingMode textCheckingMode) {
+	public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType) {
 		mFacts = facts;
 		mRules = getOrderedRules(rules);
 
 
 		// Text connector
 		this.textConnector=textConnector;
-		this.textCheckingMode=textCheckingMode;
+		this.partialBindingType=partialBindingType;
 	}
 
 	/**
@@ -132,7 +127,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	public IRelation evaluate(IQuery query) throws EvaluationException {
 		// Process the query
 		mInitialQuery = query;
-		ExtendedQueryWithSubstitution extendedQueryWithSubstitution = new ExtendedQueryWithSubstitution(query, new HashMap<IVariable, ITerm>(), ExtendedQueryWithSubstitution.Source.ORG,new HashMap<IVariable,ExtendedQueryWithSubstitution.BindingSource>());
+		ExtendedQueryWithSubstitution extendedQueryWithSubstitution = new ExtendedQueryWithSubstitution(query, new HashMap<IVariable, ITerm>(), ExtendedQueryWithSubstitution.ExpansionMethod.ORG,new HashMap<IVariable,ExtendedQueryWithSubstitution.BindingSource>());
 
 		List<RewritingPath> solutions = findAndSubstitute(extendedQueryWithSubstitution);
 
@@ -266,9 +261,9 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 			// 3)was not substituted by rules.
 
 			// If rules was not used to generate this sub query
-			if(newQws.getSource()!= ExtendedQueryWithSubstitution.Source.RULES){
+			if(newQws.getSource()!= ExtendedQueryWithSubstitution.ExpansionMethod.RULES){
 				// not the original query
-				if(query.getSource()!= ExtendedQueryWithSubstitution.Source.ORG){
+				if(query.getSource()!= ExtendedQueryWithSubstitution.ExpansionMethod.ORG){
 					if(selectedLiteral.getAtom().isGround())
 						solutionFromSubtree.forEach(sl -> sl.add(selectedLiteral, query.getSource()));
 
@@ -316,20 +311,32 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 		if (queryLiteralAtom  instanceof IBuiltinAtom) { // BuiltIn
 			subQueryList.addAll( processBuiltin(query, selectedLiteral, queryLiteralAtom) );
 		} else { // Not BuiltIn	
-			//Gad: check if there are no subqueries from the DB go to text
+			// Bind or check from KG
 			List<ExtendedQueryWithSubstitution> subQueries = processQueryAgainstFacts(query, selectedLiteral);
 			subQueryList.addAll(subQueries );
-			//TODO Gad: add the extra source here ()	
-			if(subQueries.isEmpty())
-			{
-				subQueries = processQueryAgainstText(query, selectedLiteral);
-				subQueryList.addAll(subQueries );
+
+			//If it is a fact (Grounded) and was not proved check the text
+			if(queryLiteralAtom.isGround()){
+				if(subQueries.isEmpty())
+					subQueries = processQueryAgainstText(query, selectedLiteral);
+					subQueryList.addAll(subQueries );
+			}else{
+
+				//If it is partially grounded and it is allowed to get bindings from text
+				if(partialBindingType.equals(Configuration.PartialBindingType.TEXT) ){
+					subQueries = processQueryAgainstText(query, selectedLiteral);
+					subQueryList.addAll(subQueries );
+				}
 			}
-			//Gad: If still no sub queries neither from DB nor text use rules to answer. (Previously it was always called)
-//			if(subQueries.isEmpty()){
+
+
+			//TODO Gad: add the extra source here ()	
+
+
+			// Rules are always fired to grant reaching the whole search space
 				subQueries = processQueryAgainstRules(query, selectedLiteral);
 				subQueryList.addAll( subQueries );
-//			}
+
 
 
 
@@ -349,64 +356,38 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
 
 
-		//Check according to the level
-		switch (textCheckingMode){
-
-			case FULL_ONLY:
-				if(!queryLiteral.getAtom().isGround())
-					return newQueryList;
-			case NONE:
-				//TODO to be implmented
-			case KG_BIND:
-				// TODO to be implmented  by bind all bariables using KG
-			case PARTIAL:
-				// TODO FIRE partial query
-		}
-
-
 		// Check text
 		ITextResult result = textConnector.queryText(queryLiteral);
 
 		// support is found
 		if(!result.found()){
-			return newQueryList;
+			return new LinkedList<>();
 		}
 			List<Map<IVariable, ITerm>> variableMapList = result.getVaribalesMappings();
 
-		for (Map<IVariable, ITerm> variableMap:variableMapList ) {
-			// Substitute the whole query
-			IQuery substitutedQuery = TopDownHelper.substituteVariablesInToQuery(query.getQuery(), variableMap);
 
-			// Since we have only support full matching now we will only return new set without the selectedLiteral
-			// Remove the fact, ...
-			LinkedList<ILiteral> literalsWithoutMatch = new LinkedList<ILiteral>( substitutedQuery.getLiterals() );
-			literalsWithoutMatch.remove( queryLiteral );
-
-			// Add the new query to the query list
-			IQuery newQuery = Factory.BASIC.createQuery( literalsWithoutMatch );
-
-
-
-			variableMap.putAll(query.getSubstitution());
-			//Gad
-			Map<IVariable,ExtendedQueryWithSubstitution.BindingSource> substitutionSourcesMap=new HashMap<>();
-			substitutionSourcesMap.putAll(query.getSubstitutionSources());
-			variableMap.keySet().forEach(k->substitutionSourcesMap.put(k, ExtendedQueryWithSubstitution.BindingSource.TEXT));
-
-			ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery,variableMap, ExtendedQueryWithSubstitution.Source.TEXT,substitutedQuery,substitutionSourcesMap);
-			newQueryList.add( qws );
-
-		}
-
-
-
-		//check bindings
-
-
-		return newQueryList;
+		return getExtendedQueryWithSubstitutions(query,queryLiteral,variableMapList, ExtendedQueryWithSubstitution.BindingSource.TEXT, ExtendedQueryWithSubstitution.ExpansionMethod.TEXT,true);
 	}
 
+	/**
+	 * Generate aggressive binding for a predicate using all possible entities
+	 * @param query
+	 * @param queryLiteral
+	 * @return
+	 */
+	private List<ExtendedQueryWithSubstitution> bindFromKGAggressively(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
 
+		IRelation factRelation=mFacts.getHypotheticalBindings(queryLiteral);
+
+		List<Map<IVariable, ITerm>> variableMapList=new LinkedList<>();
+		fillVariableMaps(queryLiteral,factRelation,variableMapList);
+
+		if(factRelation.size()>0){
+			return getExtendedQueryWithSubstitutions(query,queryLiteral,variableMapList, ExtendedQueryWithSubstitution.BindingSource.ENTITIES_COMB, ExtendedQueryWithSubstitution.ExpansionMethod.ENTITIES_COMB,false);
+		}
+
+		return  new LinkedList<>();
+	}
 
 
 	/**
@@ -454,7 +435,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 				// Substitute the whole query
 				newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, variableMapUnify);
 
-				ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery, variableMapUnify, ExtendedQueryWithSubstitution.Source.RULES,query.getSubstitutionSources());
+				ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery, variableMapUnify, ExtendedQueryWithSubstitution.ExpansionMethod.RULES,query.getSubstitutionSources());
 				newQueryList.add(qws);
 
 			}
@@ -473,36 +454,45 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	 */
 	private List<ExtendedQueryWithSubstitution> processQueryAgainstFacts(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
 
-		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
+
 		List<Map<IVariable, ITerm>> variableMapList = new LinkedList<Map<IVariable,ITerm>>();
 		if ( getMatchingFacts( queryLiteral, variableMapList  ) ) {
-			for (Map<IVariable, ITerm>variableMap : variableMapList) {
-				// For every fact
-
-				// Substitute the whole query
-				IQuery substitutedQuery = TopDownHelper.substituteVariablesInToQuery(query.getQuery(), variableMap);
-
-				// Remove the fact, ...
-				LinkedList<ILiteral> literalsWithoutMatch = new LinkedList<ILiteral>( substitutedQuery.getLiterals() );
-				literalsWithoutMatch.remove( queryLiteral );
-
-				// Add the new query to the query list
-				IQuery newQuery = Factory.BASIC.createQuery( literalsWithoutMatch );
-
-
-
-				variableMap.putAll(query.getSubstitution());
-
-				//Gad
-				Map<IVariable,ExtendedQueryWithSubstitution.BindingSource> substitutionSourcesMap=new HashMap<>();
-				substitutionSourcesMap.putAll(query.getSubstitutionSources());
-				variableMap.keySet().forEach(k->substitutionSourcesMap.put(k, ExtendedQueryWithSubstitution.BindingSource.FACT));
-
-				ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery,variableMap, ExtendedQueryWithSubstitution.Source.FACT,substitutedQuery,substitutionSourcesMap);
-				newQueryList.add( qws );
-			}
+			boolean removePredicate=true;
+			return getExtendedQueryWithSubstitutions(query, queryLiteral, variableMapList, ExtendedQueryWithSubstitution.BindingSource.FACT, ExtendedQueryWithSubstitution.ExpansionMethod.FACT,removePredicate);
 		}
 
+		return new LinkedList<ExtendedQueryWithSubstitution>();
+	}
+
+	private List<ExtendedQueryWithSubstitution> getExtendedQueryWithSubstitutions(ExtendedQueryWithSubstitution query, ILiteral queryLiteral, List<Map<IVariable, ITerm>> variableMapList, ExtendedQueryWithSubstitution.BindingSource bindingSource, ExtendedQueryWithSubstitution.ExpansionMethod expansionMethod, boolean removeQueryLiteral) {
+		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
+		for (Map<IVariable, ITerm>variableMap : variableMapList) {
+
+            // For every fact
+
+            // Substitute the whole query
+            IQuery substitutedQuery = TopDownHelper.substituteVariablesInToQuery(query.getQuery(), variableMap);
+
+            // Remove the fact, ...
+            LinkedList<ILiteral> literalsWithoutMatch = new LinkedList<ILiteral>( substitutedQuery.getLiterals() );
+			if(removeQueryLiteral)
+            	literalsWithoutMatch.remove( queryLiteral );
+
+            // Add the new query to the query list
+            IQuery newQuery = Factory.BASIC.createQuery( literalsWithoutMatch );
+
+
+
+            variableMap.putAll(query.getSubstitution());
+
+            //Gad
+            Map<IVariable,ExtendedQueryWithSubstitution.BindingSource> substitutionSourcesMap=new HashMap<>();
+            substitutionSourcesMap.putAll(query.getSubstitutionSources());
+            variableMap.keySet().forEach(k->substitutionSourcesMap.put(k, bindingSource));
+
+            ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery,variableMap, expansionMethod,substitutedQuery,substitutionSourcesMap);
+            newQueryList.add( qws );
+        }
 		return newQueryList;
 	}
 
@@ -556,7 +546,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 			if (builtinTuple.getVariables().isEmpty()) {
 				// Builtin tuple contained no variables, the result is
 				// true or false, e.g. ADD(1, 2, 3) = true
-				ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery, new HashMap<IVariable, ITerm>(), ExtendedQueryWithSubstitution.Source.BUILT_IN,queryWithSub.getSubstitutionSources());
+				ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery, new HashMap<IVariable, ITerm>(), ExtendedQueryWithSubstitution.ExpansionMethod.BUILT_IN,queryWithSub.getSubstitutionSources());
 				newQueryList.add( qws );
 
 			} else {
@@ -585,7 +575,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 					// add the new query to the query list
 					newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, varMap);
-					ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution( newQuery, varMap,ExtendedQueryWithSubstitution.Source.BUILT_IN ,queryWithSub.getSubstitutionSources());
+					ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution( newQuery, varMap, ExtendedQueryWithSubstitution.ExpansionMethod.BUILT_IN ,queryWithSub.getSubstitutionSources());
 					newQueryList.add( qws );
 
 
@@ -601,7 +591,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 			// add the new query to the query list
 			newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, varMap);
-			ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution( newQuery, varMap,ExtendedQueryWithSubstitution.Source.BUILT_IN ,queryWithSub.getSubstitutionSources());
+			ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution( newQuery, varMap, ExtendedQueryWithSubstitution.ExpansionMethod.BUILT_IN ,queryWithSub.getSubstitutionSources());
 			newQueryList.add( qws );
 		}
 
@@ -625,25 +615,30 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 				// Is the QueryTuple unifiable with one of the FactTuples?
 
 				IRelation factRelation = mFacts.get(factPredicate);
+				fillVariableMaps(queryLiteral, factRelation, variableMapList);
 
-				// Substitute variables into the query
-				for ( int i = 0; i < factRelation.size(); i++ ) {
-					ITuple queryTuple = queryLiteral.getAtom().getTuple();
-					boolean tupleUnifyable = false;
-					ITuple factTuple = factRelation.get(i);
-					Map<IVariable, ITerm> variableMap = new HashMap<IVariable, ITerm>();
-					tupleUnifyable = TermMatchingAndSubstitution.unify(queryTuple, factTuple, variableMap);
-					if (tupleUnifyable) {
-						queryTuple = TermMatchingAndSubstitution.substituteVariablesInToTuple(queryTuple, variableMap);
-						variableMapList.add(variableMap);
-					}
-				}
+
 			}
 		}
 		if (variableMapList.isEmpty())
 			return false; // No fact found
 
 		return true;
+	}
+
+	private void fillVariableMaps(ILiteral queryLiteral, IRelation factRelation, List<Map<IVariable, ITerm>> variableMapList) {
+		// Substitute variables into the query
+		for ( int i = 0; i < factRelation.size(); i++ ) {
+            ITuple queryTuple = queryLiteral.getAtom().getTuple();
+            boolean tupleUnifyable = false;
+            ITuple factTuple = factRelation.get(i);
+            Map<IVariable, ITerm> variableMap = new HashMap<IVariable, ITerm>();
+            tupleUnifyable = TermMatchingAndSubstitution.unify(queryTuple, factTuple, variableMap);
+            if (tupleUnifyable) {
+                queryTuple = TermMatchingAndSubstitution.substituteVariablesInToTuple(queryTuple, variableMap);
+                variableMapList.add(variableMap);
+            }
+        }
 	}
 
 

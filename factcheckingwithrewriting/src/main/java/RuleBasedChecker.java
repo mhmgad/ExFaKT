@@ -118,7 +118,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 //                    .createEvaluator(facts, rules, config);
 
 
-        evaluator = new ExtendedSLDNFEvaluator( facts, rules,new FactSpottingConnector(config),config.getTextCheckingMode() );
+        evaluator = new ExtendedSLDNFEvaluator( facts, rules,new FactSpottingConnector(config),config.getPartialBindingType() );
 
 
     }

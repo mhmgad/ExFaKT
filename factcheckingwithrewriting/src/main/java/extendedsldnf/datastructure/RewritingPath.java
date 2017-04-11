@@ -17,25 +17,25 @@ import java.util.stream.Collectors;
 public class RewritingPath {
 
     List<ILiteral> literals=new LinkedList<>();
-    List<ExtendedQueryWithSubstitution.Source> sources=new LinkedList<>();
+    List<ExtendedQueryWithSubstitution.ExpansionMethod> sources=new LinkedList<>();
 
 
     private Map<IVariable, ITerm> substitutions;
     private Map<IVariable, ExtendedQueryWithSubstitution.BindingSource> substitutionsSources;
 
     public RewritingPath() {
-        this(new LinkedList<ILiteral>(),new LinkedList<ExtendedQueryWithSubstitution.Source>(),new HashMap<IVariable,ITerm>(),new HashMap<IVariable,ExtendedQueryWithSubstitution.BindingSource>());
+        this(new LinkedList<ILiteral>(),new LinkedList<ExtendedQueryWithSubstitution.ExpansionMethod>(),new HashMap<IVariable,ITerm>(),new HashMap<IVariable,ExtendedQueryWithSubstitution.BindingSource>());
 
     }
 
-    public RewritingPath(List<ILiteral> literals, List<ExtendedQueryWithSubstitution.Source> sources, HashMap<IVariable, ITerm> substitutions, HashMap<IVariable, ExtendedQueryWithSubstitution.BindingSource> subtitutionsSources) {
+    public RewritingPath(List<ILiteral> literals, List<ExtendedQueryWithSubstitution.ExpansionMethod> sources, HashMap<IVariable, ITerm> substitutions, HashMap<IVariable, ExtendedQueryWithSubstitution.BindingSource> subtitutionsSources) {
         this.literals = literals;
         this.sources = sources;
         this.substitutions=substitutions;
         this.substitutionsSources=subtitutionsSources;
     }
 
-    public void add(ILiteral selectedLiteral, ExtendedQueryWithSubstitution.Source source) {
+    public void add(ILiteral selectedLiteral, ExtendedQueryWithSubstitution.ExpansionMethod source) {
         literals.add(0,selectedLiteral);
         sources.add(0,source);
     }
@@ -59,7 +59,7 @@ public class RewritingPath {
     }
 
     public boolean isResolvedByRule() {
-        return (!this.sources.isEmpty())&& this.sources.get(0)== ExtendedQueryWithSubstitution.Source.RULES;
+        return (!this.sources.isEmpty())&& this.sources.get(0)== ExtendedQueryWithSubstitution.ExpansionMethod.RULES;
     }
 
     public void setSubstitutions(Map<IVariable,ITerm> substitutions) {
