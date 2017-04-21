@@ -29,7 +29,7 @@ public class FactSpottingResult implements ITextResult{
 
     @Override
     public boolean found() {
-        return evidence.isSupporting();
+        return evidence!=null && evidence.isSupporting();
     }
 
     @Override

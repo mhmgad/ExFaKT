@@ -25,14 +25,19 @@ public class Configuration extends org.deri.iris.Configuration {
     private static final String FACTS_FILES = "factsSource.factsFiles";
     private static final String QUERIES_FILES = "queriesFile";
     private static final String FACTS_FORMAT = "factsFormat";
-    private static final String Partial_BINDING_TYPE = "partialBindingType";
+    private static final String PARTIAL_BINDING_TYPE = "partialBindingType";
+
+
+
 
 
     private static Configuration instance;
 
+
+
     public enum PartialBindingType {GREEDY,TEXT,NONE}
 
-    enum FactsFormat {RDF, IRIS;}
+    public enum FactsFormat {RDF, IRIS;}
 
     //public enum TextCheckingMode{GROUNDED, PARTIAL, NONE, KG_BIND;}
     /**
@@ -63,6 +68,8 @@ public class Configuration extends org.deri.iris.Configuration {
      * The allowed facts to check, either fully grounded or partially
      */
     private PartialBindingType partialBindingType;
+
+
 
     public Configuration(){
         super();
@@ -99,7 +106,8 @@ public class Configuration extends org.deri.iris.Configuration {
             conf.setFactsFiles(Arrays.asList(prop.getProperty(FACTS_FILES, "").split(",")));
             conf.setQueiesFiles(Arrays.asList(prop.getProperty(QUERIES_FILES, "").split(",")));
             conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
-            conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(Partial_BINDING_TYPE,"NONE")));
+            conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE,"NONE")));
+
 
 //                System.out.println(conf);
 
@@ -178,4 +186,7 @@ public class Configuration extends org.deri.iris.Configuration {
     public PartialBindingType getPartialBindingType() {
         return partialBindingType;
     }
+
+
+
 }

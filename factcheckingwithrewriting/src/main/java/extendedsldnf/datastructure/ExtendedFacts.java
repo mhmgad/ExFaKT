@@ -27,6 +27,12 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
     Set<ITerm> entities;
 //    Set<IRelation> possibleRelations;
 
+
+
+    public ExtendedFacts(IRelationFactory relationFactory) {
+        super(relationFactory);
+    }
+
     public ExtendedFacts(Map<IPredicate, IRelation> rawFacts, IRelationFactory relationFactory) {
         super(rawFacts, relationFactory);
 //        entitiesMap= HashMultimap.create();

@@ -69,6 +69,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	private IExtendedFacts mFacts;
 	private List<IRule> mRules;
 
+
 	private static final SimpleRelationFactory srf = new SimpleRelationFactory();
 	static final RuleManipulator rm = new RuleManipulator();
 
@@ -281,12 +282,6 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 			//logger.debug(debugPrefix + "Return: " + relationReturned);
 		}
-
-
-
-
-
-
 		return solutions;
 	}
 
@@ -315,17 +310,25 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 			List<ExtendedQueryWithSubstitution> subQueries = processQueryAgainstFacts(query, selectedLiteral);
 			subQueryList.addAll(subQueries );
 
+
 			//If it is a fact (Grounded) and was not proved check the text
 			if(queryLiteralAtom.isGround()){
-				if(subQueries.isEmpty())
+				if(subQueries.isEmpty()) {
 					subQueries = processQueryAgainstText(query, selectedLiteral);
-					subQueryList.addAll(subQueries );
+					subQueryList.addAll(subQueries);
+				}
 			}else{
 
 				//If it is partially grounded and it is allowed to get bindings from text
-				if(partialBindingType.equals(Configuration.PartialBindingType.TEXT) ){
-					subQueries = processQueryAgainstText(query, selectedLiteral);
-					subQueryList.addAll(subQueries );
+				switch (partialBindingType){
+					case TEXT:
+						subQueries = processQueryAgainstText(query, selectedLiteral);
+						subQueryList.addAll(subQueries );
+						break;
+					case GREEDY:
+						subQueries= bindFromKGAggressively(query, selectedLiteral);
+						subQueryList.addAll(subQueries );
+						break;
 				}
 			}
 
@@ -667,4 +670,6 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	public IExplanation getExplanation(IQuery query) throws EvaluationException {
 		return (IExplanation) evaluate(query);
 	}
+
+
 }

@@ -24,6 +24,7 @@ package extendedsldnf;
 
 
 import config.Configuration;
+import extendedsldnf.datastructure.IExtendedFacts;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.ProgramNotStratifiedException;
 import org.deri.iris.RuleUnsafeException;
@@ -67,7 +68,7 @@ public class ExtendedSLDNFEvaluationStrategy implements IEvaluationStrategy {
 		if( query == null )
 			throw new IllegalArgumentException( "SLDEvaluationStrategy.evaluateQuery() - query must not be null." ); 
 		
-		ExtendedSLDNFEvaluator evaluator = new ExtendedSLDNFEvaluator( mFacts, mRules );
+		ExtendedSLDNFEvaluator evaluator = new ExtendedSLDNFEvaluator( (IExtendedFacts) mFacts, mRules );
 		IRelation relation = evaluator.evaluate(query);
 		if(outputVariables==null)
 			outputVariables=new LinkedList<>();

@@ -3,7 +3,11 @@ import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
 import de.mpii.factspotting.IFactSpotter;
 import extendedsldnf.ExtendedSLDNFEvaluator;
+import extendedsldnf.datastructure.ExtendedFacts;
 import extendedsldnf.datastructure.IExplanation;
+import extendedsldnf.datastructure.IExtendedFacts;
+import extendedsldnf.facts.FactsLoaderFactory;
+import extendedsldnf.facts.IFactsLoader;
 import mpi.tools.javatools.util.FileUtils;
 import org.deri.iris.ConfigurationThreadLocalStorage;
 import org.deri.iris.EvaluationException;
@@ -52,7 +56,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
      * Facts  (iris facts)
      */
     private Map<IPredicate,IRelation> factsMap;
-    private IFacts facts;
+    private IExtendedFacts facts;
 
 
     /**
@@ -102,10 +106,11 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 
         // Load facts
         facts=loadFacts(config);
+        logger.debug(facts.toString());
         // Checks if there external data sources
-        if (config.externalDataSources.size() > 0)
-            facts = new FactsWithExternalData(facts,
-                    config.externalDataSources);
+//        if (config.externalDataSources.size() > 0)
+//            facts = new FactsWithExternalData(facts,
+//                    config.externalDataSources);
 
 
 
@@ -121,6 +126,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
         evaluator = new ExtendedSLDNFEvaluator( facts, rules,new FactSpottingConnector(config),config.getPartialBindingType() );
 
 
+
     }
 
 
@@ -129,31 +135,13 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
      * @param conf
      * @return
      */
-    private IFacts loadFacts(Configuration conf) {
-        return new Facts(loadFactsFromFiles(conf.getFactsFiles()),conf.relationFactory);
+    private IExtendedFacts loadFacts(Configuration conf) {
+        IFactsLoader factsLoader= FactsLoaderFactory.getLoader(conf);
+        return factsLoader.loadFacts(conf.getFactsFiles());
     }
 
 
-    private HashMap<IPredicate, IRelation> loadFactsFromFiles(List<String> factsFiles) {
 
-        HashMap<IPredicate, IRelation> factMap=new HashMap<>();
-        for (String filename : factsFiles) {
-
-            try {
-            BufferedReader fr = FileUtils.getBufferedUTF8Reader(filename);
-                Parser parser=new Parser();
-                parser.parse(fr);
-
-                // Retrieve the facts and put all of them in factMap
-
-                factMap.putAll(parser.getFacts());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        return factMap;
-    }
 
     private List<IRule> loadRules(List<String> rulesFilenames) {
         List<IRule> rules=new ArrayList<>();
