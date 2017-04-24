@@ -11,6 +11,8 @@ import org.deri.iris.basics.Literal;
 import org.deri.iris.facts.Facts;
 import org.deri.iris.storage.IRelation;
 import org.deri.iris.storage.IRelationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -18,6 +20,7 @@ import java.util.*;
  * Created by gadelrab on 4/10/17.
  */
 public class ExtendedFacts extends Facts implements IExtendedFacts{
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
 //
 //    SetMultimap<IPredicate,ITerm> entitiesMap;
@@ -31,14 +34,18 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
 
     public ExtendedFacts(IRelationFactory relationFactory) {
         super(relationFactory);
+        entities=new HashSet<>();
+        fillEntities();
     }
 
     public ExtendedFacts(Map<IPredicate, IRelation> rawFacts, IRelationFactory relationFactory) {
         super(rawFacts, relationFactory);
 //        entitiesMap= HashMultimap.create();
         entities=new HashSet<>();
+
 //        possibleRelations=new HashSet<>();
         fillEntities();
+        logger.debug("Entities in KG "+entities.size());
     }
 
 
@@ -74,11 +81,33 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
         IBasicFactory basicsFact=BasicFactory.getInstance();
         IRelation facts = get(literal.getAtom().getPredicate());
         IRelation generatedRelation = mRelationFactory.createRelation();
-        permutations.stream().map(l -> basicsFact.createTuple(l)).filter(t-> !facts.contains(t)).forEach(t-> generatedRelation.add(t));
+        permutations.stream().map(l -> basicsFact.createTuple(l)).filter(t-> (!facts.contains(t))).forEach(t-> generatedRelation.add(t));
 
         return generatedRelation;
 
 
+    }
+
+    @Override
+    public boolean addAll(IExtendedFacts facts) {
+
+        facts.getPredicates().forEach(
+                pred-> {
+
+
+                    IRelation predicateFacts=facts.get(pred);
+                    logger.debug(predicateFacts.toString());
+                    this.get(pred).addAll(predicateFacts);
+
+                    // add entities to map
+                    for (int i=0;i<predicateFacts.size();i++){
+                        ITuple t=predicateFacts.get(i);
+                        entities.addAll(t);
+                    }
+
+        });
+
+        return true;
     }
 
     /**
@@ -91,8 +120,9 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
         List<Set<ITerm>> listsToRelations=new ArrayList<>();
         ITuple tuple=literal.getAtom().getTuple();
         for (ITerm arg:tuple) {
+            Set<ITerm> set=new HashSet<>();
             if(arg.isGround()){
-                Set<ITerm> set=new HashSet<>();
+
                 set.add(arg);
                 listsToRelations.add(set);
             }
@@ -103,8 +133,14 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
 
 
         }
+        logger.debug(literal+" "+listsToRelations);
+
         return Sets.cartesianProduct(listsToRelations);
 
     }
+
+
+
+
 
 }

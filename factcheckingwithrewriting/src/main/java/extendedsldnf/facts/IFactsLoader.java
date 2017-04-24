@@ -5,8 +5,11 @@ import extendedsldnf.datastructure.IExtendedFacts;
 import mpi.tools.javatools.util.FileUtils;
 import org.deri.iris.api.basics.IPredicate;
 import org.deri.iris.compiler.Parser;
+import org.deri.iris.facts.IFacts;
 import org.deri.iris.storage.IRelation;
 import org.deri.iris.storage.IRelationFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,6 +22,8 @@ import java.util.Map;
  * Created by gadelrab on 4/11/17.
  */
 public abstract class IFactsLoader {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public IRelationFactory relationFactory;
 
@@ -64,9 +69,11 @@ public abstract class IFactsLoader {
          ExtendedFacts all=new ExtendedFacts(relationFactory);
 
         for (String filePath:filePaths) {
-            IExtendedFacts facts=loadFacts(filePath);
-            facts.getPredicates().forEach(pred-> all.get(pred).addAll(facts.get(pred)));
+            IExtendedFacts  facts=loadFacts(filePath);
+            all.addAll(facts);
         }
+
+//        logger.debug("all fact"+ all.toString());
 
         return all;
 

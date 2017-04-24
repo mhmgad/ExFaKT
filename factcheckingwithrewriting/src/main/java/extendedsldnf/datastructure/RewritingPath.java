@@ -1,13 +1,11 @@
 package extendedsldnf.datastructure;
 
+import com.google.api.client.util.Sets;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,5 +68,18 @@ public class RewritingPath {
         this.substitutionsSources = substitutionsSources;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RewritingPath)) return false;
+        RewritingPath that = (RewritingPath) o;
+        return Objects.equals(literals, that.literals) &&
+                Objects.equals(substitutions, that.substitutions); //&&
+//         Objects.equals(substitutionsSources, that.substitutionsSources);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(literals, substitutions);//, substitutionsSources);
+    }
 }

@@ -4,7 +4,9 @@ import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by gadelrab on 3/22/17.
@@ -15,7 +17,7 @@ public class Solutions implements IRelation, IExplanation {
     /**
      * successful rewriting paths
      */
-    List<RewritingPath> rewritingPaths;
+    Set<RewritingPath> rewritingPaths;
 
 
     public Solutions() {
@@ -23,7 +25,7 @@ public class Solutions implements IRelation, IExplanation {
     }
 
     public Solutions(List<RewritingPath> rewritingPaths) {
-        this.rewritingPaths = rewritingPaths;
+        this.rewritingPaths = new LinkedHashSet<>(rewritingPaths) ;
     }
 
     @Override

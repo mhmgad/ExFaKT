@@ -12,4 +12,5 @@ public interface IExtendedFacts extends IFacts {
 
     public IRelation getHypotheticalBindings(ILiteral literal);
 
+    public boolean addAll(IExtendedFacts facts);
 }

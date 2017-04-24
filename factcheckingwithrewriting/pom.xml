@@ -52,7 +52,7 @@
             </binFileExtensions>
             <programs>
                 <program>
-                    <mainClass>Main</mainClass>
+                    <mainClass>MainCLI</mainClass>
                     <id>check_facts</id>
                 </program>
 

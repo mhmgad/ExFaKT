@@ -32,7 +32,8 @@ public class Configuration extends org.deri.iris.Configuration {
 
 
     private static Configuration instance;
-
+    private static String configurationFile="fact_checking_rewriting.properties";
+    private static boolean confFileAlreadySet= false;
 
 
     public enum PartialBindingType {GREEDY,TEXT,NONE}
@@ -132,11 +133,24 @@ public class Configuration extends org.deri.iris.Configuration {
 
     public synchronized static Configuration getInstance() {
         if(instance==null)
-            instance= Configuration.fromFile("fact_checking_rewriting.properities");
+            instance= Configuration.fromFile(configurationFile);
 
         return instance;
     }
 
+
+
+
+    public synchronized static boolean setConfigurationFile(String file){
+        if(file==null||confFileAlreadySet)
+            return false;
+        else
+        {
+            configurationFile=file;
+            confFileAlreadySet=true;
+            return true;
+        }
+    }
 
 
     public void setSpottingMethod(FactSpotterFactory.SpottingMethod spottingMethod) {

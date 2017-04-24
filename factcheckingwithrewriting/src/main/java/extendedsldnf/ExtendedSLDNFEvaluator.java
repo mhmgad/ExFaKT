@@ -271,6 +271,9 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 				}
 			}
 
+
+
+
 			solutions.addAll(solutionFromSubtree);
 
 
@@ -381,6 +384,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	private List<ExtendedQueryWithSubstitution> bindFromKGAggressively(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
 
 		IRelation factRelation=mFacts.getHypotheticalBindings(queryLiteral);
+		logger.debug(queryLiteral+" Hypothetical Bindings "+factRelation);
 
 		List<Map<IVariable, ITerm>> variableMapList=new LinkedList<>();
 		fillVariableMaps(queryLiteral,factRelation,variableMapList);
