@@ -355,7 +355,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 		//TODO Gad: Here we should find possible bindings for ?X in p(a,?X) either:
 		// 1) search for partial grounded fact p(a,?X) in th text and from sentence get top k variables
-		// 2) generate all possible entities from KG and generate lits p(a,b), p(a,c) ... and search for it
+		// 2) generate all possible entities from KG and generate list p(a,b), p(a,c) ... and search for it
 
 		//TODO: Use the bindings to generate sub-quries.
 

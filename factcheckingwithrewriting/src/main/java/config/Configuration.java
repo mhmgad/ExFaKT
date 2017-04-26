@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-
+import java.util.stream.Collectors;
 
 
 /**
@@ -143,7 +143,7 @@ public class Configuration extends org.deri.iris.Configuration {
     private static List<String> asList(String property){
         List<String> files=new LinkedList<>();
         if(!property.trim().isEmpty())
-            files=Arrays.asList(property.split(","));
+            files=Arrays.asList(property.split(",")).stream().map(sf->sf.trim()).collect(Collectors.toList());
         return files;
     }
 
