@@ -96,7 +96,7 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
 
 
                     IRelation predicateFacts=facts.get(pred);
-                    logger.debug(predicateFacts.toString());
+//                    logger.debug(predicateFacts.toString());
                     this.get(pred).addAll(predicateFacts);
 
                     // add entities to map
@@ -133,7 +133,7 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
 
 
         }
-        logger.debug(literal+" "+listsToRelations);
+//        logger.debug(literal+" "+listsToRelations);
 
         return Sets.cartesianProduct(listsToRelations);
 

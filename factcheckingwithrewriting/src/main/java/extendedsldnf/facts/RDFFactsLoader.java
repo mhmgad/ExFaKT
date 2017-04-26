@@ -49,7 +49,8 @@ public class RDFFactsLoader extends IFactsLoader{
                 String[] parts=line.split("\t");
 
                 // Create the predicate
-                IPredicate predicate= basicFactory.createPredicate(parts[1],2);
+                String cleanPredicateName= getCleanPredicateName(parts[1]);
+                IPredicate predicate= basicFactory.createPredicate(cleanPredicateName,2);
 
                 // arguments
                 ITerm term1= termFactory.createString(parts[0]);
@@ -71,6 +72,15 @@ public class RDFFactsLoader extends IFactsLoader{
             e.printStackTrace();
         }
         return factsMap;
+    }
+
+    private String getCleanPredicateName(String predicateName) {
+        if(predicateName.startsWith("<"))
+            predicateName= predicateName.replace("<","").replace(">","");
+
+
+        predicateName=predicateName.replaceAll(":","_").replaceAll("\\.","_");
+        return predicateName;
     }
 
 

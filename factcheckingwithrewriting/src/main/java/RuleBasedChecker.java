@@ -106,7 +106,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 
         // Load facts
         facts=loadFacts(config);
-        logger.debug(facts.toString());
+        //logger.debug(facts.toString());
         // Checks if there external data sources
 //        if (config.externalDataSources.size() > 0)
 //            facts = new FactsWithExternalData(facts,

@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -34,6 +35,18 @@ public class Configuration extends org.deri.iris.Configuration {
     private static Configuration instance;
     private static String configurationFile="fact_checking_rewriting.properties";
     private static boolean confFileAlreadySet= false;
+    /**
+     * indicates whether a file is in JAR or not. once filepath is changed this variable is turned to true.
+     */
+    private static boolean externalConfFile=false;
+    /**
+     * Extra configurations
+     */
+    private Properties extraProperties;
+
+    public void setExtraProp(Properties extraProp) {
+        this.extraProperties = extraProp;
+    }
 
 
     public enum PartialBindingType {GREEDY,TEXT,NONE}
@@ -103,12 +116,12 @@ public class Configuration extends org.deri.iris.Configuration {
 
             //get the property value
             conf.setSpottingMethod(FactSpotterFactory.SpottingMethod.valueOf(prop.getProperty(SPOTTING_METHOD, "NONE")));
-            conf.setRulesFiles(Arrays.asList(prop.getProperty(RULES_FILES, "").split(",")));
-            conf.setFactsFiles(Arrays.asList(prop.getProperty(FACTS_FILES, "").split(",")));
-            conf.setQueiesFiles(Arrays.asList(prop.getProperty(QUERIES_FILES, "").split(",")));
+            conf.setRulesFiles(asList(prop.getProperty(RULES_FILES, "")));
+            conf.setFactsFiles(asList(prop.getProperty(FACTS_FILES, "")));
+            conf.setQueiesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
             conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
             conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE,"NONE")));
-
+            conf.setExtraProp(prop);
 
 //                System.out.println(conf);
 
@@ -127,8 +140,17 @@ public class Configuration extends org.deri.iris.Configuration {
 
     }
 
+    private static List<String> asList(String property){
+        List<String> files=new LinkedList<>();
+        if(!property.trim().isEmpty())
+            files=Arrays.asList(property.split(","));
+        return files;
+    }
+
+
+
     public static Configuration fromFile(String filename){
-        return fromFile(filename,true);
+        return fromFile(filename,!externalConfFile);
     }
 
     public synchronized static Configuration getInstance() {
@@ -146,8 +168,10 @@ public class Configuration extends org.deri.iris.Configuration {
             return false;
         else
         {
+
             configurationFile=file;
             confFileAlreadySet=true;
+            externalConfFile=true;
             return true;
         }
     }
@@ -201,6 +225,12 @@ public class Configuration extends org.deri.iris.Configuration {
         return partialBindingType;
     }
 
+    public boolean hasProperty(String prop){
+        return extraProperties.contains(prop);
+    }
 
+    public Object getProperty(String prop){
+        return extraProperties.getProperty(prop,null);
+    }
 
 }

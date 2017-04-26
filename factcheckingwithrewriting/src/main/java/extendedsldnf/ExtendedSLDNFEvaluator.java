@@ -209,7 +209,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 
 
-		logger.debug(debugPrefix + "subQueryList: " + subQueryList);
+		logger.trace(debugPrefix + "subQueryList: " + subQueryList);
 
 		int i = 0;
 
@@ -241,7 +241,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 			// Evaluate the new query (walk the subtree)
 			//IRelation relationFromSubtree =
-			List<RewritingPath> solutionFromSubtree = findAndSubstitute(newQws, ++recursionDepth, inNegationAsFailureFlip/*,pathAccum,variablesMapsAccum,variableListAccum*/);
+			List<RewritingPath> solutionFromSubtree = findAndSubstitute(newQws, recursionDepth+1, inNegationAsFailureFlip/*,pathAccum,variablesMapsAccum,variableListAccum*/);
 
 			logger.debug(debugPrefix + "Old query: " + query.getQuery().getVariables() + query);
 			logger.debug(debugPrefix + "New query: " + newQuery.getVariables() + newQuery + " | " + newVariableMap);
@@ -264,11 +264,11 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 			// If rules was not used to generate this sub query
 			if(newQws.getSource()!= ExtendedQueryWithSubstitution.ExpansionMethod.RULES){
 				// not the original query
-				if(query.getSource()!= ExtendedQueryWithSubstitution.ExpansionMethod.ORG){
+//				if(query.getSource()!= ExtendedQueryWithSubstitution.ExpansionMethod.ORG){
 					if(selectedLiteral.getAtom().isGround())
 						solutionFromSubtree.forEach(sl -> sl.add(selectedLiteral, query.getSource()));
 
-				}
+//				}
 			}
 
 
@@ -384,7 +384,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	private List<ExtendedQueryWithSubstitution> bindFromKGAggressively(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
 
 		IRelation factRelation=mFacts.getHypotheticalBindings(queryLiteral);
-		logger.debug(queryLiteral+" Hypothetical Bindings "+factRelation);
+		logger.debug(queryLiteral+" Hypothetical Bindings "+factRelation.size());
 
 		List<Map<IVariable, ITerm>> variableMapList=new LinkedList<>();
 		fillVariableMaps(queryLiteral,factRelation,variableMapList);
@@ -460,7 +460,6 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 	 * @return list of queries with substitutions
 	 */
 	private List<ExtendedQueryWithSubstitution> processQueryAgainstFacts(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
-
 
 		List<Map<IVariable, ITerm>> variableMapList = new LinkedList<Map<IVariable,ITerm>>();
 		if ( getMatchingFacts( queryLiteral, variableMapList  ) ) {

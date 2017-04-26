@@ -49,8 +49,10 @@ public class RewritingPath {
             if(i!=literals.size()-1)
                 sb.append(", ");
         }
+//        System.out.println("subs "+ substitutions);
+//        System.out.println("subs sources"+substitutionsSources);
         sb.append("], sources:");
-        List<String> subSourcesRep=substitutions.keySet().stream().map(k-> '('+k.toString()+": "+substitutions.get(k).toString()+", "+substitutionsSources.get(k).toString()+')').collect(Collectors.toList());
+        List<String> subSourcesRep=substitutions.keySet().stream().map(k-> '('+k.toString()+": "+substitutions.get(k).toString()+", "+((substitutionsSources.get(k)==null)? "ORG/CONST":substitutionsSources.get(k).toString())+')').collect(Collectors.toList());
         sb.append(subSourcesRep.toString());
         sb.append('}');
         return sb.toString();

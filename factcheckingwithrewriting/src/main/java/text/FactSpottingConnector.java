@@ -24,6 +24,9 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     public FactSpottingConnector(Configuration conf) {
+
+        Object spottingConfFile = conf.getProperty("factSpotting.config");
+        de.mpii.factspotting.config.Configuration.setConfigurationFile(spottingConfFile==null? null:(String)spottingConfFile);
         spotter=FactSpotterFactory.create(conf.getSpottingMethod());
 
     }
