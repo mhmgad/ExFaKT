@@ -53,6 +53,11 @@ public class FactSpottingResult implements ITextResult{
         return variableMappings;
     }
 
+    @Override
+    public String readable() {
+        return evidence.readable();
+    }
+
     private List<Map<IVariable, ITerm>>  createMaps(List<IVariable> variables, List<String> entities) {
         List<Map<IVariable, ITerm>> variableMappings=new LinkedList<>();
         Set<String> entitiesSet=new HashSet<>(entities);
@@ -70,6 +75,12 @@ public class FactSpottingResult implements ITextResult{
             IntStream.range(0, variables.size()).forEach(i -> variableMapping.put(variables.get(i), termFactory.createString(comb.get(i))));
         }
             return variableMappings;
+    }
+
+    @Override
+    public String toString() {
+        return  "{"+evidence +
+                '}';
     }
 
     @Override

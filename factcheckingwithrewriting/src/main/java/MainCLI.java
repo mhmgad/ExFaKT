@@ -6,6 +6,7 @@ import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.compiler.Parser;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,8 @@ public class MainCLI {
 
     private Option helpOp;
     private Option confFileOp;
+    private Option outFileOp;
+    private BufferedWriter outputFile;
 
 
     public MainCLI() {
@@ -40,6 +43,11 @@ public class MainCLI {
         //input file
         confFileOp = Option.builder("conf").longOpt("configurationFile").hasArg().desc("Input configuration File").argName("file").build();
         options.addOption(confFileOp);
+
+        //input file
+        outFileOp = Option.builder("o").longOpt("outputFile").hasArg().desc("Output File").argName("file").build();
+        options.addOption(outFileOp);
+
     }
 
     public void run(CommandLine cmd) throws Exception{
@@ -48,7 +56,10 @@ public class MainCLI {
         String configurationFile=cmd.getOptionValue(confFileOp.getOpt(),null);
         Configuration.setConfigurationFile(configurationFile);
 
-
+        //set output
+        String outputFilePath=cmd.getOptionValue(outFileOp.getOpt(),null);
+        if(outputFilePath!=null)
+            outputFile=FileUtils.getBufferedUTF8Writer(outputFilePath);
 
     }
 
@@ -82,9 +93,14 @@ public class MainCLI {
 
         Iterator<IExplanation> explansItr=explainations.iterator();
         for (IQuery query:queries) {
-            System.out.println(query+":\t"+explansItr.next());
+            String result="\nQuery:\t"+query+"\n"+explansItr.next()+"\n";
+            System.out.println(result);
+            if(instance.outputFile!=null)
+                instance.outputFile.write(result);
 
         }
+        if(instance.outputFile!=null)
+            instance.outputFile.close();
 
     }
 

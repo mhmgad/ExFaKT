@@ -18,4 +18,6 @@ public interface ITextResult extends  IWeightedObject{
 
     public List<Map<IVariable, ITerm>> getVaribalesMappings();
 
+    public String readable();
+
 }

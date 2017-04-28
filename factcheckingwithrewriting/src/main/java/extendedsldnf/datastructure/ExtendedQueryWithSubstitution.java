@@ -1,5 +1,6 @@
 package extendedsldnf.datastructure;
 
+import extendedsldnf.EvidenceNode;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
@@ -12,18 +13,19 @@ import java.util.Map;
  */
 public class ExtendedQueryWithSubstitution extends QueryWithSubstitution{
 
-    public Map<IVariable, BindingSource> getSubstitutionSources() {
-        return substitutionSources;
-    }
+    private EvidenceNode evidenceNode;
 
-    public enum ExpansionMethod {BUILT_IN,FACT,TEXT,RULES,ORG,ENTITIES_COMB}
-    public enum BindingSource{FACT,TEXT,ENTITIES_COMB, IN}
+//    public Map<IVariable, Enums.BindingSource> getSubstitutionSources() {
+//        return substitutionSources;
+//    }
+
+    //public enum ExpansionMethod {BUILT_IN,FACT,TEXT,RULES,ORG,GREEDY}
 
     IQuery referenceQuery;
 
-    Map<IVariable, BindingSource> substitutionSources;
+//    Map<IVariable, Enums.BindingSource> substitutionSources;
 
-    public ExpansionMethod getSource() {
+   /* public ExpansionMethod getSource() {
         return source;
     }
 
@@ -31,25 +33,32 @@ public class ExtendedQueryWithSubstitution extends QueryWithSubstitution{
         this.source = source;
     }
 
-    public ExpansionMethod source;
+    public ExpansionMethod source;*/
 
-    public ExtendedQueryWithSubstitution(IQuery query, Map<IVariable, ITerm> substitution, ExpansionMethod source, Map<IVariable, BindingSource> substitutionSources) {
-        this(query,substitution,source,query,substitutionSources);
+    public ExtendedQueryWithSubstitution(IQuery query, Map<IVariable, ITerm> substitution /*,ExpansionMethod source,*//* Map<IVariable, Enums.BindingSource> substitutionSources*/) {
+        this(query,substitution,/*source,*/query/*,substitutionSources*/);
 
     }
 
-    public ExtendedQueryWithSubstitution(IQuery query, Map<IVariable, ITerm> substitution, ExpansionMethod source, IQuery referenceQuery, Map<IVariable, BindingSource> substitutionSources) {
+    public ExtendedQueryWithSubstitution(IQuery query, Map<IVariable, ITerm> substitution, /*ExpansionMethod source,*/ IQuery referenceQuery/*, Map<IVariable, Enums.BindingSource> substitutionSources*/) {
         super(query,substitution);
-        this.source=source;
+        /*this.source=source;*/
         this.referenceQuery=referenceQuery;
-        this.substitutionSources=substitutionSources;
+//        this.substitutionSources=substitutionSources;
 
     }
 
 
 
     public String toString() {
-        return super.toString() + " | " + substitutionSources + " | " + source.toString();
+        return super.toString() /*+ " | " + substitutionSources*/ /*+ " | " + source.toString()*/;
     }
 
+    public void setEvidenceNode(EvidenceNode evidenceNode) {
+        this.evidenceNode = evidenceNode;
+    }
+
+    public EvidenceNode getEvidenceNode() {
+        return evidenceNode;
+    }
 }

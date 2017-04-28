@@ -43,8 +43,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import text.ITextConnector;
 import text.ITextResult;
+import utils.Enums;
 
 import java.util.*;
+
+import static extendedsldnf.EvidenceNode.Type.BUILT_IN;
+import static extendedsldnf.EvidenceNode.Type.ORG;
 
 /**
  * Implementation of the SLDNF evaluator. Please keep in mind that
@@ -59,582 +63,626 @@ import java.util.*;
  */
 public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGenerator {
 
-	private  ITextConnector textConnector;
-	private  Configuration.PartialBindingType partialBindingType;
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private  ITextConnector textConnector;
+    private  Configuration.PartialBindingType partialBindingType;
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private static final int _MAX_NESTING_LEVEL = 45;
+    private static final int _MAX_NESTING_LEVEL = 45;
 
-	private IQuery mInitialQuery;
-	private IExtendedFacts mFacts;
-	private List<IRule> mRules;
-
-
-	private static final SimpleRelationFactory srf = new SimpleRelationFactory();
-	static final RuleManipulator rm = new RuleManipulator();
+    private IQuery mInitialQuery;
+    private IExtendedFacts mFacts;
+    private List<IRule> mRules;
 
 
-	/**
-	 * Constructor
-	 *
-	 * @param facts one or many facts
-	 * @param rules list of rules
-	 */
-	public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules) {
-		this(facts,rules,null, Configuration.PartialBindingType.NONE);
-	}
+    private static final SimpleRelationFactory srf = new SimpleRelationFactory();
+    static final RuleManipulator rm = new RuleManipulator();
 
 
+    /**
+     * Constructor
+     *
+     * @param facts one or many facts
+     * @param rules list of rules
+     */
+    public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules) {
+        this(facts,rules,null, Configuration.PartialBindingType.NONE);
+    }
 
 
 
-	/**
-	 * Constructor
-	 *
-	 * @param facts one or many facts
-	 * @param rules list of rules
-	 */
-	public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType) {
-		mFacts = facts;
-		mRules = getOrderedRules(rules);
 
 
-		// Text connector
-		this.textConnector=textConnector;
-		this.partialBindingType=partialBindingType;
-	}
+    /**
+     * Constructor
+     *
+     * @param facts one or many facts
+     * @param rules list of rules
+     */
+    public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType) {
+        mFacts = facts;
+        mRules = getOrderedRules(rules);
 
-	/**
-	 * Takes a set of rules and sort the body of each according to binding, and sort the rules according to first ordinary literal (Not Clear!).
-	 * @param rules
-	 * @return
-	 */
-	private List<IRule> getOrderedRules(List<IRule> rules) {
-		List<IRule> tmpRules = new LinkedList<>();
-		ReOrderLiteralsOptimiser rolo = new ReOrderLiteralsOptimiser();
 
-		for (IRule rule : rules) {
-			tmpRules.add(rolo.optimise(rule));
-		}
+        // Text connector
+        this.textConnector=textConnector;
+        this.partialBindingType=partialBindingType;
+    }
 
-		SimpleReOrdering sro = new SimpleReOrdering();
-		tmpRules = sro.reOrder(tmpRules);
-		return tmpRules;
-	}
+    /**
+     * Takes a set of rules and sort the body of each according to binding, and sort the rules according to first ordinary literal (Not Clear!).
+     * @param rules
+     * @return
+     */
+    private List<IRule> getOrderedRules(List<IRule> rules) {
+        List<IRule> tmpRules = new LinkedList<>();
+        ReOrderLiteralsOptimiser rolo = new ReOrderLiteralsOptimiser();
 
-	/**
-	 * Evaluate given query
-	 */
-	public IRelation evaluate(IQuery query) throws EvaluationException {
-		// Process the query
-		mInitialQuery = query;
-		ExtendedQueryWithSubstitution extendedQueryWithSubstitution = new ExtendedQueryWithSubstitution(query, new HashMap<IVariable, ITerm>(), ExtendedQueryWithSubstitution.ExpansionMethod.ORG,new HashMap<IVariable,ExtendedQueryWithSubstitution.BindingSource>());
+        for (IRule rule : rules) {
+            tmpRules.add(rolo.optimise(rule));
+        }
 
-		List<RewritingPath> solutions = findAndSubstitute(extendedQueryWithSubstitution);
+        SimpleReOrdering sro = new SimpleReOrdering();
+        tmpRules = sro.reOrder(tmpRules);
+        return tmpRules;
+    }
 
-		Solutions returnedSoltion=new Solutions(solutions);
+    /**
+     * Evaluate given query
+     */
+    public IRelation evaluate(IQuery query) throws EvaluationException {
+        // Process the query
+        mInitialQuery = query;
+        ExtendedQueryWithSubstitution extendedQueryWithSubstitution = new ExtendedQueryWithSubstitution(query, new HashMap<IVariable, ITerm>()/*,new HashMap<IVariable,Enums.BindingSource>()*/);
+        extendedQueryWithSubstitution.setEvidenceNode(new EvidenceNode(null,ORG));
 
-		System.out.println("Logger: "+logger.getName());
+        List<EvidencePath> solutions = findAndSubstitute(extendedQueryWithSubstitution);
 
-		System.out.println("Logger debug: "+logger.isDebugEnabled());
-		logger.debug("------------");
-		//logger.debug("Relation " + relation);
-		logger.debug("Original Query: " + query);
-		logger.debug("Solutions: "+ solutions);
+        Solutions returnedSoltion=new Solutions(solutions);
 
-		return returnedSoltion;
-	}
+        System.out.println("Logger: "+logger.getName());
 
-	/**
-	 * Return variables of the initial query
-	 */
-	public List<IVariable> getOutputVariables() {
-		return mInitialQuery.getVariables();
-	}
+        System.out.println("Logger debug: "+logger.isDebugEnabled());
+        logger.debug("------------");
+        //logger.debug("Relation " + relation);
+        logger.debug("Original Query: " + query);
+        logger.debug("Solutions: "+ solutions);
 
-	private List<RewritingPath> findAndSubstitute(ExtendedQueryWithSubstitution query) throws EvaluationException {
-		//Gad: successful path queries and variables
-		List<RewritingPath> solutions = findAndSubstitute(query, 0, false);//, pathAccum,variablesMapsAccum,variableListAccum);
+        return returnedSoltion;
+    }
+
+    /**
+     * Return variables of the initial query
+     */
+    public List<IVariable> getOutputVariables() {
+        return mInitialQuery.getVariables();
+    }
+
+    private List<EvidencePath> findAndSubstitute(ExtendedQueryWithSubstitution query) throws EvaluationException {
+        //Gad: successful path queries and variables
+        List<EvidencePath> solutions = findAndSubstitute(query, 0, false);//, pathAccum,variablesMapsAccum,variableListAccum);
 //		logger.debug("Path to result: " + pathAccum.toString());
 //		logger.debug("substitutions Path: " + variablesMapsAccum.toString());
 //		logger.debug("Variables Path: " + variableListAccum.toString());
 
-		return solutions;
-	}
+        return solutions;
+    }
 
-	/**
-	 * Find recursive the next subgoal (the next query)
-	 * by matching the given rules and facts with the current query.
-	 *
-	 * @param query                   The current query that should match a rule head or a fact
-	 * @param recursionDepth          Current recursion depth
-	 * @param inNegationAsFailureFlip <code>true</code> if this evaluation step uses NAF, <code>false</code> otherwise
-	 * @return true if the query leads to a success node, false otherwise
-	 * @throws EvaluationException                   If something went wrong
-	 * @throws MaximumRecursionDepthReachedException since SLDNF evaluation does not detect infinite loops, this exception is thrown at a nesting level of 25
-	 */
-	private List<RewritingPath> findAndSubstitute(final ExtendedQueryWithSubstitution query, int recursionDepth, boolean inNegationAsFailureFlip/*,  List<List<ExtendedQueryWithSubstitution>> pathAccum,Multimap variablesMapsAccum,List<List<List<VariablesBindings>>> variableListAccum*/) throws EvaluationException, MaximumRecursionDepthReachedException {
+    /**
+     * Find recursive the next subgoal (the next query)
+     * by matching the given rules and facts with the current query.
+     *
+     * @param query                   The current query that should match a rule head or a fact
+     * @param recursionDepth          Current recursion depth
+     * @param inNegationAsFailureFlip <code>true</code> if this evaluation step uses NAF, <code>false</code> otherwise
+     * @return true if the query leads to a success node, false otherwise
+     * @throws EvaluationException                   If something went wrong
+     * @throws MaximumRecursionDepthReachedException since SLDNF evaluation does not detect infinite loops, this exception is thrown at a nesting level of 25
+     */
+    private List<EvidencePath> findAndSubstitute(final ExtendedQueryWithSubstitution query, int recursionDepth, boolean inNegationAsFailureFlip/*,  List<List<ExtendedQueryWithSubstitution>> pathAccum,Multimap variablesMapsAccum,List<List<List<VariablesBindings>>> variableListAccum*/) throws EvaluationException, MaximumRecursionDepthReachedException {
 
-		// To stop infinite loop, remove this later
-		// when tabling is implemented
-		if (recursionDepth >= _MAX_NESTING_LEVEL)
-			throw new MaximumRecursionDepthReachedException("You may ran into an infinite loop. SLDNF evaluation does not support tabling.");
+        // To stop infinite loop, remove this later
+        // when tabling is implemented
+        if (recursionDepth >= _MAX_NESTING_LEVEL)
+            throw new MaximumRecursionDepthReachedException("You may ran into an infinite loop. SLDNF evaluation does not support tabling.");
 
-		String debugPrefix = getDebugPrefix(recursionDepth, inNegationAsFailureFlip);
+        String debugPrefix = getDebugPrefix(recursionDepth, inNegationAsFailureFlip);
 
-		logger.debug(debugPrefix + query);
-		//logger.debug(debugPrefix);
+        logger.debug(debugPrefix + query);
+        //logger.debug(debugPrefix);
 
-		// Selection Rule
-		ILiteralSelector standardSelector = new StandardLiteralSelector();
-		final ILiteral selectedLiteral = standardSelector.select(query.getQuery().getLiterals());
+        // Selection Rule
+        ILiteralSelector standardSelector = new StandardLiteralSelector();
+        final ILiteral selectedLiteral = standardSelector.select(query.getQuery().getLiterals());
 
-		if (selectedLiteral == null)
-			throw new EvaluationException("The selected literal must not be null.");
+        if (selectedLiteral == null)
+            throw new EvaluationException("The selected literal must not be null.");
 
-		logger.debug(debugPrefix + "Selected: " + selectedLiteral);
+        logger.debug(debugPrefix + "Selected: " + selectedLiteral);
 
-		// The results are stored in this relation
+        // The results are stored in this relation
 //		IRelation relationReturned;
-		//Solutions solutionsReturned;
+        //Solutions solutionsReturned;
 
-		//TODO Gad: disabled Negation
-		// Process selected literal
-		// Every possibility (every child/subtree of this node) is stored in a list, which is iterated later.
-		//if (selectedLiteral.isPositive()) { // Positive Query Literal - search for a success node
+        //TODO Gad: disabled Negation
+        // Process selected literal
+        // Every possibility (every child/subtree of this node) is stored in a list, which is iterated later.
+        //if (selectedLiteral.isPositive()) { // Positive Query Literal - search for a success node
 
-		// Get all possible sub-queries (branches)
-		List<ExtendedQueryWithSubstitution> subQueryList = new LinkedList<ExtendedQueryWithSubstitution>(); // List of new queries (incl. substitutions) to process, generated by facts and rules
-		subQueryList.addAll(getSubQueryList(query, selectedLiteral));
+        // Get all possible sub-queries (branches)
+        List<ExtendedQueryWithSubstitution> subQueryList = new LinkedList<ExtendedQueryWithSubstitution>(); // List of new queries (incl. substitutions) to process, generated by facts and rules
+        // If the atom is ground we need to match it only
+
+
+        subQueryList.addAll(getSubQueryList(query, selectedLiteral));
 
 
 
-		logger.trace(debugPrefix + "subQueryList: " + subQueryList);
 
-		int i = 0;
+        logger.trace(debugPrefix + "subQueryList: " + subQueryList);
 
-		List<RewritingPath> solutions = new LinkedList<RewritingPath>();
+        int i = 0;
 
-		for (ExtendedQueryWithSubstitution newQws : subQueryList) { // process new queries
-			IQuery newQuery = newQws.getQuery();
-			Map<IVariable, ITerm> newVariableMap = newQws.getSubstitution();
+        List<EvidencePath> solutions = new LinkedList<EvidencePath>();
 
-			if (logger.isDebugEnabled()) {
-				debugPrefix = getDebugPrefix(recursionDepth, inNegationAsFailureFlip);
-				i++;
-				logger.debug(debugPrefix + "QWS-" + i + ": " + newQws);
-			}
+        for (ExtendedQueryWithSubstitution newQws : subQueryList) { // process new queries
+            IQuery newQuery = newQws.getQuery();
+            Map<IVariable, ITerm> newVariableMap = newQws.getSubstitution();
 
-			// Success node (empty clause)
-			if (newQuery.getLiterals().isEmpty()) {
-//				ITuple tuple = TopDownHelper.resolveTuple(query.getQuery(), variableMap);
-//				relationReturned.add(tuple);
-				//solutionsReturned.add(getMappedVariableList(query.getQuery().getVariables(),newVariableMap,query.source));
-				RewritingPath solution = new RewritingPath();
-				solution.add(selectedLiteral, query.getSource());
-				solution.setSubstitutions(query.getSubstitution());
-				solution.setSubstitutionsSources(query.getSubstitutionSources());
+            if (logger.isDebugEnabled()) {
+                debugPrefix = getDebugPrefix(recursionDepth, inNegationAsFailureFlip);
+                i++;
+                logger.debug(debugPrefix + "QWS-" + i + ": " + newQws);
+            }
 
-				solutions.add(solution);
-				continue;
-			}
+            // Success node (empty clause)
+            if (newQuery.getLiterals().isEmpty()) {
+                EvidencePath solution = new EvidencePath();
+                solution.add(newQws.getEvidenceNode());
+                logger.debug("VarMap: "+newQws.getSubstitution());
+//				solution.setSubstitutions(newQws.getSubstitution());
+//				solution.setSubstitutionsSources(newQws.getSubstitutionSources());
 
-			// Evaluate the new query (walk the subtree)
-			//IRelation relationFromSubtree =
-			List<RewritingPath> solutionFromSubtree = findAndSubstitute(newQws, recursionDepth+1, inNegationAsFailureFlip/*,pathAccum,variablesMapsAccum,variableListAccum*/);
+                solutions.add(solution);
+                continue;
+            }
 
-			logger.debug(debugPrefix + "Old query: " + query.getQuery().getVariables() + query);
-			logger.debug(debugPrefix + "New query: " + newQuery.getVariables() + newQuery + " | " + newVariableMap);
-			logger.debug(debugPrefix + "Subtree Solution: " + solutionFromSubtree);
+            // Evaluate the new query (walk the subtree)
+            //IRelation relationFromSubtree =
+            List<EvidencePath> solutionFromSubtree = findAndSubstitute(newQws, recursionDepth+1, inNegationAsFailureFlip/*,pathAccum,variablesMapsAccum,variableListAccum*/);
 
-			if (solutionFromSubtree.isEmpty()/*solutionFromSubtree.isEmpty()*/) {
-				if (!inNegationAsFailureFlip) {
-					continue; // Failure node (subtree returned false) - try next branch
-				} else {
-					logger.debug(debugPrefix + "NAF FAILURE NODE " + solutions);
-					break; // Failure node, and we do NAF. So it is a success node
-				}
-			}
+            logger.debug(debugPrefix + "Old query: " + query.getQuery().getVariables() + query);
+            logger.debug(debugPrefix + "New query: " + newQuery.getVariables() + newQuery + " | " + newVariableMap);
+            logger.debug(debugPrefix + "Subtree Solution: " + solutionFromSubtree);
 
-			// Gad: Selected literal is added if:
-			// 1)grounded atoms
-			// 2)not the original Query
-			// 3)was not substituted by rules.
+            if (solutionFromSubtree.isEmpty()/*solutionFromSubtree.isEmpty()*/) {
+                if (!inNegationAsFailureFlip) {
+                    continue; // Failure node (subtree returned false) - try next branch
+                } else {
+                    logger.debug(debugPrefix + "NAF FAILURE NODE " + solutions);
+                    break; // Failure node, and we do NAF. So it is a success node
+                }
+            }
 
-			// If rules was not used to generate this sub query
-			if(newQws.getSource()!= ExtendedQueryWithSubstitution.ExpansionMethod.RULES){
-				// not the original query
+            // Gad: Selected literal is added if: (deprecated)
+            // 1)grounded atoms
+            // 2)not the original Query
+            // 3)was not substituted by rules.
+
+            // If rules was not used to generate this sub query
+//			if(newQws.getSource()!= ExtendedQueryWithSubstitution.ExpansionMethod.RULES){
+            // not the original query
 //				if(query.getSource()!= ExtendedQueryWithSubstitution.ExpansionMethod.ORG){
-					if(selectedLiteral.getAtom().isGround())
-						solutionFromSubtree.forEach(sl -> sl.add(selectedLiteral, query.getSource()));
+//					if(selectedLiteral.getAtom().isGround())
+            solutionFromSubtree.forEach(sl -> sl.add(newQws.getEvidenceNode()));
 
 //				}
-			}
+//			}
 
 
 
 
-			solutions.addAll(solutionFromSubtree);
+            solutions.addAll(solutionFromSubtree);
 
-
-			//Gad: if we reached here, that means that the pass returened non-empty relation and this contributes to the success
-//
-
-			//logger.debug(debugPrefix + "fullSubgoalRelation: " + fullSubgoalRelation);
-			//relationReturned.addAll(fullSubgoalRelation);
-
-			//logger.debug(debugPrefix + "Return: " + relationReturned);
-		}
-		return solutions;
-	}
+        }
+        return solutions;
+    }
 
 
 
-	/**
-	 * Get possible sub-queries of this node by evaluating built-ins or 
-	 * applying rules and facts.
-	 *
-	 * @param query current query 
-	 * @param selectedLiteral selected literal
-	 *
-	 * @return list where the new queries are stored
-	 *
-	 * @throws EvaluationException on failure
-	 */
-	private List<ExtendedQueryWithSubstitution> getSubQueryList(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) throws EvaluationException {
-		List<ExtendedQueryWithSubstitution> subQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
+    /**
+     * Get possible sub-queries of this node by evaluating built-ins or
+     * applying rules and facts.
+     *
+     * @param query current query
+     * @param selectedLiteral selected literal
+     *
+     * @return list where the new queries are stored
+     *
+     * @throws EvaluationException on failure
+     */
+    private List<ExtendedQueryWithSubstitution> getSubQueryList(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) throws EvaluationException {
+        List<ExtendedQueryWithSubstitution> subQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
 
-		IAtom queryLiteralAtom = selectedLiteral.getAtom();
+        IAtom queryLiteralAtom = selectedLiteral.getAtom();
 
-		if (queryLiteralAtom  instanceof IBuiltinAtom) { // BuiltIn
-			subQueryList.addAll( processBuiltin(query, selectedLiteral, queryLiteralAtom) );
-		} else { // Not BuiltIn	
-			// Bind or check from KG
-			List<ExtendedQueryWithSubstitution> subQueries = processQueryAgainstFacts(query, selectedLiteral);
-			subQueryList.addAll(subQueries );
+        if (queryLiteralAtom  instanceof IBuiltinAtom) { // BuiltIn
+            subQueryList.addAll( processBuiltin(query, selectedLiteral, queryLiteralAtom) );
+        } else {
 
-
-			//If it is a fact (Grounded) and was not proved check the text
-			if(queryLiteralAtom.isGround()){
-				if(subQueries.isEmpty()) {
-					subQueries = processQueryAgainstText(query, selectedLiteral);
-					subQueryList.addAll(subQueries);
-				}
-			}else{
-
-				//If it is partially grounded and it is allowed to get bindings from text
-				switch (partialBindingType){
-					case TEXT:
-						subQueries = processQueryAgainstText(query, selectedLiteral);
-						subQueryList.addAll(subQueries );
-						break;
-					case GREEDY:
-						subQueries= bindFromKGAggressively(query, selectedLiteral);
-						subQueryList.addAll(subQueries );
-						break;
-				}
-			}
+            //If it is a fact (Grounded) and was not proved check the text
+            List<ExtendedQueryWithSubstitution> subQueries;
+            if(queryLiteralAtom.isGround()){
+                subQueries = checkFact(query, selectedLiteral);
+            }else{
+                subQueries= bindVariables(query, selectedLiteral);
+            }
+            subQueryList.addAll(subQueries);
 
 
-			//TODO Gad: add the extra source here ()	
 
-
-			// Rules are always fired to grant reaching the whole search space
-				subQueries = processQueryAgainstRules(query, selectedLiteral);
-				subQueryList.addAll( subQueries );
+            // Rules are always fired to grant reaching the whole search space
+            subQueries = processQueryAgainstRules(query, selectedLiteral);
+            subQueryList.addAll( subQueries );
 
 
 
 
-		}
-		return subQueryList;
-	}
+        }
+        return subQueryList;
+    }
 
-	private List<ExtendedQueryWithSubstitution> processQueryAgainstText(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
+    private List<ExtendedQueryWithSubstitution> bindVariables(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) {
+        List<ExtendedQueryWithSubstitution> subQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
 
+        // Bind from KG
+        subQueryList.addAll(processQueryAgainstFacts(query, selectedLiteral));
 
-		//TODO Gad: Here we should find possible bindings for ?X in p(a,?X) either:
-		// 1) search for partial grounded fact p(a,?X) in th text and from sentence get top k variables
-		// 2) generate all possible entities from KG and generate list p(a,b), p(a,c) ... and search for it
+        //If it is partially grounded and it is allowed to get bindings from text
+        switch (partialBindingType){
+            case TEXT:
+                subQueryList.addAll(processQueryAgainstText(query, selectedLiteral));
+                break;
+            case GREEDY:
+                subQueryList.addAll( bindFromKGAggressively(query, selectedLiteral));
+                break;
+        }
+        return subQueryList;
+    }
 
-		//TODO: Use the bindings to generate sub-quries.
-
-		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
-
-
-		// Check text
-		ITextResult result = textConnector.queryText(queryLiteral);
-
-		// support is found
-		if(!result.found()){
-			return new LinkedList<>();
-		}
-			List<Map<IVariable, ITerm>> variableMapList = result.getVaribalesMappings();
-
-
-		return getExtendedQueryWithSubstitutions(query,queryLiteral,variableMapList, ExtendedQueryWithSubstitution.BindingSource.TEXT, ExtendedQueryWithSubstitution.ExpansionMethod.TEXT,true);
-	}
-
-	/**
-	 * Generate aggressive binding for a predicate using all possible entities
-	 * @param query
-	 * @param queryLiteral
-	 * @return
-	 */
-	private List<ExtendedQueryWithSubstitution> bindFromKGAggressively(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
-
-		IRelation factRelation=mFacts.getHypotheticalBindings(queryLiteral);
-		logger.debug(queryLiteral+" Hypothetical Bindings "+factRelation.size());
-
-		List<Map<IVariable, ITerm>> variableMapList=new LinkedList<>();
-		fillVariableMaps(queryLiteral,factRelation,variableMapList);
-
-		if(factRelation.size()>0){
-			return getExtendedQueryWithSubstitutions(query,queryLiteral,variableMapList, ExtendedQueryWithSubstitution.BindingSource.ENTITIES_COMB, ExtendedQueryWithSubstitution.ExpansionMethod.ENTITIES_COMB,false);
-		}
-
-		return  new LinkedList<>();
-	}
+    private List<ExtendedQueryWithSubstitution> checkFact(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) {
+        List<ExtendedQueryWithSubstitution> subQueries;
+        subQueries = processQueryAgainstFacts(query, selectedLiteral);
 
 
-	/**
-	 * Scans the knowledge base for rules that match the selected query literal.
-	 * If a unifiable match was found the substitution and the new query will be
-	 * saved and added to a list of new queries, which is returned.
-	 *
-	 * @param query the whole query
-	 * @param selectedLiteral the selected literal
-	 * @return list of queries with substitutions
-	 *
-	 * @throws EvaluationException on failure
-	 */
-	private List<ExtendedQueryWithSubstitution> processQueryAgainstRules(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) throws EvaluationException {
+        if(subQueries.isEmpty()) {
+            subQueries = processQueryAgainstText(query, selectedLiteral);
+        }
+        return subQueries;
+    }
 
-		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
+    private List<ExtendedQueryWithSubstitution> processQueryAgainstText(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
 
-		//SimpleSelector
 
-		for (IRule rule : mRules) {
-			ILiteral ruleHead = rule.getHead().get(0);
+        //TODO Gad: Here we should find possible bindings for ?X in p(a,?X) either:
+        // 1) search for partial grounded fact p(a,?X) in th text and from sentence get top k variables
+        // 2) generate all possible entities from KG and generate list p(a,b), p(a,c) ... and search for it
 
-			// Potential match?
-			if (TopDownHelper.match(ruleHead, selectedLiteral)) {
-				Map<IVariable, ITerm> variableMapUnify = new HashMap<IVariable, ITerm>();
-				ITuple queryTuple = selectedLiteral.getAtom().getTuple();
+        //TODO: Use the bindings to generate sub-quries.
 
-				// Occur Check
-				// Replace all variables of the rule with unused ones (variables that are not in the query)
-				Map<IVariable, ITerm> variableMapForOccurCheck = TopDownHelper.getVariableMapForVariableRenaming(rule, query.getQuery());
-				IRule ruleAfterOccurCheck = TopDownHelper.replaceVariablesInRule(rule, variableMapForOccurCheck);
+        List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
 
-				ITuple ruleHeadAfterOCTuple = ruleAfterOccurCheck.getHead().get(0).getAtom().getTuple(); // ruleHead changed
 
-				// Unifiable?
-				boolean unifyable = TermMatchingAndSubstitution.unify(queryTuple, ruleHeadAfterOCTuple, variableMapUnify);
+        // Check text
+        ITextResult result = textConnector.queryText(queryLiteral);
 
-				IQuery newQuery = query.getQuery();
-				if (unifyable) {
-					// Replace the rule head with the rule body
-					// This replacement has to be save, because we did an occur check before 
-					newQuery = TopDownHelper.substituteRuleHeadWithBody( query.getQuery(), selectedLiteral, ruleAfterOccurCheck );
-				}
+        // support is found
+        if(!result.found()){
+            return new LinkedList<>();
+        }
 
-				// Substitute the whole query
-				newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, variableMapUnify);
+        List<Map<IVariable, ITerm>> variableMapList = result.getVaribalesMappings();
 
-				ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery, variableMapUnify, ExtendedQueryWithSubstitution.ExpansionMethod.RULES,query.getSubstitutionSources());
-				newQueryList.add(qws);
+        EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, EvidenceNode.Type.TEXT):new EvidenceNode(queryLiteral, EvidenceNode.Type.BIND);
+//			evidenceNode.setParentEvidence(query.getEvidenceNode());
+        if(evidenceNode.getType()== EvidenceNode.Type.BIND)
+            evidenceNode.setBindingSource(Enums.BindingSource.TEXT);
+        else
+            evidenceNode.setTextResults(result);
 
-			}
-		}
-		return newQueryList;
-	}
 
-	/**
-	 * Scans the knowledge base for rules that match the selected query literal.
-	 * If a unifiable match was found the substitution and the new query will be
-	 * saved and added to a list of new queries, which is returned.
-	 *
-	 * @param query the whole query
-	 * @param queryLiteral the selected literal
-	 * @return list of queries with substitutions
-	 */
-	private List<ExtendedQueryWithSubstitution> processQueryAgainstFacts(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
 
-		List<Map<IVariable, ITerm>> variableMapList = new LinkedList<Map<IVariable,ITerm>>();
-		if ( getMatchingFacts( queryLiteral, variableMapList  ) ) {
-			boolean removePredicate=true;
-			return getExtendedQueryWithSubstitutions(query, queryLiteral, variableMapList, ExtendedQueryWithSubstitution.BindingSource.FACT, ExtendedQueryWithSubstitution.ExpansionMethod.FACT,removePredicate);
-		}
+        return getExtendedQueryWithSubstitutions(query,queryLiteral,variableMapList, evidenceNode,true);
+    }
 
-		return new LinkedList<ExtendedQueryWithSubstitution>();
-	}
+    /**
+     * Generate aggressive binding for a predicate using all possible entities
+     * @param query
+     * @param queryLiteral
+     * @return
+     */
+    private List<ExtendedQueryWithSubstitution> bindFromKGAggressively(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
 
-	private List<ExtendedQueryWithSubstitution> getExtendedQueryWithSubstitutions(ExtendedQueryWithSubstitution query, ILiteral queryLiteral, List<Map<IVariable, ITerm>> variableMapList, ExtendedQueryWithSubstitution.BindingSource bindingSource, ExtendedQueryWithSubstitution.ExpansionMethod expansionMethod, boolean removeQueryLiteral) {
-		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
-		for (Map<IVariable, ITerm>variableMap : variableMapList) {
+        IRelation factRelation=mFacts.getHypotheticalBindings(queryLiteral);
+        logger.debug(queryLiteral+" Hypothetical Bindings "+factRelation.size());
+
+        List<Map<IVariable, ITerm>> variableMapList=new LinkedList<>();
+        fillVariableMaps(queryLiteral,factRelation,variableMapList);
+
+        EvidenceNode evidenceNode=new EvidenceNode(queryLiteral, EvidenceNode.Type.BIND);
+        evidenceNode.setBindingSource(Enums.BindingSource.GREEDY);
+
+        if(factRelation.size()>0){
+            return getExtendedQueryWithSubstitutions(query,queryLiteral,variableMapList,evidenceNode/*, Enums.BindingSource.GREEDY, ExtendedQueryWithSubstitution.ExpansionMethod.ENTITIES_COMB*/,false);
+        }
+
+        return  new LinkedList<>();
+    }
+
+
+    /**
+     * Scans the knowledge base for rules that match the selected query literal.
+     * If a unifiable match was found the substitution and the new query will be
+     * saved and added to a list of new queries, which is returned.
+     *
+     * @param query the whole query
+     * @param selectedLiteral the selected literal
+     * @return list of queries with substitutions
+     *
+     * @throws EvaluationException on failure
+     */
+    private List<ExtendedQueryWithSubstitution> processQueryAgainstRules(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) throws EvaluationException {
+
+        List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
+
+        //SimpleSelector
+
+        for (IRule rule : mRules) {
+            ILiteral ruleHead = rule.getHead().get(0);
+
+            // Potential match?
+            if (TopDownHelper.match(ruleHead, selectedLiteral)) {
+                Map<IVariable, ITerm> variableMapUnify = new HashMap<IVariable, ITerm>();
+                ITuple queryTuple = selectedLiteral.getAtom().getTuple();
+
+                // Occur Check
+                // Replace all variables of the rule with unused ones (variables that are not in the query)
+                Map<IVariable, ITerm> variableMapForOccurCheck = TopDownHelper.getVariableMapForVariableRenaming(rule, query.getQuery());
+                IRule ruleAfterOccurCheck = TopDownHelper.replaceVariablesInRule(rule, variableMapForOccurCheck);
+
+                ITuple ruleHeadAfterOCTuple = ruleAfterOccurCheck.getHead().get(0).getAtom().getTuple(); // ruleHead changed
+
+                // Unifiable?
+                boolean unifyable = TermMatchingAndSubstitution.unify(queryTuple, ruleHeadAfterOCTuple, variableMapUnify);
+
+                IQuery newQuery = query.getQuery();
+                if (unifyable) {
+                    // Replace the rule head with the rule body
+                    // This replacement has to be save, because we did an occur check before
+                    newQuery = TopDownHelper.substituteRuleHeadWithBody( query.getQuery(), selectedLiteral, ruleAfterOccurCheck );
+                }
+
+                // Substitute the whole query
+                newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, variableMapUnify);
+
+                EvidenceNode evidenceNode= new EvidenceNode(selectedLiteral, EvidenceNode.Type.RULE);
+                evidenceNode.setRule(rule);
+
+
+                ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery, variableMapUnify/*,query.getSubstitutionSources()*/);
+                qws.setEvidenceNode(evidenceNode);
+                newQueryList.add(qws);
+
+            }
+        }
+        return newQueryList;
+    }
+
+    /**
+     * Scans the knowledge base for rules that match the selected query literal.
+     * If a unifiable match was found the substitution and the new query will be
+     * saved and added to a list of new queries, which is returned.
+     *
+     * @param query the whole query
+     * @param queryLiteral the selected literal
+     * @return list of queries with substitutions
+     */
+    private List<ExtendedQueryWithSubstitution> processQueryAgainstFacts(ExtendedQueryWithSubstitution query, ILiteral queryLiteral) {
+
+
+        List<Map<IVariable, ITerm>> variableMapList = new LinkedList<Map<IVariable,ITerm>>();
+        if ( getMatchingFacts( queryLiteral, variableMapList  ) ) {
+            boolean removePredicate=true;
+            EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, EvidenceNode.Type.FACT):new EvidenceNode(queryLiteral, EvidenceNode.Type.BIND);
+//			evidenceNode.setParentEvidence(query.getEvidenceNode());
+            if(evidenceNode.getType()== EvidenceNode.Type.BIND) evidenceNode.setBindingSource(Enums.BindingSource.FACT);
+
+            return getExtendedQueryWithSubstitutions(query, queryLiteral, variableMapList, evidenceNode,removePredicate);
+        }
+
+        return new LinkedList<ExtendedQueryWithSubstitution>();
+    }
+
+    private List<ExtendedQueryWithSubstitution> getExtendedQueryWithSubstitutions(ExtendedQueryWithSubstitution query, ILiteral queryLiteral, List<Map<IVariable, ITerm>> variableMapList, /*Enums.BindingSource bindingSource,*/ EvidenceNode evidenceNode, boolean removeQueryLiteral) {
+        List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
+        for (Map<IVariable, ITerm>variableMap : variableMapList) {
 
             // For every fact
 
             // Substitute the whole query
             IQuery substitutedQuery = TopDownHelper.substituteVariablesInToQuery(query.getQuery(), variableMap);
 
-            // Remove the fact, ...
-            LinkedList<ILiteral> literalsWithoutMatch = new LinkedList<ILiteral>( substitutedQuery.getLiterals() );
-			if(removeQueryLiteral)
-            	literalsWithoutMatch.remove( queryLiteral );
-
-            // Add the new query to the query list
-            IQuery newQuery = Factory.BASIC.createQuery( literalsWithoutMatch );
+            IQuery newQuery = getSubQuery(queryLiteral, substitutedQuery, removeQueryLiteral);
 
 
-
-            variableMap.putAll(query.getSubstitution());
+            Map<IVariable, ITerm> combinedVariableMap=new HashMap<>();
+            combinedVariableMap.putAll(query.getSubstitution());
+            combinedVariableMap.putAll(variableMap);
 
             //Gad
-            Map<IVariable,ExtendedQueryWithSubstitution.BindingSource> substitutionSourcesMap=new HashMap<>();
-            substitutionSourcesMap.putAll(query.getSubstitutionSources());
-            variableMap.keySet().forEach(k->substitutionSourcesMap.put(k, bindingSource));
+//            Map<IVariable,Enums.BindingSource> substitutionSourcesMap=new HashMap<>();
+//            substitutionSourcesMap.putAll(query.getSubstitutionSources());
+//			combinedVariableMap.keySet().forEach(k->substitutionSourcesMap.put(k, evidenceNode.getBindingSource()));
 
-            ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery,variableMap, expansionMethod,substitutedQuery,substitutionSourcesMap);
+            ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery,combinedVariableMap,substitutedQuery/*,substitutionSourcesMap*/);
+            // extended evidence and the mapping
+            EvidenceNode extendedEvidenceNode=evidenceNode.clone();
+            extendedEvidenceNode.setVariableBindingMap(variableMap);
+
+            qws.setEvidenceNode(extendedEvidenceNode);
             newQueryList.add( qws );
         }
-		return newQueryList;
-	}
+        return newQueryList;
+    }
 
-	/**
-	 * Process a builtin atom.
-	 *
-	 * @param queryWithSub the whole query
-	 * @param selectedQueryLiteral the selected literal
-	 * @param queryLiteralAtom
-	 * @return List of new queries and the associated substitutions
-	 *
-	 * @throws EvaluationException on failure
-	 */
+    private IQuery getSubQuery(ILiteral queryLiteral, IQuery substitutedQuery, boolean removeQueryLiteral) {
+        // Remove the fact, ...
+        LinkedList<ILiteral> literalsWithoutMatch = new LinkedList<ILiteral>( substitutedQuery.getLiterals() );
+        if(removeQueryLiteral)
+            literalsWithoutMatch.remove( queryLiteral );
 
-	private List<ExtendedQueryWithSubstitution> processBuiltin(ExtendedQueryWithSubstitution queryWithSub, ILiteral selectedQueryLiteral, IAtom queryLiteralAtom)
-			throws EvaluationException {
-		IQuery query=queryWithSub.getQuery();
-		IBuiltinAtom builtinAtom = (IBuiltinAtom)queryLiteralAtom;
-		ITuple builtinTuple = builtinAtom.getTuple();
-		List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
+        // Add the new query to the query list
+        return Factory.BASIC.createQuery( literalsWithoutMatch );
+    }
 
-		ITuple builtinEvaluation = null;
-		boolean unifyable = false;
-		boolean evaluationNeeded = false;
+    /**
+     * Process a builtin atom.
+     *
+     * @param queryWithSub the whole query
+     * @param selectedQueryLiteral the selected literal
+     * @param queryLiteralAtom
+     * @return List of new queries and the associated substitutions
+     *
+     * @throws EvaluationException on failure
+     */
 
-		Map<IVariable, ITerm> varMapCTarg = new HashMap<IVariable, ITerm>();
+    private List<ExtendedQueryWithSubstitution> processBuiltin(ExtendedQueryWithSubstitution queryWithSub, ILiteral selectedQueryLiteral, IAtom queryLiteralAtom)
+            throws EvaluationException {
+        IQuery query=queryWithSub.getQuery();
+        IBuiltinAtom builtinAtom = (IBuiltinAtom)queryLiteralAtom;
+        ITuple builtinTuple = builtinAtom.getTuple();
+        List<ExtendedQueryWithSubstitution> newQueryList = new LinkedList<ExtendedQueryWithSubstitution>();
 
-		if ( builtinAtom instanceof EqualBuiltin || builtinAtom instanceof ExactEqualBuiltin ) {
-			// UNIFICATION
+        ITuple builtinEvaluation = null;
+        boolean unifyable = false;
+        boolean evaluationNeeded = false;
 
-			assert builtinTuple.size() == 2;
-			unifyable = TermMatchingAndSubstitution.unify(builtinTuple.get(0), builtinTuple.get(1), varMapCTarg );
+        Map<IVariable, ITerm> varMapCTarg = new HashMap<IVariable, ITerm>();
 
-		} else {
-			// EVALUATION - every builtin except EqualBuiltin 
-			evaluationNeeded = true;
-		}
+        if ( builtinAtom instanceof EqualBuiltin || builtinAtom instanceof ExactEqualBuiltin ) {
+            // UNIFICATION
 
-		try {
-			builtinEvaluation = builtinAtom.evaluate(builtinTuple);
-		} catch (IllegalArgumentException iae) {
-			// The builtin can't be evaluated yet, simply continue
-		}
+            assert builtinTuple.size() == 2;
+            unifyable = TermMatchingAndSubstitution.unify(builtinTuple.get(0), builtinTuple.get(1), varMapCTarg );
 
-		List<ILiteral> literalsWithoutBuiltin = new LinkedList<ILiteral>(query.getLiterals());
-		literalsWithoutBuiltin.remove(selectedQueryLiteral);
-		IQuery newQuery = Factory.BASIC.createQuery( literalsWithoutBuiltin );
+        } else {
+            // EVALUATION - every builtin except EqualBuiltin
+            evaluationNeeded = true;
+        }
 
-		if (builtinEvaluation != null) {
+        try {
+            builtinEvaluation = builtinAtom.evaluate(builtinTuple);
+        } catch (IllegalArgumentException iae) {
+            // The builtin can't be evaluated yet, simply continue
+        }
 
-			if (builtinTuple.getVariables().isEmpty()) {
-				// Builtin tuple contained no variables, the result is
-				// true or false, e.g. ADD(1, 2, 3) = true
-				ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery, new HashMap<IVariable, ITerm>(), ExtendedQueryWithSubstitution.ExpansionMethod.BUILT_IN,queryWithSub.getSubstitutionSources());
-				newQueryList.add( qws );
+        List<ILiteral> literalsWithoutBuiltin = new LinkedList<ILiteral>(query.getLiterals());
+        literalsWithoutBuiltin.remove(selectedQueryLiteral);
+        IQuery newQuery = Factory.BASIC.createQuery( literalsWithoutBuiltin );
 
-			} else {
-				// Builtin tuple contained variables, so there is a
-				// computed answer, e.g. ADD(1, 2, ?X) => ?X = 3
-				Map<IVariable, ITerm> varMap = new HashMap<IVariable, ITerm>();
-				Set<IVariable> variablesPreEvaluation = builtinTuple.getVariables();
-
-				if (variablesPreEvaluation.size() != builtinEvaluation.size())
-					throw new EvaluationException("Builtin Evaluation failed. Expected " + variablesPreEvaluation.size() + " results, got " + builtinEvaluation.size());
+        EvidenceNode evidenceNode=new EvidenceNode(selectedQueryLiteral,BUILT_IN);
 
 
-				// Add every computed variable to the mapping
-				int variableIndex = 0;
-				for ( IVariable var : variablesPreEvaluation ) {
+        if (builtinEvaluation != null) {
 
-					if ( unifyable ) { // unification
-						varMap.putAll(varMapCTarg);
-					} else if ( evaluationNeeded ) { // evaluation 
-						ITerm termPostEvaluation = builtinEvaluation.get( variableIndex ); // get evaluated term
-						varMap.put(var, termPostEvaluation);
-					} else { // no new query / branch
-						variableIndex++;
-						continue;
-					}
+            if (builtinTuple.getVariables().isEmpty()) {
+                // Builtin tuple contained no variables, the result is
+                // true or false, e.g. ADD(1, 2, 3) = true
+                ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution(newQuery, new HashMap<IVariable, ITerm>()/*,queryWithSub.getSubstitutionSources()*/);
+                qws.setEvidenceNode(evidenceNode);
+                newQueryList.add( qws );
 
-					// add the new query to the query list
-					newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, varMap);
-					ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution( newQuery, varMap, ExtendedQueryWithSubstitution.ExpansionMethod.BUILT_IN ,queryWithSub.getSubstitutionSources());
-					newQueryList.add( qws );
+            } else {
+                // Builtin tuple contained variables, so there is a
+                // computed answer, e.g. ADD(1, 2, ?X) => ?X = 3
+                Map<IVariable, ITerm> varMap = new HashMap<IVariable, ITerm>();
+                Set<IVariable> variablesPreEvaluation = builtinTuple.getVariables();
 
-
-					variableIndex++;
-				}
-			}
-		} else if (unifyable) {
-			// Builtin evaluation failed, unification succeeded
-			// Take unify result as mapping
-			Map<IVariable, ITerm> varMap = new HashMap<IVariable, ITerm>();
-
-			varMap.putAll(varMapCTarg);
-
-			// add the new query to the query list
-			newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, varMap);
-			ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution( newQuery, varMap, ExtendedQueryWithSubstitution.ExpansionMethod.BUILT_IN ,queryWithSub.getSubstitutionSources());
-			newQueryList.add( qws );
-		}
-
-		return newQueryList;
-	}
-
-	/**
-	 * Tries to find a fact that matches the given query. 
-	 * The variableMap will be populated if a matching fact was found.
-	 * @param queryLiteral the given query
-	 *
-	 * @return true if a matching fact is found, false otherwise
-	 */
-	private boolean getMatchingFacts(ILiteral queryLiteral, List<Map<IVariable, ITerm>> variableMapList) {
-
-		// Check all the facts
-		for ( IPredicate factPredicate : mFacts.getPredicates() ) {
-			// Check if the predicate and the arity matches
-			if ( TopDownHelper.match(queryLiteral, factPredicate) ) {
-				// We've found a match (predicates and arity match) 
-				// Is the QueryTuple unifiable with one of the FactTuples?
-
-				IRelation factRelation = mFacts.get(factPredicate);
-				fillVariableMaps(queryLiteral, factRelation, variableMapList);
+                if (variablesPreEvaluation.size() != builtinEvaluation.size())
+                    throw new EvaluationException("Builtin Evaluation failed. Expected " + variablesPreEvaluation.size() + " results, got " + builtinEvaluation.size());
 
 
-			}
-		}
-		if (variableMapList.isEmpty())
-			return false; // No fact found
+                // Add every computed variable to the mapping
+                int variableIndex = 0;
+                for ( IVariable var : variablesPreEvaluation ) {
 
-		return true;
-	}
+                    if ( unifyable ) { // unification
+                        varMap.putAll(varMapCTarg);
+                    } else if ( evaluationNeeded ) { // evaluation
+                        ITerm termPostEvaluation = builtinEvaluation.get( variableIndex ); // get evaluated term
+                        varMap.put(var, termPostEvaluation);
+                    } else { // no new query / branch
+                        variableIndex++;
+                        continue;
+                    }
 
-	private void fillVariableMaps(ILiteral queryLiteral, IRelation factRelation, List<Map<IVariable, ITerm>> variableMapList) {
-		// Substitute variables into the query
-		for ( int i = 0; i < factRelation.size(); i++ ) {
+                    // add the new query to the query list
+                    newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, varMap);
+                    ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution( newQuery, varMap/*,queryWithSub.getSubstitutionSources()*/);
+                    qws.setEvidenceNode(evidenceNode);
+                    newQueryList.add( qws );
+
+
+                    variableIndex++;
+                }
+            }
+        } else if (unifyable) {
+            // Builtin evaluation failed, unification succeeded
+            // Take unify result as mapping
+            Map<IVariable, ITerm> varMap = new HashMap<IVariable, ITerm>();
+
+            varMap.putAll(varMapCTarg);
+
+            // add the new query to the query list
+            newQuery = TopDownHelper.substituteVariablesInToQuery(newQuery, varMap);
+            ExtendedQueryWithSubstitution qws = new ExtendedQueryWithSubstitution( newQuery, varMap/*, queryWithSub.getSubstitutionSources()*/);
+            qws.setEvidenceNode(evidenceNode);
+            newQueryList.add( qws );
+        }
+
+        return newQueryList;
+    }
+
+    /**
+     * Tries to find a fact that matches the given query.
+     * The variableMap will be populated if a matching fact was found.
+     * @param queryLiteral the given query
+     *
+     * @return true if a matching fact is found, false otherwise
+     */
+    private boolean getMatchingFacts(ILiteral queryLiteral, List<Map<IVariable, ITerm>> variableMapList) {
+
+        // Check all the facts
+        for ( IPredicate factPredicate : mFacts.getPredicates() ) {
+            // Check if the predicate and the arity matches
+            if ( TopDownHelper.match(queryLiteral, factPredicate) ) {
+                // We've found a match (predicates and arity match)
+                // Is the QueryTuple unifiable with one of the FactTuples?
+
+                IRelation factRelation = mFacts.get(factPredicate);
+                fillVariableMaps(queryLiteral, factRelation, variableMapList);
+
+
+            }
+        }
+        if (variableMapList.isEmpty())
+            return false; // No fact found
+
+        return true;
+    }
+
+    private void fillVariableMaps(ILiteral queryLiteral, IRelation factRelation, List<Map<IVariable, ITerm>> variableMapList) {
+        // Substitute variables into the query
+        for ( int i = 0; i < factRelation.size(); i++ ) {
             ITuple queryTuple = queryLiteral.getAtom().getTuple();
             boolean tupleUnifyable = false;
             ITuple factTuple = factRelation.get(i);
@@ -645,34 +693,34 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
                 variableMapList.add(variableMap);
             }
         }
-	}
+    }
 
 
-	/**
-	 * Creates a debug prefix for nice output
-	 *
-	 * @param recursionDepth depth of recursion (0 = root)
-	 * @param inNegationAsFailureFlip <code>true</code> is this a NAF tree, <code>false</code> otherwise
-	 *
-	 * @return debug prefix string
-	 */
-	private String getDebugPrefix(int recursionDepth, boolean inNegationAsFailureFlip) {
-		// Debug prefix for proper output
-		String debugPrefix = "";
+    /**
+     * Creates a debug prefix for nice output
+     *
+     * @param recursionDepth depth of recursion (0 = root)
+     * @param inNegationAsFailureFlip <code>true</code> is this a NAF tree, <code>false</code> otherwise
+     *
+     * @return debug prefix string
+     */
+    private String getDebugPrefix(int recursionDepth, boolean inNegationAsFailureFlip) {
+        // Debug prefix for proper output
+        String debugPrefix = "";
 
-		for (int i = 0; i < recursionDepth; i++)
-			debugPrefix += "  ";
+        for (int i = 0; i < recursionDepth; i++)
+            debugPrefix += "  ";
 
-		if (inNegationAsFailureFlip)
-			debugPrefix += "{NAF} ";
+        if (inNegationAsFailureFlip)
+            debugPrefix += "{NAF} ";
 
-		return debugPrefix;
-	}
+        return debugPrefix;
+    }
 
-	@Override
-	public IExplanation getExplanation(IQuery query) throws EvaluationException {
-		return (IExplanation) evaluate(query);
-	}
+    @Override
+    public IExplanation getExplanation(IQuery query) throws EvaluationException {
+        return (IExplanation) evaluate(query);
+    }
 
 
 }

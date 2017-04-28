@@ -1,5 +1,6 @@
 package extendedsldnf.datastructure;
 
+import com.google.common.base.Joiner;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
 
@@ -17,15 +18,15 @@ public class Solutions implements IRelation, IExplanation {
     /**
      * successful rewriting paths
      */
-    Set<RewritingPath> rewritingPaths;
+    Set<EvidencePath> evidencePaths;
 
 
     public Solutions() {
         this(new ArrayList<>());
     }
 
-    public Solutions(List<RewritingPath> rewritingPaths) {
-        this.rewritingPaths = new LinkedHashSet<>(rewritingPaths) ;
+    public Solutions(List<EvidencePath> evidencePaths) {
+        this.evidencePaths = new LinkedHashSet<>(evidencePaths) ;
     }
 
     @Override
@@ -66,8 +67,8 @@ public class Solutions implements IRelation, IExplanation {
 
     @Override
     public String toString() {
-        return "Solutions{" +
-                rewritingPaths +
-                '}';
+        return "EvidencesPaths{[\n" +
+                Joiner.on("\n\n,").join(evidencePaths) +
+                "\n]}";
     }
 }
