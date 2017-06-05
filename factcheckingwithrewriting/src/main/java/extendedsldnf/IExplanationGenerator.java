@@ -1,6 +1,6 @@
 package extendedsldnf;
 
-import extendedsldnf.datastructure.IExplanation;
+import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.IQuery;
 
@@ -14,5 +14,5 @@ public interface IExplanationGenerator {
      * @param query
      * @return
      */
-    public IExplanation getExplanation(IQuery query) throws EvaluationException;
+    public IQueryExplanations getExplanation(IQuery query) throws EvaluationException;
 }

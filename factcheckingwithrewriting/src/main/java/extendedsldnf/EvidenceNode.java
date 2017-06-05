@@ -48,7 +48,9 @@ public class EvidenceNode implements IWeightedObject {
         this.variableBindingMap = variableBindingMap;
     }
 
-    public enum Type{FACT,TEXT,BUILT_IN,BIND,RULE,ORG};
+
+
+    public enum Type{KG_FACT, TEXT_MENTION,BUILT_IN, VAR_BIND,RULE,ORG};
 
     ILiteral queryLiteral;
     Type type = Type.ORG;
@@ -83,14 +85,14 @@ public class EvidenceNode implements IWeightedObject {
     public String toString() {
         return "Evidence{" +
                 "literal=" + queryLiteral +
-                ", type=" + type + ((type==Type.BIND)? "("+bindingSource+")":"")+
-                ((type ==Type.TEXT)?
+                ", type=" + type + ((type==Type.VAR_BIND)? "("+bindingSource+")":"")+
+                ((type ==Type.TEXT_MENTION)?
                         ", text=" + textResults.readable():"" )+
                 ((type ==Type.RULE)?
                         ", rule=" + rule:"" )+
-                ((type ==Type.BIND)?
+                ((type ==Type.VAR_BIND)?
                         ", variableMap=" + variableBindingMap:"" )+
-                "}"+((type ==Type.TEXT||type ==Type.FACT)? "**":"" );
+                "}"+((type ==Type.TEXT_MENTION ||type ==Type.KG_FACT)? "**":"" );
     }
 
     @Override
@@ -116,4 +118,20 @@ public class EvidenceNode implements IWeightedObject {
         node.rule=rule;
         return node;
     }
+
+    public boolean isTextMention(){ return getType().equals(Type.TEXT_MENTION);}
+    public boolean isKGFact(){ return getType().equals(Type.KG_FACT);}
+
+    public  boolean isVerification() {
+        return isTextMention()||isKGFact();
+    }
+
+    public  boolean isVariableBinding() {
+        return getType().equals(Type.VAR_BIND);
+    }
+
+    public  boolean isRuleExpansion() {
+        return getType().equals(Type.RULE);
+    }
+
 }

@@ -3,33 +3,26 @@ import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
 import de.mpii.factspotting.IFactSpotter;
 import extendedsldnf.ExtendedSLDNFEvaluator;
-import extendedsldnf.datastructure.ExtendedFacts;
-import extendedsldnf.datastructure.IExplanation;
+import extendedsldnf.datastructure.IQueryExplanations;
 import extendedsldnf.datastructure.IExtendedFacts;
 import extendedsldnf.facts.FactsLoaderFactory;
 import extendedsldnf.facts.IFactsLoader;
 import mpi.tools.javatools.util.FileUtils;
 import org.deri.iris.ConfigurationThreadLocalStorage;
 import org.deri.iris.EvaluationException;
-import org.deri.iris.api.basics.IPredicate;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
 import org.deri.iris.evaluation.IEvaluationStrategy;
-import org.deri.iris.facts.Facts;
-import org.deri.iris.facts.FactsWithExternalData;
-import org.deri.iris.facts.IFacts;
-import org.deri.iris.storage.IRelation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import text.FactSpottingConnector;
+import utils.DataUtils;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by gadelrab on 3/22/17.
@@ -55,7 +48,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
     /**
      * Facts  (iris facts)
      */
-    private Map<IPredicate,IRelation> factsMap;
+//    private Map<IPredicate,IRelation> factsMap;
     private IExtendedFacts facts;
 
 
@@ -87,7 +80,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 
 
         // Load Rules
-        rules=loadRules(config.getRulesFiles());
+        rules=DataUtils.loadRules(config.getRulesFiles());
 
         if (logger.isDebugEnabled()) {
             logger.debug("IRIS knowledge-base init");
@@ -105,7 +98,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 
 
         // Load facts
-        facts=loadFacts(config);
+        facts= DataUtils.loadFacts(config);
         //logger.debug(facts.toString());
         // Checks if there external data sources
 //        if (config.externalDataSources.size() > 0)
@@ -123,52 +116,22 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 //                    .createEvaluator(facts, rules, config);
 
 
-        evaluator = new ExtendedSLDNFEvaluator( facts, rules,new FactSpottingConnector(config),config.getPartialBindingType() );
+        evaluator = new ExtendedSLDNFEvaluator( facts, rules,new FactSpottingConnector(config),config.getPartialBindingType(),config.isSuspectsFromKG() );
 
 
 
     }
 
 
-    /**
-     * Creates IFacts source according to the type indicated in the configuration file
-     * @param conf
-     * @return
-     */
-    private IExtendedFacts loadFacts(Configuration conf) {
-        IFactsLoader factsLoader= FactsLoaderFactory.getLoader(conf);
-        return factsLoader.loadFacts(conf.getFactsFiles());
-    }
-
-
-
-
-    private List<IRule> loadRules(List<String> rulesFilenames) {
-        List<IRule> rules=new ArrayList<>();
-
-        for (String filename:rulesFilenames) {
-            try {
-                Parser parser=new Parser();
-                BufferedReader fr = FileUtils.getBufferedUTF8Reader(filename);
-                parser.parse(fr);
-                rules.addAll(parser.getRules());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-      return rules;
-
-    }
 
 
     @Override
-    public IExplanation check(IQuery query) {
+    public IQueryExplanations check(IQuery query) {
         try {
 
            // return (IExplaination) evaluationStrategy.evaluateQuery(query,null);
 
-            IExplanation relation = evaluator.getExplanation(query);
+            IQueryExplanations relation = evaluator.getExplanation(query);
             return  relation;
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,7 +141,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 
 
     @Override
-    public IExplanation check(Fact fact) {
+    public IQueryExplanations check(Fact fact) {
 
         Parser parser = new Parser();
         try {
@@ -194,8 +157,14 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
     }
 
 
-
-
-
+//    public void removeFactsFromKG(List<IQuery> queries) {
+//        for (IQuery q:queries) {
+//            for (ILiteral l:q.getLiterals()) {
+//                facts.
+//
+//            }
+//
+//        }
+//    }
 }
 

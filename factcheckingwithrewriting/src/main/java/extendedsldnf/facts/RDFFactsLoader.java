@@ -85,8 +85,12 @@ public class RDFFactsLoader extends IFactsLoader{
 
 
     public static RDFFactsLoader getInstance(Configuration configuration) {
+        return getInstance(configuration.relationFactory);
+    }
+
+    public static RDFFactsLoader getInstance(IRelationFactory relationFactory) {
         if(instance==null){
-            instance=new RDFFactsLoader(configuration.relationFactory);
+            instance=new RDFFactsLoader(relationFactory);
         }
         return instance;
     }

@@ -1,5 +1,5 @@
 import de.mpii.datastructures.Fact;
-import extendedsldnf.datastructure.IExplanation;
+import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.api.basics.IQuery;
 
 /**
@@ -8,7 +8,7 @@ import org.deri.iris.api.basics.IQuery;
 public interface IDeepChecker<T extends IQuery> {
 
 
-    public IExplanation check(T queryFact);
+    public IQueryExplanations check(T queryFact);
 
-    IExplanation check(Fact fact);
+    IQueryExplanations check(Fact fact);
 }

@@ -56,8 +56,15 @@
                     <id>check_facts</id>
                 </program>
 
+                <program>
+                    <mainClass>experiments.DatalogProgramExcuter</mainClass>
+                    <id>create_exper</id>
+                </program>
+
 
             </programs>
+
+
         </configuration>
     </plugin>
 </plugins>

@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static config.Configuration.FACT_SPOTTING_CONF;
+
 /**
  * Created by gadelrab on 3/31/17.
  */
@@ -24,8 +26,7 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     public FactSpottingConnector(Configuration conf) {
-
-        Object spottingConfFile = conf.getProperty("factSpotting.config");
+        Object spottingConfFile = conf.setSpottingConfFile();
         de.mpii.factspotting.config.Configuration.setConfigurationFile(spottingConfFile==null? null:(String)spottingConfFile);
         spotter=FactSpotterFactory.create(conf.getSpottingMethod());
 

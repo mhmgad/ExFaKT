@@ -1,32 +1,32 @@
 package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
+import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by gadelrab on 3/22/17.
  */
 //TODO get red off the IRelation interface, It is useless but it is easier than implementing the whole thing form scratch
-public class Solutions implements IRelation, IExplanation {
+public class QueryExplanations implements IRelation, IQueryExplanations {
 
     /**
      * successful rewriting paths
      */
-    Set<EvidencePath> evidencePaths;
+    Set<Explanation> explanations;
+    private IQuery query;
 
 
-    public Solutions() {
-        this(new ArrayList<>());
-    }
+//    public Solutions() {
+//        this(new ArrayList<>());
+//    }
 
-    public Solutions(List<EvidencePath> evidencePaths) {
-        this.evidencePaths = new LinkedHashSet<>(evidencePaths) ;
+    public QueryExplanations(IQuery query, List<Explanation> explanations) {
+        this.explanations = new LinkedHashSet<>(explanations) ;
+        this.query=query;
     }
 
     @Override
@@ -67,8 +67,39 @@ public class Solutions implements IRelation, IExplanation {
 
     @Override
     public String toString() {
-        return "EvidencesPaths{[\n" +
-                Joiner.on("\n\n,").join(evidencePaths) +
+        return "Explanations{[\n" +
+                Joiner.on("\n\n,").join(explanations) +
                 "\n]}";
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return explanations.isEmpty();
+    }
+
+    @Override
+    public IQuery getQuery() {
+        return this.query;
+    }
+
+    @Override
+    public Collection<Explanation> getExplanations() {
+        return explanations;
+    }
+
+    @Override
+    public boolean hasDirectExplanation() {
+        return getExplanations().stream().anyMatch(Explanation::isDirectEvidence);
+    }
+
+    @Override
+    public boolean isDirectExplanation() {
+        return getExplanations().size()==1 && hasDirectExplanation();
+    }
+
+    @Override
+    public boolean hasIndirectExplanation() {
+        return (!isEmpty())&&!getExplanations().stream().allMatch(Explanation::isDirectEvidence);
+
     }
 }

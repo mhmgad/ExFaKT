@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static utils.StringUtils.asList;
+
 
 /**
  * This class extends the configuration of IRIS
@@ -27,6 +29,8 @@ public class Configuration extends org.deri.iris.Configuration {
     private static final String QUERIES_FILES = "queriesFile";
     private static final String FACTS_FORMAT = "factsFormat";
     private static final String PARTIAL_BINDING_TYPE = "partialBindingType";
+    private static final String SUSPECTS_FROM_KG = "suspectsFromKG";
+    public static final String FACT_SPOTTING_CONF = "factSpotting.config";
 
 
 
@@ -43,9 +47,26 @@ public class Configuration extends org.deri.iris.Configuration {
      * Extra configurations
      */
     private Properties extraProperties;
+    private String spottingConfFile;
 
     public void setExtraProp(Properties extraProp) {
         this.extraProperties = extraProp;
+    }
+
+    public boolean isSuspectsFromKG() {
+        return suspectsFromKG;
+    }
+
+    public void setSuspectsFromKG(boolean suspectsFromKG) {
+        this.suspectsFromKG = suspectsFromKG;
+    }
+
+    public void setSpottingConfFile(String spottingConfFile) {
+        this.spottingConfFile = spottingConfFile;
+    }
+
+    public String setSpottingConfFile() {
+        return spottingConfFile;
     }
 
 
@@ -82,6 +103,11 @@ public class Configuration extends org.deri.iris.Configuration {
      * The allowed facts to check, either fully grounded or partially
      */
     private PartialBindingType partialBindingType;
+
+    /**
+     * suspected in the KG so remove them from KG
+     */
+    private boolean suspectsFromKG=false;
 
 
 
@@ -121,6 +147,8 @@ public class Configuration extends org.deri.iris.Configuration {
             conf.setQueiesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
             conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
             conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE,"NONE")));
+            conf.setSuspectsFromKG(Boolean.parseBoolean(prop.getProperty(SUSPECTS_FROM_KG,"false")));
+            conf.setSpottingConfFile(prop.getProperty(FACT_SPOTTING_CONF,null));
             conf.setExtraProp(prop);
 
 //                System.out.println(conf);
@@ -140,12 +168,6 @@ public class Configuration extends org.deri.iris.Configuration {
 
     }
 
-    private static List<String> asList(String property){
-        List<String> files=new LinkedList<>();
-        if(!property.trim().isEmpty())
-            files=Arrays.asList(property.split(",")).stream().map(sf->sf.trim()).collect(Collectors.toList());
-        return files;
-    }
 
 
 

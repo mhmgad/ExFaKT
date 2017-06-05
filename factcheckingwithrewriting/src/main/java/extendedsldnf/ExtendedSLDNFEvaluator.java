@@ -63,11 +63,12 @@ import static extendedsldnf.EvidenceNode.Type.ORG;
  */
 public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGenerator {
 
+    private boolean suspectsFromKG;
     private  ITextConnector textConnector;
     private  Configuration.PartialBindingType partialBindingType;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final int _MAX_NESTING_LEVEL = 45;
+    private static final int _MAX_NESTING_LEVEL = 20;
 
     private IQuery mInitialQuery;
     private IExtendedFacts mFacts;
@@ -85,7 +86,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
      * @param rules list of rules
      */
     public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules) {
-        this(facts,rules,null, Configuration.PartialBindingType.NONE);
+        this(facts,rules,null, Configuration.PartialBindingType.NONE,false);
     }
 
 
@@ -98,7 +99,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
      * @param facts one or many facts
      * @param rules list of rules
      */
-    public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType) {
+    public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG) {
         mFacts = facts;
         mRules = getOrderedRules(rules);
 
@@ -106,6 +107,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         // Text connector
         this.textConnector=textConnector;
         this.partialBindingType=partialBindingType;
+        this.suspectsFromKG=suspectsFromKG;
     }
 
     /**
@@ -135,19 +137,16 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         ExtendedQueryWithSubstitution extendedQueryWithSubstitution = new ExtendedQueryWithSubstitution(query, new HashMap<IVariable, ITerm>()/*,new HashMap<IVariable,Enums.BindingSource>()*/);
         extendedQueryWithSubstitution.setEvidenceNode(new EvidenceNode(null,ORG));
 
-        List<EvidencePath> solutions = findAndSubstitute(extendedQueryWithSubstitution);
+        List<Explanation> solutions = findAndSubstitute(extendedQueryWithSubstitution);
 
-        Solutions returnedSoltion=new Solutions(solutions);
+        QueryExplanations returnedSolution=new QueryExplanations(query,solutions);
 
-        System.out.println("Logger: "+logger.getName());
-
-        System.out.println("Logger debug: "+logger.isDebugEnabled());
         logger.debug("------------");
         //logger.debug("Relation " + relation);
         logger.debug("Original Query: " + query);
         logger.debug("Solutions: "+ solutions);
 
-        return returnedSoltion;
+        return returnedSolution;
     }
 
     /**
@@ -157,9 +156,9 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         return mInitialQuery.getVariables();
     }
 
-    private List<EvidencePath> findAndSubstitute(ExtendedQueryWithSubstitution query) throws EvaluationException {
+    private List<Explanation> findAndSubstitute(ExtendedQueryWithSubstitution query) throws EvaluationException {
         //Gad: successful path queries and variables
-        List<EvidencePath> solutions = findAndSubstitute(query, 0, false);//, pathAccum,variablesMapsAccum,variableListAccum);
+        List<Explanation> solutions = findAndSubstitute(query, 0, false);//, pathAccum,variablesMapsAccum,variableListAccum);
 //		logger.debug("Path to result: " + pathAccum.toString());
 //		logger.debug("substitutions Path: " + variablesMapsAccum.toString());
 //		logger.debug("Variables Path: " + variableListAccum.toString());
@@ -178,12 +177,13 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
      * @throws EvaluationException                   If something went wrong
      * @throws MaximumRecursionDepthReachedException since SLDNF evaluation does not detect infinite loops, this exception is thrown at a nesting level of 25
      */
-    private List<EvidencePath> findAndSubstitute(final ExtendedQueryWithSubstitution query, int recursionDepth, boolean inNegationAsFailureFlip/*,  List<List<ExtendedQueryWithSubstitution>> pathAccum,Multimap variablesMapsAccum,List<List<List<VariablesBindings>>> variableListAccum*/) throws EvaluationException, MaximumRecursionDepthReachedException {
+    private List<Explanation> findAndSubstitute(final ExtendedQueryWithSubstitution query, int recursionDepth, boolean inNegationAsFailureFlip/*,  List<List<ExtendedQueryWithSubstitution>> pathAccum,Multimap variablesMapsAccum,List<List<List<VariablesBindings>>> variableListAccum*/) throws EvaluationException, MaximumRecursionDepthReachedException {
 
         // To stop infinite loop, remove this later
         // when tabling is implemented
         if (recursionDepth >= _MAX_NESTING_LEVEL)
-            throw new MaximumRecursionDepthReachedException("You may ran into an infinite loop. SLDNF evaluation does not support tabling.");
+            //throw new MaximumRecursionDepthReachedException("You may ran into an infinite loop. SLDNF evaluation does not support tabling.");
+            return new ArrayList<>();
 
         String debugPrefix = getDebugPrefix(recursionDepth, inNegationAsFailureFlip);
 
@@ -222,7 +222,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
         int i = 0;
 
-        List<EvidencePath> solutions = new LinkedList<EvidencePath>();
+        List<Explanation> solutions = new LinkedList<Explanation>();
 
         for (ExtendedQueryWithSubstitution newQws : subQueryList) { // process new queries
             IQuery newQuery = newQws.getQuery();
@@ -236,7 +236,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
             // Success node (empty clause)
             if (newQuery.getLiterals().isEmpty()) {
-                EvidencePath solution = new EvidencePath();
+                Explanation solution = new Explanation();
                 solution.add(newQws.getEvidenceNode());
                 logger.debug("VarMap: "+newQws.getSubstitution());
 //				solution.setSubstitutions(newQws.getSubstitution());
@@ -248,7 +248,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
             // Evaluate the new query (walk the subtree)
             //IRelation relationFromSubtree =
-            List<EvidencePath> solutionFromSubtree = findAndSubstitute(newQws, recursionDepth+1, inNegationAsFailureFlip/*,pathAccum,variablesMapsAccum,variableListAccum*/);
+            List<Explanation> solutionFromSubtree = findAndSubstitute(newQws, recursionDepth+1, inNegationAsFailureFlip/*,pathAccum,variablesMapsAccum,variableListAccum*/);
 
             logger.debug(debugPrefix + "Old query: " + query.getQuery().getVariables() + query);
             logger.debug(debugPrefix + "New query: " + newQuery.getVariables() + newQuery + " | " + newVariableMap);
@@ -350,8 +350,15 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
     }
 
     private List<ExtendedQueryWithSubstitution> checkFact(ExtendedQueryWithSubstitution query, ILiteral selectedLiteral) {
-        List<ExtendedQueryWithSubstitution> subQueries;
-        subQueries = processQueryAgainstFacts(query, selectedLiteral);
+
+        List<ExtendedQueryWithSubstitution> subQueries=new LinkedList<>();
+//        logger.debug("Fact is suspect: "+suspectsFromKG +" Query type: "+query.getEvidenceNode().getType() );
+        if((query.getEvidenceNode().getType()==ORG)&&suspectsFromKG){
+            // Do not check the KG if the fact is suspected from KG
+            logger.debug("Skip KG check! Fact is suspected from KG.");
+        }else {
+            subQueries = processQueryAgainstFacts(query, selectedLiteral);
+        }
 
 
         if(subQueries.isEmpty()) {
@@ -382,9 +389,9 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
         List<Map<IVariable, ITerm>> variableMapList = result.getVaribalesMappings();
 
-        EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, EvidenceNode.Type.TEXT):new EvidenceNode(queryLiteral, EvidenceNode.Type.BIND);
+        EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, EvidenceNode.Type.TEXT_MENTION):new EvidenceNode(queryLiteral, EvidenceNode.Type.VAR_BIND);
 //			evidenceNode.setParentEvidence(query.getEvidenceNode());
-        if(evidenceNode.getType()== EvidenceNode.Type.BIND)
+        if(evidenceNode.getType()== EvidenceNode.Type.VAR_BIND)
             evidenceNode.setBindingSource(Enums.BindingSource.TEXT);
         else
             evidenceNode.setTextResults(result);
@@ -408,7 +415,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         List<Map<IVariable, ITerm>> variableMapList=new LinkedList<>();
         fillVariableMaps(queryLiteral,factRelation,variableMapList);
 
-        EvidenceNode evidenceNode=new EvidenceNode(queryLiteral, EvidenceNode.Type.BIND);
+        EvidenceNode evidenceNode=new EvidenceNode(queryLiteral, EvidenceNode.Type.VAR_BIND);
         evidenceNode.setBindingSource(Enums.BindingSource.GREEDY);
 
         if(factRelation.size()>0){
@@ -492,9 +499,9 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         List<Map<IVariable, ITerm>> variableMapList = new LinkedList<Map<IVariable,ITerm>>();
         if ( getMatchingFacts( queryLiteral, variableMapList  ) ) {
             boolean removePredicate=true;
-            EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, EvidenceNode.Type.FACT):new EvidenceNode(queryLiteral, EvidenceNode.Type.BIND);
+            EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, EvidenceNode.Type.KG_FACT):new EvidenceNode(queryLiteral, EvidenceNode.Type.VAR_BIND);
 //			evidenceNode.setParentEvidence(query.getEvidenceNode());
-            if(evidenceNode.getType()== EvidenceNode.Type.BIND) evidenceNode.setBindingSource(Enums.BindingSource.FACT);
+            if(evidenceNode.getType()== EvidenceNode.Type.VAR_BIND) evidenceNode.setBindingSource(Enums.BindingSource.FACT);
 
             return getExtendedQueryWithSubstitutions(query, queryLiteral, variableMapList, evidenceNode,removePredicate);
         }
@@ -718,8 +725,8 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
     }
 
     @Override
-    public IExplanation getExplanation(IQuery query) throws EvaluationException {
-        return (IExplanation) evaluate(query);
+    public IQueryExplanations getExplanation(IQuery query) throws EvaluationException {
+        return (IQueryExplanations) evaluate(query);
     }
 
 

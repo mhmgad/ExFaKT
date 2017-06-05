@@ -41,13 +41,15 @@ public class IRISFactsLoader extends IFactsLoader{
     }
 
 
-    public static IRISFactsLoader getInstance(Configuration config){
-        if (instance==null){
-            instance= new IRISFactsLoader(config.relationFactory);
+    public static IRISFactsLoader getInstance(Configuration configuration) {
+        return getInstance(configuration.relationFactory);
+    }
+
+    public static IRISFactsLoader getInstance(IRelationFactory relationFactory) {
+        if(instance==null){
+            instance=new IRISFactsLoader(relationFactory);
         }
-
         return instance;
-
     }
 
 

@@ -110,6 +110,21 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
         return true;
     }
 
+//    @Override
+//    public boolean deleteFact(ILiteral literal) {
+//        IRelation predicateTuples = get(literal.getAtom().getPredicate());
+//        if(predicateTuples==null)
+//            return false;
+//
+//        ITuple tupleToDelete = literal.getAtom().getTuple();
+//        if(!predicateTuples.contains(tupleToDelete))
+//            return false;
+//        else{
+//            predicateTuples.
+//        }
+//
+//    }
+
     /**
      * gets all possible combinations for a predicate
      * @param literal
