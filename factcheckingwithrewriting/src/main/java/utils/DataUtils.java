@@ -33,6 +33,16 @@ public class DataUtils {
         return factsLoader.loadFacts(conf.getFactsFiles());
     }
 
+    /**
+     * Creates IFacts source according to the type indicated in the configuration file
+     * @param conf
+     * @return
+     */
+    public static IExtendedFacts loadFacts(Configuration conf,List<String> factsFiles) {
+        IFactsLoader factsLoader= FactsLoaderFactory.getLoader(conf);
+        return factsLoader.loadFacts(factsFiles);
+    }
+
 
 
 

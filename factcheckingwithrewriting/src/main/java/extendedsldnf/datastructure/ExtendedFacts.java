@@ -46,6 +46,7 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
 //        possibleRelations=new HashSet<>();
         fillEntities();
         logger.debug("Entities in KG "+entities.size());
+
     }
 
 
@@ -108,6 +109,11 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
         });
 
         return true;
+    }
+
+    @Override
+    public int size() {
+        return super.getPredicates().stream().mapToInt(pred-> super.get(pred).size()).sum();
     }
 
 //    @Override

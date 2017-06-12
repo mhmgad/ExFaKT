@@ -4,15 +4,13 @@ import config.Configuration;
 import extendedsldnf.datastructure.IExtendedFacts;
 
 import mpi.tools.javatools.util.FileUtils;
-import org.apache.commons.collections4.ListUtils;
+import org.apache.log4j.Logger;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.api.terms.IVariable;
 import org.deri.iris.compiler.ParserException;
 import org.deri.iris.evaluation.IEvaluationStrategy;
-import org.deri.iris.evaluation.IEvaluationStrategyFactory;
-import org.deri.iris.evaluation.stratifiedbottomup.StratifiedBottomUpEvaluationStrategy;
 import org.deri.iris.evaluation.stratifiedbottomup.StratifiedBottomUpEvaluationStrategyFactory;
 import org.deri.iris.evaluation.stratifiedbottomup.seminaive.SemiNaiveEvaluatorFactory;
 import org.deri.iris.storage.IRelation;
@@ -26,10 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 /**
  * Created by gadelrab on 5/31/17.
  */
-public class DatalogProgramExcuter {
+public class DatalogProgramExecuter {
+
+    Logger logger= Logger.getLogger(getClass());
 
 
     private  Configuration config;
@@ -39,10 +40,15 @@ public class DatalogProgramExcuter {
     IExtendedFacts facts;
 
 
-    public DatalogProgramExcuter(List<String> factsFile,List<String> rulesFiles,List<String> queriesFiles) {
+    public DatalogProgramExecuter(List<String> factsFile, List<String> rulesFiles, List<String> queriesFiles) {
         config = Configuration.getInstance();
-        facts=DataUtils.loadFacts(config);
+        facts=DataUtils.loadFacts(config,factsFile);
+        logger.debug("loadedFacts "+facts.size());
+
         rules= DataUtils.loadRules(rulesFiles);
+        logger.debug("loadedRules "+rules.size());
+
+
         evaluationStrategyFactory = new StratifiedBottomUpEvaluationStrategyFactory( new SemiNaiveEvaluatorFactory() );
 
         try {
@@ -64,6 +70,8 @@ public class DatalogProgramExcuter {
                 List<IVariable> variableBindings = new ArrayList<IVariable>();
                 IRelation relation =  str.evaluateQuery(q,variableBindings);
 
+
+
                 // Output the variables.
                 System.out.println(variableBindings);
 // For performance reasons compute the relation size only once.
@@ -76,7 +84,7 @@ public class DatalogProgramExcuter {
 
 
                 for (int i = 0; i < relationSize; i++) {
-                    System.out.println(relation.get(i));
+                    //System.out.println(relation.get(i));
                     bw.write("?- "+q.getLiterals().get(0).getAtom().getPredicate().toString()+relation.get(i).toString()+".");
                     bw.newLine();
                 }
@@ -96,13 +104,15 @@ public class DatalogProgramExcuter {
 
     public static void main(String[] args) {
         List<String> facts= StringUtils.asList(args[0]);
+        System.out.println("facts: "+facts);
         List<String> rules=StringUtils.asList(args[1]);
+        System.out.println("rules: "+rules);
         List<String> queries=StringUtils.asList(args[2]);
-
+        System.out.println("queries: "+queries);
         String outputFile=args[3];
 
 
-        DatalogProgramExcuter executer=new DatalogProgramExcuter(facts,rules,queries);
+        DatalogProgramExecuter executer=new DatalogProgramExecuter(facts,rules,queries);
 
         executer.execute(outputFile);
 

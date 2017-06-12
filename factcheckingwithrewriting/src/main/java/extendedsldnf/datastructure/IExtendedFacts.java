@@ -14,5 +14,7 @@ public interface IExtendedFacts extends IFacts {
 
     public boolean addAll(IExtendedFacts facts);
 
+    public int size();
+
 //    public boolean deleteFact(ILiteral literal);
 }

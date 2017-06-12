@@ -57,7 +57,7 @@
                 </program>
 
                 <program>
-                    <mainClass>experiments.DatalogProgramExcuter</mainClass>
+                    <mainClass>experiments.DatalogProgramExecuter</mainClass>
                     <id>create_exper</id>
                 </program>
 
