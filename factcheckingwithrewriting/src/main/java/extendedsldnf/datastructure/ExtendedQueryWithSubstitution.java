@@ -19,7 +19,7 @@ public class ExtendedQueryWithSubstitution extends QueryWithSubstitution{
 //        return substitutionSources;
 //    }
 
-    //public enum ExpansionMethod {BUILT_IN,KG_FACT,TEXT_MENTION,RULES,ORG,GREEDY}
+    //public enum ExpansionMethod {BUILT_IN,KG_VALID,TEXT_VALID,RULES,ORG,GREEDY}
 
     IQuery referenceQuery;
 

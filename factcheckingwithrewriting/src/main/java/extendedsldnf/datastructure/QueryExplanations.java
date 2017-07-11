@@ -6,6 +6,7 @@ import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by gadelrab on 3/22/17.
@@ -68,7 +69,7 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     @Override
     public String toString() {
         return "Explanations{[\n" +
-                Joiner.on("\n\n,").join(explanations) +
+                Joiner.on("\n\n,").join(explanations.stream().sorted().collect(Collectors.toList())) +
                 "\n]}";
     }
 

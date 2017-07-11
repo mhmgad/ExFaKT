@@ -1,6 +1,7 @@
 package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
+import extendedsldnf.CostAccumulator;
 import extendedsldnf.EvidenceNode;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
@@ -12,31 +13,21 @@ import java.util.*;
  * Created by gadelrab on 3/8/17.
  */
 
-public class Explanation {
+public class Explanation implements Comparable<Explanation> {
 
     List<EvidenceNode> evidenceNodes=new LinkedList<>();
-//    List<ExtendedQueryWithSubstitution.ExpansionMethod> sources=new LinkedList<>();
+    private CostAccumulator cost;
 
-
-//    private Map<IVariable, ITerm> substitutions;
-//    private Map<IVariable, Enums.BindingSource> substitutionsSources;
 
     public Explanation() {
-        this(new LinkedList<EvidenceNode>()/*,new LinkedList<ExtendedQueryWithSubstitution.ExpansionMethod>()*/,new HashMap<IVariable,ITerm>(),new HashMap<IVariable,Enums.BindingSource>());
+        this(new LinkedList<EvidenceNode>());
 
     }
 
-    public Explanation(List<EvidenceNode> evidenceNodes/*, List<ExtendedQueryWithSubstitution.ExpansionMethod> sources*/, HashMap<IVariable, ITerm> substitutions, HashMap<IVariable, Enums.BindingSource> subtitutionsSources) {
+    public Explanation(List<EvidenceNode> evidenceNodes) {
         this.evidenceNodes = evidenceNodes;
-        /*this.sources = sources;*/
-//        this.substitutions=substitutions;
-//        this.substitutionsSources=subtitutionsSources;
     }
 
-//    public void add(ILiteral selectedLiteral, ExtendedQueryWithSubstitution.ExpansionMethod source) {
-//        literals.add(0,selectedLiteral);
-//        sources.add(0,source);
-//    }
 
     public void add(EvidenceNode evidenceNode){
         evidenceNodes.add(evidenceNode);
@@ -46,22 +37,10 @@ public class Explanation {
     public String toString() {
         StringBuilder sb=new StringBuilder("Explanation{[\n ");
         sb.append(Joiner.on("\n,").join(evidenceNodes));
-//        sb.append("]\n,sources:");
-//        List<String> subSourcesRep=substitutions.keySet().stream().map(k-> '('+k.toString()+": "+substitutions.get(k).toString()+", "+((substitutionsSources.get(k)==null)? "ORG/CONST":substitutionsSources.get(k).toString())+')').collect(Collectors.toList());
-//        sb.append(subSourcesRep.toString());
-        sb.append("\n]}");
+        sb.append("\n]" +
+                "\n"+cost.toString()+"}");
         return sb.toString();
     }
-
-
-
-//    public void setSubstitutions(Map<IVariable,ITerm> substitutions) {
-//        this.substitutions = substitutions;
-//    }
-
-//    public void setSubstitutionsSources(Map<IVariable,Enums.BindingSource> substitutionsSources) {
-//        this.substitutionsSources = substitutionsSources;
-//    }
 
     @Override
     public boolean equals(Object o) {
@@ -122,5 +101,18 @@ public class Explanation {
     public  boolean hasTextEvidences() {
 
         return getTextEvidencesCount()>0;
+    }
+
+    public void setCost(CostAccumulator cost) {
+        this.cost = cost;
+    }
+
+    public CostAccumulator getCost(){
+        return cost;
+    }
+
+    @Override
+    public int compareTo(Explanation that) {
+        return cost.compareTo(that.cost);
     }
 }
