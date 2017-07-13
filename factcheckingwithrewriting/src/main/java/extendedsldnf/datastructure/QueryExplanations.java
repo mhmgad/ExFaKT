@@ -17,7 +17,7 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     /**
      * successful rewriting paths
      */
-    Set<Explanation> explanations;
+    private SortedSet<Explanation> explanations;
     private IQuery query;
 
 
@@ -26,7 +26,7 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
 //    }
 
     public QueryExplanations(IQuery query, List<Explanation> explanations) {
-        this.explanations = new LinkedHashSet<>(explanations) ;
+        this.explanations = new TreeSet<>(explanations) ;
         this.query=query;
     }
 
@@ -47,8 +47,9 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     @Override
     public int size() {
         //TODO Remove this
-        System.out.println("Size Of relation is not supported is not supported!");
-        return 0;
+        //System.out.println("Size Of relation is not supported is not supported!");
+        return explanations.size();
+
     }
 
     @Override
@@ -69,7 +70,7 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     @Override
     public String toString() {
         return "Explanations{[\n" +
-                Joiner.on("\n\n,").join(explanations.stream().sorted().collect(Collectors.toList())) +
+                Joiner.on("\n\n,").join(explanations) +
                 "\n]}";
     }
 

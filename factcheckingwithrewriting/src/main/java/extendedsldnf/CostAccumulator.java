@@ -4,6 +4,8 @@ import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.custom_hash.TObjectIntCustomHashMap;
 import utils.Enums;
 
+import javax.swing.*;
+
 /**
  * Created by gadelrab on 7/10/17.
  */
@@ -49,11 +51,12 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
 
 
     public synchronized void addCost(Enums.ActionType type){
+
         addCost(type,costMap.get(type));
     }
 
     public synchronized void addCost(Enums.ActionType type, int cost){
-        individualCounts.adjustValue(type,cost);
+        individualCounts.adjustValue(type,1);
         totalCost+=cost;
     }
 
@@ -74,5 +77,14 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
     @Override
     public int compareTo(CostAccumulator that) {
         return Integer.compare(this.totalCost,that.totalCost);
+    }
+
+    public int getTotalCost() {
+        return totalCost;
+    }
+
+    public int getCount(Enums.ActionType type){
+        return individualCounts.get(type);
+
     }
 }

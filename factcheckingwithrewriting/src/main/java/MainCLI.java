@@ -38,6 +38,9 @@ public class MainCLI {
     private Option factsFilesOp;
     private Option spottingConfFileOp;
 
+    private BufferedWriter outputCostFile;
+    private BufferedWriter outputCostSummaryFile;
+
 
     public MainCLI() {
         options= new Options();
@@ -84,6 +87,7 @@ public class MainCLI {
 
 
 
+
     }
 
     public void run(CommandLine cmd) throws Exception{
@@ -100,6 +104,9 @@ public class MainCLI {
             outputFile=FileUtils.getBufferedUTF8Writer(outputFilePath);
             outputStatsFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats");
             outputStatsSummaryFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats.summary");
+//            outputCostFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".cost.details");
+
+            outputCostSummaryFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".cost.summary");
         }
 
         if(cmd.hasOption(rulesFilesOp.getOpt())) {
@@ -163,6 +170,12 @@ public class MainCLI {
         if(instance.outputFile!=null) {
             evals.dump(instance.outputStatsFile);
             evals.dumpSummary(instance.outputStatsSummaryFile);
+
+        }
+        
+        if(instance.outputCostFile!=null){
+            evals.dumpCost(instance.outputCostFile);
+            evals.dumpCostSummary(instance.outputCostSummaryFile);
 
         }
 

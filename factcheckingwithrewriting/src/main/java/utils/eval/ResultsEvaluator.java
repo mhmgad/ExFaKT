@@ -1,14 +1,14 @@
 package utils.eval;
 
 import com.google.common.base.Joiner;
+import extendedsldnf.datastructure.Explanation;
 import extendedsldnf.datastructure.IQueryExplanations;
 import mpi.tools.javatools.util.FileUtils;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,8 +33,13 @@ public class ResultsEvaluator {
     private int newlyCoveredCount;
 
 
-    public ResultsEvaluator(List<IQueryExplanations> explanations) {
-        evaluate(explanations);
+    List<IQueryExplanations> queryExplanations;
+
+    public ResultsEvaluator(List<IQueryExplanations> queryExplanations) {
+
+        this.queryExplanations=queryExplanations;
+
+        evaluate(queryExplanations);
     }
 
 
@@ -156,6 +161,49 @@ public class ResultsEvaluator {
             bw.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    public void dumpCost(BufferedWriter outputCostFile) {
+        StringBuilder sb=new StringBuilder();
+
+        for(IQueryExplanations queryExplanationsObject:queryExplanations){
+            Collection<Explanation> explanations = queryExplanationsObject.getExplanations();
+            sb.append(queryExplanationsObject.getQuery().toString()+((explanations.size()>0)? '\t':""));
+            sb.append(Joiner.on('\t').join(explanations.stream().map(exp-> Integer.toString(exp.getCost().getTotalCost())).collect(Collectors.toList())));
+            sb.append('\n');
+        }
+        try {
+            outputCostFile.write(sb.toString());
+            outputCostFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void dumpCostSummary(BufferedWriter outputCostSummaryFile) {
+        int maxSize=queryExplanations.stream().mapToInt(IQueryExplanations::size).max().getAsInt();
+        List<LinkedList<Explanation>> explanationsAsList = queryExplanations.stream().map(qexp -> new LinkedList(qexp.getExplanations())).collect(Collectors.toList());
+
+        StringBuilder sb=new StringBuilder();
+        sb.append("Count\tAvg.\tMax\tMin\tSum");
+
+        for (int i = 1; i < maxSize+1; i++) {
+            IntSummaryStatistics levelCost = explanationsAsList.stream().filter(expL -> expL.size() > 0).map(expL -> expL.removeFirst()).mapToInt(exp -> exp.getCost().getTotalCost()).summaryStatistics();
+            sb.append(levelCost.getCount()+"\t"+levelCost.getAverage()+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum()+"\n");
+
+        }
+
+        try {
+            outputCostSummaryFile.write(sb.toString());
+            outputCostSummaryFile.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

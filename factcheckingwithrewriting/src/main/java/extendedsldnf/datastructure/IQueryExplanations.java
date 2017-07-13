@@ -23,5 +23,5 @@ public interface IQueryExplanations {
     public boolean isDirectExplanation();
 
 
-
+    public int size();
 }
