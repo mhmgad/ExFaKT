@@ -28,6 +28,7 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         individualCounts=new TObjectIntCustomHashMap<>();
 
         for (Enums.ActionType t: Enums.ActionType.values()) {
+            if(t!=null)
                 individualCounts.put(t,0);
         }
 
