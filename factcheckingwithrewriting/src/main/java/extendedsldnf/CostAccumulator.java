@@ -4,9 +4,6 @@ import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.custom_hash.TObjectIntCustomHashMap;
 import utils.Enums;
 
-import javax.swing.*;
-import java.util.Collections;
-
 /**
  * Created by gadelrab on 7/10/17.
  */
@@ -30,18 +27,18 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         for (Enums.ActionType t: Enums.ActionType.values()) {
             System.out.println(t);
             if(t!=null)
-                individualCounts.put(t.toString(),0);
+                individualCounts.put(t.name(),0);
         }
 
 
         costMap=new TObjectIntCustomHashMap<>();
-        costMap.put(Enums.ActionType.RULE_EXPAND.toString(),1);
-        costMap.put(Enums.ActionType.KG_VALID.toString(),1);
-        costMap.put(Enums.ActionType.KG_BIND.toString(),1);
-        costMap.put(Enums.ActionType.GREEDY_BIND.toString(),2);
-        costMap.put(Enums.ActionType.TEXT_VALID.toString(),2);
-        costMap.put(Enums.ActionType.TEXT_BIND.toString(),2);
-        costMap.put(Enums.ActionType.UNCLASSIFEIED.toString(),0);
+        costMap.put(Enums.ActionType.RULE_EXPAND.name(),1);
+        costMap.put(Enums.ActionType.KG_VALID.name(),1);
+        costMap.put(Enums.ActionType.KG_BIND.name(),1);
+        costMap.put(Enums.ActionType.GREEDY_BIND.name(),2);
+        costMap.put(Enums.ActionType.TEXT_VALID.name(),2);
+        costMap.put(Enums.ActionType.TEXT_BIND.name(),2);
+        costMap.put(Enums.ActionType.UNCLASSIFEIED.name(),0);
 
         System.out.println("Action Costs: "+costMap);
 
@@ -61,7 +58,7 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
     }
 
     public synchronized void addCost(Enums.ActionType type, int cost){
-        individualCounts.adjustValue(type.toString(),1);
+        individualCounts.adjustValue(type.name(),1);
         totalCost+=cost;
     }
 
@@ -89,7 +86,7 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
     }
 
     public int getCount(Enums.ActionType type){
-        return individualCounts.get(type);
+        return individualCounts.get(type.name());
 
     }
 }
