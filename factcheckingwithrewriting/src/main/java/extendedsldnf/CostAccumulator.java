@@ -36,25 +36,13 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         individualCounts=new TObjectIntHashMap<>();
 
         for (Enums.ActionType t: Enums.ActionType.values()) {
-
-            if(t!=null){
-
-
-                individualCounts.adjustOrPutValue(t, 0,0);
-            }
-
-
-
+                individualCounts.put(t, 0);
         }
-
-//
-
-//        System.out.println("Action Costs: "+costMap);
-
     }
 
     public CostAccumulator(int totalCost, TObjectIntMap<Enums.ActionType> individualCounts){
         this();
+        this.totalCost=totalCost;
         this.individualCounts.putAll(individualCounts);
 
     }
