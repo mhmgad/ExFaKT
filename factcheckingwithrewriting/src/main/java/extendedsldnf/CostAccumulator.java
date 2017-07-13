@@ -5,6 +5,7 @@ import gnu.trove.map.custom_hash.TObjectIntCustomHashMap;
 import utils.Enums;
 
 import javax.swing.*;
+import java.util.Collections;
 
 /**
  * Created by gadelrab on 7/10/17.
@@ -17,16 +18,17 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
 
     TObjectIntMap<Enums.ActionType> individualCounts;
 
-    static TObjectIntMap<Enums.ActionType> costMap=new TObjectIntCustomHashMap<>();
+    static TObjectIntMap<Enums.ActionType> costMap=new TObjectIntCustomHashMap<>();;
     static {
-        costMap=new TObjectIntCustomHashMap<>();
-        costMap.put(Enums.ActionType.RULE_EXPAND,1);
-        costMap.put(Enums.ActionType.KG_VALID,1);
-        costMap.put(Enums.ActionType.KG_BIND,1);
-        costMap.put(Enums.ActionType.GREEDY_BIND,2);
-        costMap.put(Enums.ActionType.TEXT_VALID,2);
-        costMap.put(Enums.ActionType.TEXT_BIND,2);
-        costMap.put(Enums.ActionType.UNCLASSIFEIED,0);
+        TObjectIntMap<Enums.ActionType>  aCostMap=new TObjectIntCustomHashMap<>();
+        aCostMap.put(Enums.ActionType.RULE_EXPAND,1);
+        aCostMap.put(Enums.ActionType.KG_VALID,1);
+        aCostMap.put(Enums.ActionType.KG_BIND,1);
+        aCostMap.put(Enums.ActionType.GREEDY_BIND,2);
+        aCostMap.put(Enums.ActionType.TEXT_VALID,2);
+        aCostMap.put(Enums.ActionType.TEXT_BIND,2);
+        aCostMap.put(Enums.ActionType.UNCLASSIFEIED,0);
+        costMap.putAll(aCostMap);
     }
 
 
@@ -38,12 +40,13 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         for (Enums.ActionType t: Enums.ActionType.values()) {
                 individualCounts.put(t,0);
         }
+
+        System.out.println("Action Costs: "+costMap);
+
     }
 
     public CostAccumulator(int totalCost, TObjectIntMap<Enums.ActionType> individualCounts){
-        this.totalCost=totalCost;
-
-        this.individualCounts=new TObjectIntCustomHashMap<>();
+        this();
         this.individualCounts.putAll(individualCounts);
 
     }
@@ -52,7 +55,7 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
 
     public synchronized void addCost(Enums.ActionType type){
 
-        addCost(type,costMap.get(type));
+        addCost(type,CostAccumulator.costMap.get(type));
     }
 
     public synchronized void addCost(Enums.ActionType type, int cost){
