@@ -289,8 +289,10 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
             subQueryList.addAll(subQueries);
 
             // Rules are always fired to grant reaching the whole search space
-            subQueries = processQueryAgainstRules(query, selectedLiteral);
-            subQueryList.addAll( subQueries );
+            if(mRules.size()>0){
+                subQueries = processQueryAgainstRules(query, selectedLiteral);
+                subQueryList.addAll( subQueries );
+            }
         }
         return subQueryList;
     }
