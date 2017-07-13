@@ -190,7 +190,7 @@ public class ResultsEvaluator {
 
     public void dumpCostSummary(BufferedWriter outputCostSummaryFile) {
         int maxSize=queryExplanations.stream().mapToInt(IQueryExplanations::size).max().getAsInt();
-        List<LinkedList<Explanation>> explanationsAsList = queryExplanations.stream().map(qexp -> new LinkedList(qexp.getExplanations())).collect(Collectors.toList());
+        List<LinkedList<Explanation>> explanationsAsList = queryExplanations.stream().map(qexp -> new LinkedList<Explanation>(qexp.getExplanations())).collect(Collectors.toList());
 
         StringBuilder sb=new StringBuilder();
         sb.append("Count\tAvg.\tMax\tMin\tSum");
