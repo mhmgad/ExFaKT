@@ -121,7 +121,6 @@ public class ResultsEvaluator {
                 ", explanationsWithTextPerQuery=" + Arrays.toString(explanationsWithTextPerQuery) +
                 ", explanationsWithTextOnlyPerQuery=" + Arrays.toString(explanationsWithTextOnlyPerQuery) +
                 ", explanationsWithKGFactsOnlyPerQuery=" + Arrays.toString(explanationsWithKGFactsOnlyPerQuery) +
-
                 '}';
     }
 
@@ -156,7 +155,6 @@ public class ResultsEvaluator {
 
     public void dumpSummary(BufferedWriter bw){
         try {
-
             bw.write(toString());
             bw.close();
         } catch (FileNotFoundException e) {
@@ -198,7 +196,6 @@ public class ResultsEvaluator {
         for (int i = 1; i < maxSize+1; i++) {
             IntSummaryStatistics levelCost = explanationsAsList.stream().filter(expL -> expL.size() > 0).map(expL -> expL.removeFirst()).mapToInt(exp -> exp.getCost().getTotalCost()).summaryStatistics();
             sb.append(levelCost.getCount()+"\t"+levelCost.getAverage()+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum()+"\n");
-
         }
 
         try {

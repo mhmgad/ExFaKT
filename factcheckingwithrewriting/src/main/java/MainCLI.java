@@ -80,14 +80,6 @@ public class MainCLI {
         //input file
         spottingConfFileOp = Option.builder("spotConf").longOpt("spottingConfigurationFile").hasArg().desc("Spotting configuration File").argName("file").build();
         options.addOption(spottingConfFileOp);
-
-
-
-
-
-
-
-
     }
 
     public void run(CommandLine cmd) throws Exception{
@@ -120,12 +112,10 @@ public class MainCLI {
 
         if(cmd.hasOption(factsFilesOp.getOpt())) {
             configuration.setFactsFiles(asList(cmd.getOptionValue(factsFilesOp.getOpt(),null)));
-
         }
 
         if(cmd.hasOption(spottingConfFileOp.getOpt())) {
             configuration.setSpottingConfFile(cmd.getOptionValue(spottingConfFileOp.getOpt(),null));
-
         }
 
     }
@@ -177,9 +167,6 @@ public class MainCLI {
             evals.dumpCostSummary(instance.outputCostSummaryFile);
 
         }
-
-
-
 
     }
 

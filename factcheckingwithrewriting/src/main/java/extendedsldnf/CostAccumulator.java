@@ -44,13 +44,11 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         this();
         this.totalCost=totalCost;
         this.individualCounts.putAll(individualCounts);
-
     }
 
 
 
     public synchronized void addCost(Enums.ActionType type){
-
         addCost(type,CostAccumulator.costMap.get(type));
     }
 
@@ -89,6 +87,5 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
 
     public static void main(String[] args){
         CostAccumulator obj = new CostAccumulator();
-
     }
 }
