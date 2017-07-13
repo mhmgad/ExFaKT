@@ -16,9 +16,9 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
     int totalCost;
 
 
-    TObjectIntMap<Enums.ActionType> individualCounts;
+    TObjectIntMap<String> individualCounts;
 
-    static TObjectIntMap<Enums.ActionType> costMap;
+    static TObjectIntMap<String> costMap;
 
 
 
@@ -28,25 +28,26 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         individualCounts=new TObjectIntCustomHashMap<>();
 
         for (Enums.ActionType t: Enums.ActionType.values()) {
+            System.out.println(t);
             if(t!=null)
-                individualCounts.put(t,0);
+                individualCounts.put(t.toString(),0);
         }
 
 
         costMap=new TObjectIntCustomHashMap<>();
-        costMap.put(Enums.ActionType.RULE_EXPAND,1);
-        costMap.put(Enums.ActionType.KG_VALID,1);
-        costMap.put(Enums.ActionType.KG_BIND,1);
-        costMap.put(Enums.ActionType.GREEDY_BIND,2);
-        costMap.put(Enums.ActionType.TEXT_VALID,2);
-        costMap.put(Enums.ActionType.TEXT_BIND,2);
-        costMap.put(Enums.ActionType.UNCLASSIFEIED,0);
+        costMap.put(Enums.ActionType.RULE_EXPAND.toString(),1);
+        costMap.put(Enums.ActionType.KG_VALID.toString(),1);
+        costMap.put(Enums.ActionType.KG_BIND.toString(),1);
+        costMap.put(Enums.ActionType.GREEDY_BIND.toString(),2);
+        costMap.put(Enums.ActionType.TEXT_VALID.toString(),2);
+        costMap.put(Enums.ActionType.TEXT_BIND.toString(),2);
+        costMap.put(Enums.ActionType.UNCLASSIFEIED.toString(),0);
 
         System.out.println("Action Costs: "+costMap);
 
     }
 
-    public CostAccumulator(int totalCost, TObjectIntMap<Enums.ActionType> individualCounts){
+    public CostAccumulator(int totalCost, TObjectIntMap<String> individualCounts){
         this();
         this.individualCounts.putAll(individualCounts);
 
@@ -60,7 +61,7 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
     }
 
     public synchronized void addCost(Enums.ActionType type, int cost){
-        individualCounts.adjustValue(type,1);
+        individualCounts.adjustValue(type.toString(),1);
         totalCost+=cost;
     }
 
