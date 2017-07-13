@@ -191,11 +191,11 @@ public class ResultsEvaluator {
         List<LinkedList<Explanation>> explanationsAsList = queryExplanations.stream().map(qexp -> new LinkedList<Explanation>(qexp.getExplanations())).collect(Collectors.toList());
 
         StringBuilder sb=new StringBuilder();
-        sb.append("Count\tAvg.\tMax\tMin\tSum");
+        sb.append("Explan\tCount\tAvg.\tMax\tMin\tSum\n");
 
         for (int i = 1; i < maxSize+1; i++) {
             IntSummaryStatistics levelCost = explanationsAsList.stream().filter(expL -> expL.size() > 0).map(expL -> expL.removeFirst()).mapToInt(exp -> exp.getCost().getTotalCost()).summaryStatistics();
-            sb.append(levelCost.getCount()+"\t"+levelCost.getAverage()+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum()+"\n");
+            sb.append(i+"\t"+levelCost.getCount()+"\t"+levelCost.getAverage()+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum()+"\n");
         }
 
         try {
