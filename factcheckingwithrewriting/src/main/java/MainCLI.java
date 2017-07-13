@@ -104,8 +104,7 @@ public class MainCLI {
             outputFile=FileUtils.getBufferedUTF8Writer(outputFilePath);
             outputStatsFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats");
             outputStatsSummaryFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats.summary");
-//            outputCostFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".cost.details");
-
+            outputCostFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".cost");
             outputCostSummaryFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".cost.summary");
         }
 
