@@ -2,12 +2,10 @@ import config.Configuration;
 import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
 import de.mpii.factspotting.IFactSpotter;
+import extendedsldnf.EvaluatorFactory;
 import extendedsldnf.ExtendedSLDNFEvaluator;
-import extendedsldnf.datastructure.IQueryExplanations;
 import extendedsldnf.datastructure.IExtendedFacts;
-import extendedsldnf.facts.FactsLoaderFactory;
-import extendedsldnf.facts.IFactsLoader;
-import mpi.tools.javatools.util.FileUtils;
+import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.ConfigurationThreadLocalStorage;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.IQuery;
@@ -20,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import text.FactSpottingConnector;
 import utils.DataUtils;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,7 +103,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 
 
 
-// Init evalution Strategy .. usefull if we are going to optimize the program
+// Init evaluation Strategy .. useful if we are going to optimize the program
 //        if (config.programOptmimisers.size() > 0)
 //            evaluationStrategy = new OptimisedProgramStrategyAdaptor(facts,
 //                    rules, config);
@@ -116,7 +112,8 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 //                    .createEvaluator(facts, rules, config);
 
 
-        evaluator = new ExtendedSLDNFEvaluator( facts, rules,new FactSpottingConnector(config),config.getPartialBindingType(),config.isSuspectsFromKG() );
+        EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
+        evaluator = evaluatorFactory.getEvaluator(facts, rules,new FactSpottingConnector(config),config.getPartialBindingType(),config.isSuspectsFromKG() );
 
 
 

@@ -3,14 +3,11 @@ import extendedsldnf.datastructure.IQueryExplanations;
 import mpi.tools.javatools.util.FileUtils;
 import org.apache.commons.cli.*;
 import org.deri.iris.api.basics.IQuery;
-import org.deri.iris.compiler.Parser;
-import org.deri.iris.compiler.ParserException;
 import utils.DataUtils;
+import utils.Enums;
 import utils.eval.ResultsEvaluator;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +37,7 @@ public class MainCLI {
 
     private BufferedWriter outputCostFile;
     private BufferedWriter outputCostSummaryFile;
+    private Option evalMethodOp;
 
 
     public MainCLI() {
@@ -80,6 +78,11 @@ public class MainCLI {
         //input file
         spottingConfFileOp = Option.builder("spotConf").longOpt("spottingConfigurationFile").hasArg().desc("Spotting configuration File").argName("file").build();
         options.addOption(spottingConfFileOp);
+
+
+        //Evaluator Implementation
+        evalMethodOp = Option.builder("evalImpl").longOpt("EvaluationMethod").hasArg().desc("Evaluation Method").argName("method").build();
+        options.addOption(evalMethodOp);
     }
 
     public void run(CommandLine cmd) throws Exception{
@@ -118,6 +121,9 @@ public class MainCLI {
             configuration.setSpottingConfFile(cmd.getOptionValue(spottingConfFileOp.getOpt(),null));
         }
 
+        if(cmd.hasOption(evalMethodOp.getOpt())) {
+            configuration.setEvaluationMethod(Enums.EvalMethod.valueOf(cmd.getOptionValue(evalMethodOp.getOpt(), Enums.EvalMethod.SLD.name())));
+        }
     }
 
     private CommandLine parse(String[] args) throws ParseException {

@@ -13,3 +13,5 @@ queriesFile=/home/gadelrab/ideaProjects/RuleBasedFactChecking/iris-example/datal
 #partialBindingType=true
 #textBinding=true
 
+evalMethod=SLD
+

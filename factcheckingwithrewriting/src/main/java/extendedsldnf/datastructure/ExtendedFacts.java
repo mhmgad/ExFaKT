@@ -100,7 +100,7 @@ public class ExtendedFacts extends Facts implements IExtendedFacts{
 //                    logger.debug(predicateFacts.toString());
                     this.get(pred).addAll(predicateFacts);
 
-                    // add entities to map
+                    // addAll entities to map
                     for (int i=0;i<predicateFacts.size();i++){
                         ITuple t=predicateFacts.get(i);
                         entities.addAll(t);

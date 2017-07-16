@@ -1,9 +1,9 @@
 package utils.eval;
 
 import com.google.common.base.Joiner;
+
 import extendedsldnf.datastructure.Explanation;
 import extendedsldnf.datastructure.IQueryExplanations;
-import mpi.tools.javatools.util.FileUtils;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

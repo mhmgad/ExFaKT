@@ -1,11 +1,10 @@
-package extendedsldnf;
+package extendedsldnf.datastructure;
 
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
 import text.ITextResult;
-import text.IWeightedObject;
 import utils.Enums;
 
 import java.util.Map;
@@ -14,12 +13,12 @@ import java.util.Objects;
 /**
  * Created by gadelrab on 4/26/17.
  */
-public class EvidenceNode implements IWeightedObject {
+public class EvidenceNode/* implements IWeightedObject */{
     //private Enums.BindingSource bindingSource;
     private IRule rule;
     private Map<IVariable, ITerm> variableBindingMap;
 
-    @Override
+ /*   @Override
     public double getWeight() {
         return 0;
     }
@@ -27,7 +26,7 @@ public class EvidenceNode implements IWeightedObject {
     @Override
     public double getCost() {
         return 0;
-    }
+    }*/
 
 
     private ITextResult textResults;
@@ -52,11 +51,11 @@ public class EvidenceNode implements IWeightedObject {
     ;
 
     ILiteral queryLiteral;
-    Enums.ActionType type = Enums.ActionType.ORG;
+    Enums.ActionType sourceActionType = Enums.ActionType.ORG;
 
-    public EvidenceNode(ILiteral queryLiteral, Enums.ActionType type) {
+    public EvidenceNode(ILiteral queryLiteral, Enums.ActionType sourceActionType) {
         this.queryLiteral = queryLiteral;
-        this.type = type;
+        this.sourceActionType = sourceActionType;
     }
 
     public ILiteral getQueryLiteral() {
@@ -67,12 +66,12 @@ public class EvidenceNode implements IWeightedObject {
         this.queryLiteral = queryLiteral;
     }
 
-    public Enums.ActionType getType() {
-        return type;
+    public Enums.ActionType getSourceActionType() {
+        return sourceActionType;
     }
 
-    public void setType(Enums.ActionType type) {
-        this.type = type;
+    public void setSourceActionType(Enums.ActionType sourceActionType) {
+        this.sourceActionType = sourceActionType;
     }
 
     public void setTextResults(ITextResult textResults){
@@ -84,14 +83,14 @@ public class EvidenceNode implements IWeightedObject {
     public String toString() {
         return "Evidence{" +
                 "literal=" + queryLiteral +
-                ", type=" + type + /*((type==Type.VAR_BIND)? "("+bindingSource+")":"")+*/
-                ((type == Enums.ActionType.TEXT_VALID)?
+                ", sourceActionType=" + sourceActionType + /*((sourceActionType==Type.VAR_BIND)? "("+bindingSource+")":"")+*/
+                ((sourceActionType == Enums.ActionType.TEXT_VALID)?
                         ", text=" + textResults.readable():"" )+
-                ((type == Enums.ActionType.RULE_EXPAND)?
+                ((sourceActionType == Enums.ActionType.RULE_EXPAND)?
                         ", rule=" + rule:"" )+
                 ((isVariableBinding())?
                         ", variableMap=" + variableBindingMap:"" )+
-                "}"+((type == Enums.ActionType.TEXT_VALID ||type == Enums.ActionType.KG_VALID)? "**":"" );
+                "}"+((sourceActionType == Enums.ActionType.TEXT_VALID || sourceActionType == Enums.ActionType.KG_VALID)? "**":"" );
     }
 
     @Override
@@ -101,36 +100,37 @@ public class EvidenceNode implements IWeightedObject {
         EvidenceNode that = (EvidenceNode) o;
         return /*getBindingSource() == that.getBindingSource() &&*/
                 Objects.equals(getQueryLiteral(), that.getQueryLiteral()) &&
-                getType() == that.getType();
+                getSourceActionType() == that.getSourceActionType();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(/*getBindingSource(),*/ getQueryLiteral(), getType());
+        return Objects.hash(/*getBindingSource(),*/ getQueryLiteral(), getSourceActionType());
     }
 
     @Override
     public EvidenceNode clone(){
-        EvidenceNode node=new EvidenceNode(this.queryLiteral,this.type);
+        EvidenceNode node=new EvidenceNode(this.queryLiteral,this.sourceActionType);
         /*node.bindingSource=bindingSource;*/
         node.textResults=textResults;
         node.rule=rule;
         return node;
     }
 
-    public boolean isTextMention(){ return getType().equals(Enums.ActionType.TEXT_VALID);}
-    public boolean isKGFact(){ return getType().equals(Enums.ActionType.KG_VALID);}
+    public boolean isTextMention(){ return getSourceActionType().equals(Enums.ActionType.TEXT_VALID);}
+    public boolean isKGFact(){ return getSourceActionType().equals(Enums.ActionType.KG_VALID);}
 
     public  boolean isVerification() {
         return isTextMention()||isKGFact();
     }
 
     public  boolean isVariableBinding() {
-        return (type == Enums.ActionType.TEXT_BIND||type == Enums.ActionType.KG_BIND||type == Enums.ActionType.GREEDY_BIND);
+        return (sourceActionType == Enums.ActionType.TEXT_BIND|| sourceActionType == Enums.ActionType.KG_BIND|| sourceActionType == Enums.ActionType.GREEDY_BIND);
     }
 
     public  boolean isRuleExpansion() {
-        return getType().equals(Enums.ActionType.RULE_EXPAND);
+        return getSourceActionType().equals(Enums.ActionType.RULE_EXPAND);
     }
+
 
 }

@@ -2,6 +2,7 @@ package config;
 
 import de.mpii.factspotting.FactSpotterFactory;
 import extendedsldnf.ExtendedSLDNFEvaluationStrategyFactory;
+import utils.Enums;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,9 +32,7 @@ public class Configuration extends org.deri.iris.Configuration {
     private static final String PARTIAL_BINDING_TYPE = "partialBindingType";
     private static final String SUSPECTS_FROM_KG = "suspectsFromKG";
     public static final String FACT_SPOTTING_CONF = "factSpotting.config";
-
-
-
+    private static final String EVALUATION_METHOD = "evalMethod";
 
 
     private static Configuration instance;
@@ -48,6 +47,7 @@ public class Configuration extends org.deri.iris.Configuration {
      */
     private Properties extraProperties;
     private String spottingConfFile;
+    private Enums.EvalMethod evaluationMethod= Enums.EvalMethod.SLD;
 
     public void setExtraProp(Properties extraProp) {
         this.extraProperties = extraProp;
@@ -67,6 +67,14 @@ public class Configuration extends org.deri.iris.Configuration {
 
     public String setSpottingConfFile() {
         return spottingConfFile;
+    }
+
+    public void setEvaluationMethod(Enums.EvalMethod evaluationMethod) {
+        this.evaluationMethod = evaluationMethod;
+    }
+
+    public Enums.EvalMethod getEvaluationMethod() {
+        return evaluationMethod;
     }
 
 
@@ -149,7 +157,9 @@ public class Configuration extends org.deri.iris.Configuration {
             conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE,"NONE")));
             conf.setSuspectsFromKG(Boolean.parseBoolean(prop.getProperty(SUSPECTS_FROM_KG,"false")));
             conf.setSpottingConfFile(prop.getProperty(FACT_SPOTTING_CONF,null));
+            conf.setEvaluationMethod(Enums.EvalMethod.valueOf(prop.getProperty(EVALUATION_METHOD,Enums.EvalMethod.SLD.name())));
             conf.setExtraProp(prop);
+
 
 //                System.out.println(conf);
 

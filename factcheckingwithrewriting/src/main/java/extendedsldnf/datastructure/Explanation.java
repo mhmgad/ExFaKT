@@ -2,12 +2,10 @@ package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
 import extendedsldnf.CostAccumulator;
-import extendedsldnf.EvidenceNode;
-import org.deri.iris.api.terms.ITerm;
-import org.deri.iris.api.terms.IVariable;
-import utils.Enums;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by gadelrab on 3/8/17.
@@ -48,7 +46,7 @@ public class Explanation implements Comparable<Explanation> {
         if (!(o instanceof Explanation)) return false;
         Explanation that = (Explanation) o;
         return Objects.equals(evidenceNodes, that.evidenceNodes) ;/*&&
-                Objects.equals(substitutions, that.substitutions);*/
+                    Objects.equals(substitutions, that.substitutions);*/
     }
 
     @Override
