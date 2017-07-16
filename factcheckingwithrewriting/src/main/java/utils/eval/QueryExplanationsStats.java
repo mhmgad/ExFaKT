@@ -2,6 +2,7 @@ package utils.eval;
 
 import com.google.common.base.Joiner;
 import extendedsldnf.ExtendedSLDNFEvaluator;
+import extendedsldnf.datastructure.Explanation;
 import extendedsldnf.datastructure.IQueryExplanations;
 
 import java.util.ArrayList;
@@ -43,19 +44,19 @@ public  class QueryExplanationsStats {
     }
 
     public int getExplanationsWithTextCount(){
-        return (int) explanation.getExplanations().stream().filter(ExtendedSLDNFEvaluator.Explanation::hasTextEvidences).count();
+        return (int) explanation.getExplanations().stream().filter(Explanation::hasTextEvidences).count();
     }
 
     public int getExplanationsWithTextOnlyCount(){
-        return (int) explanation.getExplanations().stream().filter(ExtendedSLDNFEvaluator.Explanation::hasEvidencesFromTextOnly).count();
+        return (int) explanation.getExplanations().stream().filter(Explanation::hasEvidencesFromTextOnly).count();
     }
 
     public int getExplanationsWithKGFactsOnlyCount(){
-        return (int) explanation.getExplanations().stream().filter(ExtendedSLDNFEvaluator.Explanation::hasEvidencesFromKGOnly).count();
+        return (int) explanation.getExplanations().stream().filter(Explanation::hasEvidencesFromKGOnly).count();
     }
 
     public boolean areAllPureKG(){
-        return (!explanation.isEmpty())&&explanation.getExplanations().stream().allMatch(ExtendedSLDNFEvaluator.Explanation::hasEvidencesFromKGOnly);
+        return (!explanation.isEmpty())&&explanation.getExplanations().stream().allMatch(Explanation::hasEvidencesFromKGOnly);
     }
 
     public boolean isNewlyCovered(){
@@ -64,7 +65,7 @@ public  class QueryExplanationsStats {
 
 
     public boolean isOnePureFromKG(){
-        return explanation.getExplanations().stream().anyMatch(ExtendedSLDNFEvaluator.Explanation::hasEvidencesFromKGOnly);
+        return explanation.getExplanations().stream().anyMatch(Explanation::hasEvidencesFromKGOnly);
     }
 
     @Override

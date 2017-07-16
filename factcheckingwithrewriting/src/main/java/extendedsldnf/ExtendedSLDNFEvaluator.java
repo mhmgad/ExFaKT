@@ -23,6 +23,7 @@
 package extendedsldnf;
 
 import config.Configuration;
+
 import extendedsldnf.datastructure.*;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.*;
