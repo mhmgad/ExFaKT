@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * Created by gadelrab on 4/26/17.
  */
-public class EvidenceNode/* implements IWeightedObject */{
+public class EvidenceNode{
     //private Enums.BindingSource bindingSource;
     private IRule rule;
     private Map<IVariable, ITerm> variableBindingMap;
@@ -47,8 +47,6 @@ public class EvidenceNode/* implements IWeightedObject */{
         this.variableBindingMap = variableBindingMap;
     }
 
-
-    ;
 
     ILiteral queryLiteral;
     Enums.ActionType sourceActionType = Enums.ActionType.ORG;

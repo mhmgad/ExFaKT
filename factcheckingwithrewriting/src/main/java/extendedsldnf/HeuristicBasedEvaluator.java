@@ -1,7 +1,14 @@
 package extendedsldnf;
 
 import config.Configuration;
-import extendedsldnf.datastructure.*;
+import extendedsldnf.datastructure.IExtendedFacts;
+import extendedsldnf.datastructure.EvidenceNode;
+import extendedsldnf.datastructure.Explanation;
+import extendedsldnf.datastructure.QueryExplanations;
+import extendedsldnf.datastructure.ExtendedQueryWithSubstitution;
+import extendedsldnf.datastructure.IQueriesPool;
+import extendedsldnf.datastructure.DefaultQueriesPool;
+
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IQuery;
@@ -47,6 +54,7 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
         CostAccumulator costAccumulator=new CostAccumulator();
         IQueriesPool pool=new DefaultQueriesPool();
+        pool.add(extendedQueryWithSubstitution);
         List<Explanation> solutions = findSolutionsIteratively(pool,costAccumulator);
 
         QueryExplanations returnedSolution=new QueryExplanations(query,solutions);
@@ -65,9 +73,12 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
         ILiteralSelector literalSelector=new StandardLiteralSelector();
 
-        while (pool.isEmpty()){
+        while (!pool.isEmpty()){
             // Global selection
             ExtendedQueryWithSubstitution chosenQuery=pool.selectQuery();
+
+            logger.debug("Selected Query:"+ chosenQuery.toString()+" "+chosenQuery.getEvidenceNode().toString());
+            logger.debug("Pool Size:"+ pool.size());
 
             IQuery newQuery = chosenQuery.getQuery();
             Map<IVariable, ITerm> newVariableMap = chosenQuery.getSubstitution();
@@ -88,11 +99,15 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
             try {
                 // Getting sub-queries
-                pool.addAll(getSubQueryList(chosenQuery, selectedLiteral, costAccumulator));
+                List<ExtendedQueryWithSubstitution> subqueries = getSubQueryList(chosenQuery, selectedLiteral, costAccumulator);
+                logger.debug("Subqueries: "+ subqueries);
+                logger.debug("Number of Subqueries: "+subqueries.size());
+                pool.addAll(subqueries);
             } catch (EvaluationException e) {
                 e.printStackTrace();
             }
 
+            logger.debug("Pool Size after:"+ pool.size());
 
         }
 
@@ -108,7 +123,9 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
         Explanation solution = new Explanation();
 
        for(ExtendedQueryWithSubstitution currentQuery=query; currentQuery!=null;currentQuery=currentQuery.getParent()){
-            solution.add(query.getEvidenceNode());
+           if(currentQuery.getEvidenceNode().getSourceActionType()!=ORG) {
+               solution.add(currentQuery.getEvidenceNode());
+           }
         }
 
         solution.setCost(costAccumulator.clone());

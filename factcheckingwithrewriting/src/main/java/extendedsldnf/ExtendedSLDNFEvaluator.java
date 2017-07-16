@@ -24,7 +24,14 @@ package extendedsldnf;
 
 import config.Configuration;
 
-import extendedsldnf.datastructure.*;
+
+import extendedsldnf.datastructure.ExtendedQueryWithSubstitution;
+import extendedsldnf.datastructure.Explanation;
+import extendedsldnf.datastructure.EvidenceNode;
+import extendedsldnf.datastructure.IQueryExplanations;
+import extendedsldnf.datastructure.IExtendedFacts;
+import extendedsldnf.datastructure.QueryExplanations;
+
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.*;
 import org.deri.iris.api.builtins.IBuiltinAtom;

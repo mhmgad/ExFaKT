@@ -81,7 +81,7 @@ public class MainCLI {
 
 
         //Evaluator Implementation
-        evalMethodOp = Option.builder("evalImpl").longOpt("EvaluationMethod").hasArg().desc("Evaluation Method").argName("method").build();
+        evalMethodOp = Option.builder("eval").longOpt("EvaluationMethod").hasArg().desc("Evaluation Method").argName("method").build();
         options.addOption(evalMethodOp);
     }
 

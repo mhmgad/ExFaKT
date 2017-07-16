@@ -38,7 +38,7 @@ public class DefaultQueriesPool implements IQueriesPool {
 
 
     @Override
-    public void addAll(ExtendedQueryWithSubstitution query) {
+    public void add(ExtendedQueryWithSubstitution query) {
 
         queries.add(query);
     }
@@ -49,9 +49,14 @@ public class DefaultQueriesPool implements IQueriesPool {
     }
 
     @Override
+    public int size() {
+        return queries.size();
+    }
+
+    @Override
     public void addAll(Collection<ExtendedQueryWithSubstitution> queries) {
 
-        queries.addAll(queries);
+        this.queries.addAll(queries);
 
     }
 }

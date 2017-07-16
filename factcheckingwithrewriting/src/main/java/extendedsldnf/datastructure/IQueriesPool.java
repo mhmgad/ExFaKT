@@ -14,8 +14,10 @@ public interface IQueriesPool {
 
     public void addAll(Collection<ExtendedQueryWithSubstitution> queries);
 
-    public void addAll(ExtendedQueryWithSubstitution query);
+    public void add(ExtendedQueryWithSubstitution query);
 
     public boolean isEmpty();
+
+    public int size();
 
 }
