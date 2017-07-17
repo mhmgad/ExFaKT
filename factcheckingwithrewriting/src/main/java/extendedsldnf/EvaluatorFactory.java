@@ -1,6 +1,7 @@
 package extendedsldnf;
 
 import config.Configuration;
+import extendedsldnf.datastructure.DefaultQueriesPool;
 import extendedsldnf.datastructure.IExtendedFacts;
 import org.deri.iris.api.basics.IRule;
 import text.FactSpottingConnector;
@@ -35,8 +36,9 @@ public class EvaluatorFactory {
         switch (evalMethod){
 
             case SLD_ITR:
+                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, DefaultQueriesPool.ComparisionMethod.DFS );
             case HEURISTIC:
-                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG );
+                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG,DefaultQueriesPool.ComparisionMethod.HEURISTIC );
             case SLD:
             default:
                 return new ExtendedSLDNFEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG );

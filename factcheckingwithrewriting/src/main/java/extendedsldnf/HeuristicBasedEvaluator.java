@@ -5,7 +5,7 @@ import extendedsldnf.datastructure.IExtendedFacts;
 import extendedsldnf.datastructure.EvidenceNode;
 import extendedsldnf.datastructure.Explanation;
 import extendedsldnf.datastructure.QueryExplanations;
-import extendedsldnf.datastructure.ExtendedQueryWithSubstitution;
+import extendedsldnf.datastructure.ExtQuerySubs;
 import extendedsldnf.datastructure.IQueriesPool;
 import extendedsldnf.datastructure.DefaultQueriesPool;
 
@@ -34,26 +34,31 @@ import static utils.Enums.ActionType.ORG;
  */
 public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
+
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    DefaultQueriesPool.ComparisionMethod compareMethod= DefaultQueriesPool.ComparisionMethod.DFS;
 
-    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules) {
+    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules,DefaultQueriesPool.ComparisionMethod compareMethod) {
         super(facts, rules);
+        this.compareMethod=compareMethod;
     }
 
-    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG) {
+    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,DefaultQueriesPool.ComparisionMethod compareMethod) {
         super(facts, rules, textConnector, partialBindingType, suspectsFromKG);
+        this.compareMethod=compareMethod;
     }
 
 
     @Override
     public IRelation evaluate(IQuery query) throws EvaluationException {
 
-        ExtendedQueryWithSubstitution extendedQueryWithSubstitution = new ExtendedQueryWithSubstitution(query, new HashMap<IVariable, ITerm>(),null,0,0);
+        ExtQuerySubs extendedQueryWithSubstitution = new ExtQuerySubs(query, new HashMap<>(),null,0,0);
         extendedQueryWithSubstitution.setEvidenceNode(new EvidenceNode(null,ORG));
 
         CostAccumulator costAccumulator=new CostAccumulator();
-        IQueriesPool pool=new DefaultQueriesPool();
+        IQueriesPool pool=new DefaultQueriesPool(compareMethod);
         pool.add(extendedQueryWithSubstitution);
         List<Explanation> solutions = findSolutionsIteratively(pool,costAccumulator);
 
@@ -75,13 +80,12 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
         while (!pool.isEmpty()){
             // Global selection
-            ExtendedQueryWithSubstitution chosenQuery=pool.selectQuery();
+            ExtQuerySubs chosenQuery=pool.selectQuery();
 
             logger.debug("Selected Query:"+ chosenQuery.toString()+" "+chosenQuery.getEvidenceNode().toString());
             logger.debug("Pool Size:"+ pool.size());
 
             IQuery newQuery = chosenQuery.getQuery();
-            Map<IVariable, ITerm> newVariableMap = chosenQuery.getSubstitution();
 
             // Empty query i.e. Success
             if (newQuery.getLiterals().isEmpty()) {
@@ -99,7 +103,7 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
             try {
                 // Getting sub-queries
-                List<ExtendedQueryWithSubstitution> subqueries = getSubQueryList(chosenQuery, selectedLiteral, costAccumulator);
+                List<ExtQuerySubs> subqueries = getSubQueryList(chosenQuery, selectedLiteral, costAccumulator);
                 logger.debug("Subqueries: "+ subqueries);
                 logger.debug("Number of Subqueries: "+subqueries.size());
                 pool.addAll(subqueries);
@@ -119,10 +123,10 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
     /**
      * Override the original method to loop over all parents to collect the path
      */
-    public Explanation createExplanation(ExtendedQueryWithSubstitution query, CostAccumulator costAccumulator) {
+    public Explanation createExplanation(ExtQuerySubs query, CostAccumulator costAccumulator) {
         Explanation solution = new Explanation();
 
-       for(ExtendedQueryWithSubstitution currentQuery=query; currentQuery!=null;currentQuery=currentQuery.getParent()){
+       for(ExtQuerySubs currentQuery = query; currentQuery!=null; currentQuery=currentQuery.getParent()){
            if(currentQuery.getEvidenceNode().getSourceActionType()!=ORG) {
                solution.add(currentQuery.getEvidenceNode());
            }

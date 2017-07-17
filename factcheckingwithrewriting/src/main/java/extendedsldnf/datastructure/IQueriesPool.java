@@ -1,20 +1,17 @@
 package extendedsldnf.datastructure;
 
-import extendedsldnf.datastructure.ExtendedQueryWithSubstitution;
-
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by gadelrab on 7/14/17.
  */
 public interface IQueriesPool {
 
-    public ExtendedQueryWithSubstitution selectQuery();
+    public ExtQuerySubs selectQuery();
 
-    public void addAll(Collection<ExtendedQueryWithSubstitution> queries);
+    public void addAll(Collection<ExtQuerySubs> queries);
 
-    public void add(ExtendedQueryWithSubstitution query);
+    public void add(ExtQuerySubs query);
 
     public boolean isEmpty();
 

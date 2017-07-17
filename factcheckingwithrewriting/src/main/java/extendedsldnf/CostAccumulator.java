@@ -1,7 +1,6 @@
 package extendedsldnf;
 
 import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.custom_hash.TObjectIntCustomHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import utils.Enums;
 
@@ -11,6 +10,8 @@ import utils.Enums;
 public class CostAccumulator implements Comparable<CostAccumulator>{
 
 
+    private  long startTime;
+    private  long elapsedTime;
     int totalCost;
 
 
@@ -38,12 +39,16 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         for (Enums.ActionType t: Enums.ActionType.values()) {
                 individualCounts.put(t, 0);
         }
+        startTime = System.currentTimeMillis();
+        elapsedTime =-1;
     }
 
-    public CostAccumulator(int totalCost, TObjectIntMap<Enums.ActionType> individualCounts){
+    public CostAccumulator(int totalCost, TObjectIntMap<Enums.ActionType> individualCounts,long startTime,long timeElapsed){
         this();
         this.totalCost=totalCost;
         this.individualCounts.putAll(individualCounts);
+        this.startTime = startTime;
+        this.elapsedTime =timeElapsed;
     }
 
 
@@ -60,7 +65,8 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
 
     @Override
     public synchronized CostAccumulator clone() {
-        return new CostAccumulator(this.totalCost,this.individualCounts);
+        long endTime=System.currentTimeMillis();
+        return new CostAccumulator(this.totalCost,this.individualCounts,startTime,endTime-startTime);
     }
 
     @Override
@@ -68,6 +74,7 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         return "CostAccumulator{" +
                 "totalCost=" + totalCost +
                 ", individualCounts=" + individualCounts +
+                ",time="+ (elapsedTime / 1000.0)+" Sec"+
                 '}';
     }
 
@@ -87,5 +94,12 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
 
     public static void main(String[] args){
         CostAccumulator obj = new CostAccumulator();
+    }
+
+    public long getElapsedTime() {
+        return elapsedTime;
+    }
+    public double getElapsedTimeSec() {
+        return elapsedTime/1000.0;
     }
 }

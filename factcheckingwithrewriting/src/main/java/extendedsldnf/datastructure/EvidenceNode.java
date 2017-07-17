@@ -14,30 +14,12 @@ import java.util.Objects;
  * Created by gadelrab on 4/26/17.
  */
 public class EvidenceNode{
-    //private Enums.BindingSource bindingSource;
     private IRule rule;
     private Map<IVariable, ITerm> variableBindingMap;
-
- /*   @Override
-    public double getWeight() {
-        return 0;
-    }
-
-    @Override
-    public double getCost() {
-        return 0;
-    }*/
-
-
     private ITextResult textResults;
+    ILiteral queryLiteral;
+    Enums.ActionType sourceActionType = Enums.ActionType.ORG;
 
-    //public void setBindingSource(Enums.BindingSource source) {
-    //    this.bindingSource=source;
-    //}
-
-    //public Enums.BindingSource getBindingSource() {
-    //    return bindingSource;
-    //}
 
     public void setRule(IRule rule) {
         this.rule = rule;
@@ -46,10 +28,6 @@ public class EvidenceNode{
     public void setVariableBindingMap(Map<IVariable, ITerm> variableBindingMap) {
         this.variableBindingMap = variableBindingMap;
     }
-
-
-    ILiteral queryLiteral;
-    Enums.ActionType sourceActionType = Enums.ActionType.ORG;
 
     public EvidenceNode(ILiteral queryLiteral, Enums.ActionType sourceActionType) {
         this.queryLiteral = queryLiteral;
@@ -109,7 +87,6 @@ public class EvidenceNode{
     @Override
     public EvidenceNode clone(){
         EvidenceNode node=new EvidenceNode(this.queryLiteral,this.sourceActionType);
-        /*node.bindingSource=bindingSource;*/
         node.textResults=textResults;
         node.rule=rule;
         return node;

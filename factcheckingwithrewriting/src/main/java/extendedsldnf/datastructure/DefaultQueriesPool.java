@@ -1,10 +1,9 @@
 package extendedsldnf.datastructure;
 
 import org.apache.commons.collections4.ComparatorUtils;
+import utils.Enums;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Created by gadelrab on 7/14/17.
@@ -12,10 +11,20 @@ import java.util.PriorityQueue;
 public class DefaultQueriesPool implements IQueriesPool {
 
 
-    PriorityQueue<ExtendedQueryWithSubstitution> queries;
+    public static enum ComparisionMethod {DFS,HEURISTIC}
 
-    public DefaultQueriesPool() {
-        queries=new PriorityQueue<>(getDFSComparator());
+    PriorityQueue<ExtQuerySubs> queries;
+
+
+    public DefaultQueriesPool(ComparisionMethod method) {
+        switch (method) {
+            case DFS:
+                queries = new PriorityQueue<>(getDFSComparator());
+                break;
+            case HEURISTIC:
+                queries = new PriorityQueue<>(getHeuristicComparator());
+        }
+
 
     }
 
@@ -25,20 +34,20 @@ public class DefaultQueriesPool implements IQueriesPool {
      * 2) Priority of source action (smaller first)
      * @return
      */
-    private Comparator<ExtendedQueryWithSubstitution> getDFSComparator() {
-     return ComparatorUtils.chainedComparator(new Comparator[]{Comparator.comparing(ExtendedQueryWithSubstitution::getTreeDepth).reversed(),ExtendedQueryWithSubstitution.ActionPriorityComparator});
+    private Comparator<ExtQuerySubs> getDFSComparator() {
+     return ComparatorUtils.chainedComparator(new Comparator[]{ExtQuerySubs.treeDepthComparator.reversed(), ExtQuerySubs.ActionPriorityComparator});
 
     }
 
     @Override
-    public ExtendedQueryWithSubstitution selectQuery() {
+    public ExtQuerySubs selectQuery() {
        return queries.remove();
     }
 
 
 
     @Override
-    public void add(ExtendedQueryWithSubstitution query) {
+    public void add(ExtQuerySubs query) {
 
         queries.add(query);
     }
@@ -54,9 +63,31 @@ public class DefaultQueriesPool implements IQueriesPool {
     }
 
     @Override
-    public void addAll(Collection<ExtendedQueryWithSubstitution> queries) {
+    public void addAll(Collection<ExtQuerySubs> queries) {
 
         this.queries.addAll(queries);
 
+    }
+
+    /**
+     * Comparator that simulates our Heursitics:
+     * 1) Shorter rewritings first
+     * 2) least number of rules
+     * 3) least number of free variables
+     * 4) least number of possible grounding (above 0) //TODO to be added
+     * @return
+     */
+    public Comparator<ExtQuerySubs> getHeuristicComparator() {
+
+        List<Comparator<ExtQuerySubs>> comparatorList=new LinkedList<>();
+        comparatorList.add(ExtQuerySubs.sizeComparator);
+        comparatorList.add(ExtQuerySubs.rulesDepthComparator);
+        comparatorList.add(ExtQuerySubs.rulesDepthComparator);
+        comparatorList.add(ExtQuerySubs.freeVarsComparator);
+        comparatorList.add(ExtQuerySubs.treeDepthComparator.reversed());
+
+
+
+        return ComparatorUtils.chainedComparator(comparatorList);
     }
 }
