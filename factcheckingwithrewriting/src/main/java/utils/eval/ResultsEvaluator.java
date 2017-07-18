@@ -200,7 +200,7 @@ public class ResultsEvaluator {
             IntSummaryStatistics levelCost = levelCosts.stream().mapToInt(CostAccumulator::getTotalCost).summaryStatistics();
             DoubleSummaryStatistics levelTime = levelCosts.stream().mapToDouble(CostAccumulator::getElapsedTimeSec).summaryStatistics();
             sb.append(i+"\t"+levelCost.getCount()+"\t"+levelCost.getAverage()+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum());
-            sb.append("\t"+levelTime.getAverage()+"\t"+levelTime.getMax()+"\t"+levelTime.getMin()+"\t"+levelTime.getSum());
+            sb.append("\t"+levelTime.getAverage()+"\t"+levelTime.getMax()+"\t"+levelTime.getMin()+"\t"+levelTime.getSum()+"\n");
         }
 
         try {
