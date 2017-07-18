@@ -9,6 +9,7 @@ import extendedsldnf.datastructure.IQueryExplanations;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ import java.util.stream.IntStream;
  */
 public class ResultsEvaluator {
 
+
+    DecimalFormat dcf = new DecimalFormat("#.##");
 
     private int hasExplanationsCount;
     private int isDirectExplanationOnlyCount;
@@ -199,8 +202,8 @@ public class ResultsEvaluator {
             List<CostAccumulator> levelCosts = explanationsAsList.stream().filter(expL -> expL.size() > 0).map(expL -> expL.removeFirst()).map(exp -> exp.getCost()).collect(Collectors.toList());
             IntSummaryStatistics levelCost = levelCosts.stream().mapToInt(CostAccumulator::getTotalCost).summaryStatistics();
             DoubleSummaryStatistics levelTime = levelCosts.stream().mapToDouble(CostAccumulator::getElapsedTimeSec).summaryStatistics();
-            sb.append(i+"\t"+levelCost.getCount()+"\t"+levelCost.getAverage()+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum());
-            sb.append("\t"+levelTime.getAverage()+"\t"+levelTime.getMax()+"\t"+levelTime.getMin()+"\t"+levelTime.getSum()+"\n");
+            sb.append(i+"\t"+levelCost.getCount()+"\t"+dcf.format(levelCost.getAverage())+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum());
+            sb.append("\t"+dcf.format(levelTime.getAverage())+"\t"+dcf.format(levelTime.getMax())+"\t"+dcf.format(levelTime.getMin())+"\t"+dcf.format(levelTime.getSum())+"\n");
         }
 
         try {
