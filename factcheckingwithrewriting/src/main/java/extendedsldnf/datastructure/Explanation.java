@@ -113,4 +113,8 @@ public class Explanation implements Comparable<Explanation> {
     public int compareTo(Explanation that) {
         return cost.compareTo(that.cost);
     }
+
+    public  int size() {
+        return evidenceNodes.size();
+    }
 }

@@ -195,15 +195,36 @@ public class ResultsEvaluator {
         List<LinkedList<Explanation>> explanationsAsList = queryExplanations.stream().map(qexp -> new LinkedList<Explanation>(qexp.getExplanations())).collect(Collectors.toList());
 
         StringBuilder sb=new StringBuilder();
-        sb.append("Explan\tCount\tAvg.\tMax\tMin\tSum\tAvg.time\tMax.time\tMin.time\ttotal.time\n");
+        sb.append("Explan\tCount\tAvg.\tMax\tMin\tSum");
+        sb.append("\tAvg.time\tMax.time\tMin.time\ttotal.time");
+        sb.append("\tAvg.size\tMax.size\tMin.size");
+        sb.append("\tAvg.textEvid\tMax.textEvid\tMin.textEvid");
+        sb.append("\tAvg.rules\tMax.rules\tMin.rules");
+
+        sb.append('\n');
 
         for (int i = 1; i < maxSize+1; i++) {
             //IntSummaryStatistics levelCost = explanationsAsList.stream().filter(expL -> expL.size() > 0).map(expL -> expL.removeFirst()).mapToInt(exp -> exp.getCost().getTotalCost()).summaryStatistics();
-            List<CostAccumulator> levelCosts = explanationsAsList.stream().filter(expL -> expL.size() > 0).map(expL -> expL.removeFirst()).map(exp -> exp.getCost()).collect(Collectors.toList());
+            List<Explanation> levelExplanation= explanationsAsList.stream().filter(expL -> expL.size() > 0).map(expL -> expL.removeFirst()).collect(Collectors.toList());
+
+
+
+            List<CostAccumulator> levelCosts = levelExplanation.stream().map(exp -> exp.getCost()).collect(Collectors.toList());
             IntSummaryStatistics levelCost = levelCosts.stream().mapToInt(CostAccumulator::getTotalCost).summaryStatistics();
             DoubleSummaryStatistics levelTime = levelCosts.stream().mapToDouble(CostAccumulator::getElapsedTimeSec).summaryStatistics();
-            sb.append(i+"\t"+levelCost.getCount()+"\t"+dcf.format(levelCost.getAverage())+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum());
-            sb.append("\t"+dcf.format(levelTime.getAverage())+"\t"+dcf.format(levelTime.getMax())+"\t"+dcf.format(levelTime.getMin())+"\t"+dcf.format(levelTime.getSum())+"\n");
+            IntSummaryStatistics explanSize= levelExplanation.stream().mapToInt(Explanation::size).summaryStatistics();
+            IntSummaryStatistics explanTextEvid= levelExplanation.stream().mapToInt(Explanation::getTextEvidencesCount).summaryStatistics();
+            IntSummaryStatistics explanRules= levelExplanation.stream().mapToInt(Explanation::getTextEvidencesCount).summaryStatistics();
+
+            sb.append(i);
+            sb.append("\t"+levelCost.getCount()+"\t"+dcf.format(levelCost.getAverage())+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum());
+            sb.append("\t"+dcf.format(levelTime.getAverage())+"\t"+dcf.format(levelTime.getMax())+"\t"+dcf.format(levelTime.getMin())+"\t"+dcf.format(levelTime.getSum()));
+            sb.append("\t"+dcf.format(explanSize.getAverage())+"\t"+explanSize.getMax()+"\t"+explanSize.getMin());
+            sb.append("\t"+dcf.format(explanTextEvid.getAverage())+"\t"+explanTextEvid.getMax()+"\t"+explanTextEvid.getMin());
+            sb.append("\t"+dcf.format(explanRules.getAverage())+"\t"+explanRules.getMax()+"\t"+explanRules.getMin());
+
+
+            sb.append('\n');
         }
 
         try {
