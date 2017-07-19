@@ -113,7 +113,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 
 
         EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
-        evaluator = evaluatorFactory.getEvaluator(facts, rules,new FactSpottingConnector(config),config.getPartialBindingType(),config.isSuspectsFromKG() );
+        evaluator = evaluatorFactory.getEvaluator(facts, rules);
 
 
 

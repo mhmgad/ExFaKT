@@ -1,20 +1,12 @@
 package extendedsldnf;
 
 import config.Configuration;
-import extendedsldnf.datastructure.IExtendedFacts;
-import extendedsldnf.datastructure.EvidenceNode;
-import extendedsldnf.datastructure.Explanation;
-import extendedsldnf.datastructure.QueryExplanations;
-import extendedsldnf.datastructure.ExtQuerySubs;
-import extendedsldnf.datastructure.IQueriesPool;
-import extendedsldnf.datastructure.DefaultQueriesPool;
+import extendedsldnf.datastructure.*;
 
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
-import org.deri.iris.api.terms.ITerm;
-import org.deri.iris.api.terms.IVariable;
 import org.deri.iris.evaluation.topdown.ILiteralSelector;
 import org.deri.iris.evaluation.topdown.StandardLiteralSelector;
 import org.deri.iris.storage.IRelation;
@@ -25,7 +17,6 @@ import text.ITextConnector;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static utils.Enums.ActionType.ORG;
 
@@ -38,14 +29,14 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    DefaultQueriesPool.ComparisionMethod compareMethod= DefaultQueriesPool.ComparisionMethod.DFS;
+    AbstractQueriesPool.ComparisionMethod compareMethod= AbstractQueriesPool.ComparisionMethod.DFS;
 
-    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules,DefaultQueriesPool.ComparisionMethod compareMethod) {
+    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules,AbstractQueriesPool.ComparisionMethod compareMethod) {
         super(facts, rules);
         this.compareMethod=compareMethod;
     }
 
-    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,DefaultQueriesPool.ComparisionMethod compareMethod) {
+    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,AbstractQueriesPool.ComparisionMethod compareMethod) {
         super(facts, rules, textConnector, partialBindingType, suspectsFromKG);
         this.compareMethod=compareMethod;
     }
@@ -58,7 +49,7 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
         extendedQueryWithSubstitution.setEvidenceNode(new EvidenceNode(null,ORG));
 
         CostAccumulator costAccumulator=new CostAccumulator();
-        IQueriesPool pool=new DefaultQueriesPool(compareMethod);
+        IQueriesPool pool= QueriesPoolFactory.getPool(compareMethod);
         pool.add(extendedQueryWithSubstitution);
         List<Explanation> solutions = findSolutionsIteratively(pool,costAccumulator);
 

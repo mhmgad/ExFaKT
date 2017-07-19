@@ -1,7 +1,7 @@
 package extendedsldnf;
 
 import config.Configuration;
-import extendedsldnf.datastructure.DefaultQueriesPool;
+import extendedsldnf.datastructure.AbstractQueriesPool;
 import extendedsldnf.datastructure.IExtendedFacts;
 import org.deri.iris.api.basics.IRule;
 import text.FactSpottingConnector;
@@ -27,8 +27,8 @@ public class EvaluatorFactory {
 //    }
 
 
-    public  ExtendedSLDNFEvaluator getEvaluator(IExtendedFacts facts, List<IRule> rules, FactSpottingConnector factSpottingConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG) {
-       return getEvaluator(config.getEvaluationMethod(),facts,rules,factSpottingConnector,partialBindingType,suspectsFromKG);
+    public  ExtendedSLDNFEvaluator getEvaluator(IExtendedFacts facts, List<IRule> rules) {
+       return getEvaluator(config.getEvaluationMethod(),facts,rules,new FactSpottingConnector(config),config.getPartialBindingType(),config.isSuspectsFromKG() );
 
     }
 
@@ -36,9 +36,9 @@ public class EvaluatorFactory {
         switch (evalMethod){
 
             case SLD_ITR:
-                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, DefaultQueriesPool.ComparisionMethod.DFS );
+                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.DFS );
             case HEURISTIC:
-                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG,DefaultQueriesPool.ComparisionMethod.HEURISTIC );
+                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.HEURISTIC );
             case SLD:
             default:
                 return new ExtendedSLDNFEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG );
