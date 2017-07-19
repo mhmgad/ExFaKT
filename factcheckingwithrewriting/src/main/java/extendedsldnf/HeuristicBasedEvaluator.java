@@ -53,7 +53,7 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
         pool.add(extendedQueryWithSubstitution);
         List<Explanation> solutions = findSolutionsIteratively(pool,costAccumulator);
 
-        QueryExplanations returnedSolution=new QueryExplanations(query,solutions);
+        QueryExplanations returnedSolution=new QueryExplanations(query,solutions,costAccumulator.clone());
 
         logger.debug("------------");
         //logger.debug("Relation " + relation);

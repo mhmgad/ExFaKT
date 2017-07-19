@@ -13,6 +13,7 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
     private  long startTime;
     private  long elapsedTime;
     int totalCost;
+    double relativeCost;
 
 
     TObjectIntMap<Enums.ActionType> individualCounts;
@@ -29,6 +30,8 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         costMap.put(Enums.ActionType.UNCLASSIFEIED,0);
     }
 
+    private CostAccumulator fullCost;
+    private double relativeElapsedTime;
 
 
     public CostAccumulator(){
@@ -101,5 +104,26 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
     }
     public double getElapsedTimeSec() {
         return elapsedTime/1000.0;
+    }
+
+    public double getRelativeCost() {
+        return relativeCost;
+    }
+
+    public void setQueryFullCost(CostAccumulator fullCost){
+        this.fullCost=fullCost;
+        this.setRelativeCost(fullCost.getTotalCost());
+        this.setRelativeElapsedTime(fullCost.getElapsedTime());
+    }
+    public void setRelativeCost(int totalQueryCost){
+        this.relativeCost=(this.totalCost+0.0)/totalQueryCost;
+    }
+
+    public void setRelativeElapsedTime(long queryElapsedTime) {
+        this.relativeElapsedTime = (this.elapsedTime+0.0)/queryElapsedTime;
+    }
+
+    public  double getRelativeElapsedTime() {
+        return this.relativeElapsedTime;
     }
 }

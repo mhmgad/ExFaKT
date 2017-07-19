@@ -200,6 +200,8 @@ public class ResultsEvaluator {
         sb.append("\tAvg.size\tMax.size\tMin.size");
         sb.append("\tAvg.textEvid\tMax.textEvid\tMin.textEvid");
         sb.append("\tAvg.rules\tMax.rules\tMin.rules");
+        sb.append("\tAvg.relCost\tMax.relCost\tMin.relCost");
+        sb.append("\tAvg.relTime\tMax.relTime\tMin.relTime");
 
         sb.append('\n');
 
@@ -215,6 +217,9 @@ public class ResultsEvaluator {
             IntSummaryStatistics explanSize= levelExplanation.stream().mapToInt(Explanation::size).summaryStatistics();
             IntSummaryStatistics explanTextEvid= levelExplanation.stream().mapToInt(Explanation::getTextEvidencesCount).summaryStatistics();
             IntSummaryStatistics explanRules= levelExplanation.stream().mapToInt(Explanation::getTextEvidencesCount).summaryStatistics();
+            DoubleSummaryStatistics relativeCost = levelCosts.stream().mapToDouble(CostAccumulator::getRelativeCost).summaryStatistics();
+            DoubleSummaryStatistics relativeTime = levelCosts.stream().mapToDouble(CostAccumulator::getRelativeElapsedTime).summaryStatistics();
+
 
             sb.append(i);
             sb.append("\t"+levelCost.getCount()+"\t"+dcf.format(levelCost.getAverage())+"\t"+levelCost.getMax()+"\t"+levelCost.getMin()+"\t"+levelCost.getSum());
@@ -222,6 +227,8 @@ public class ResultsEvaluator {
             sb.append("\t"+dcf.format(explanSize.getAverage())+"\t"+explanSize.getMax()+"\t"+explanSize.getMin());
             sb.append("\t"+dcf.format(explanTextEvid.getAverage())+"\t"+explanTextEvid.getMax()+"\t"+explanTextEvid.getMin());
             sb.append("\t"+dcf.format(explanRules.getAverage())+"\t"+explanRules.getMax()+"\t"+explanRules.getMin());
+            sb.append("\t"+dcf.format(relativeCost.getAverage())+"\t"+relativeCost.getMax()+"\t"+relativeCost.getMin());
+            sb.append("\t"+dcf.format(relativeTime.getAverage())+"\t"+dcf.format(relativeTime.getMax())+"\t"+dcf.format(relativeTime.getMin()));
 
 
             sb.append('\n');

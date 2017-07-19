@@ -1,6 +1,7 @@
 package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
+import extendedsldnf.CostAccumulator;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
@@ -13,6 +14,7 @@ import java.util.*;
 //TODO get red off the IRelation interface, It is useless but it is easier than implementing the whole thing form scratch
 public class QueryExplanations implements IRelation, IQueryExplanations {
 
+    private CostAccumulator costAccumulator;
     /**
      * successful rewriting paths
      */
@@ -24,9 +26,10 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
 //        this(new ArrayList<>());
 //    }
 
-    public QueryExplanations(IQuery query, List<Explanation> explanations) {
+    public QueryExplanations(IQuery query, List<Explanation> explanations, CostAccumulator cost) {
         this.explanations = new TreeSet<>(explanations) ;
         this.query=query;
+        this.costAccumulator=cost;
     }
 
     @Override
@@ -102,5 +105,9 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     public boolean hasIndirectExplanation() {
         return (!isEmpty())&&!getExplanations().stream().allMatch(Explanation::isDirectEvidence);
 
+    }
+
+    public CostAccumulator getCostAccumulator() {
+        return costAccumulator;
     }
 }

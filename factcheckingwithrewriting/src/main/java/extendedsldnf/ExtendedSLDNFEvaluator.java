@@ -149,7 +149,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         CostAccumulator costAccumulator=new CostAccumulator();
         List<Explanation> solutions = findAndSubstitute(extendedQueryWithSubstitution,costAccumulator);
 
-        QueryExplanations returnedSolution=new QueryExplanations(query,solutions);
+        QueryExplanations returnedSolution=new QueryExplanations(query,solutions,costAccumulator.clone());
 
         logger.debug("------------");
         //logger.debug("Relation " + relation);
