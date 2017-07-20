@@ -30,6 +30,7 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
         this.explanations = new TreeSet<>(explanations) ;
         this.query=query;
         this.costAccumulator=cost;
+        explanations.forEach(expl->expl.getCost().setQueryFullCost(costAccumulator));
     }
 
     @Override

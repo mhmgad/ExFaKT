@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 public class ResultsEvaluator {
 
 
-    DecimalFormat dcf = new DecimalFormat("#.##");
+    DecimalFormat dcf = new DecimalFormat("0.000");
 
     private int hasExplanationsCount;
     private int isDirectExplanationOnlyCount;
@@ -227,7 +227,7 @@ public class ResultsEvaluator {
             sb.append("\t"+dcf.format(explanSize.getAverage())+"\t"+explanSize.getMax()+"\t"+explanSize.getMin());
             sb.append("\t"+dcf.format(explanTextEvid.getAverage())+"\t"+explanTextEvid.getMax()+"\t"+explanTextEvid.getMin());
             sb.append("\t"+dcf.format(explanRules.getAverage())+"\t"+explanRules.getMax()+"\t"+explanRules.getMin());
-            sb.append("\t"+dcf.format(relativeCost.getAverage())+"\t"+relativeCost.getMax()+"\t"+relativeCost.getMin());
+            sb.append("\t"+dcf.format(relativeCost.getAverage())+"\t"+dcf.format(relativeCost.getMax())+"\t"+dcf.format(relativeCost.getMin()));
             sb.append("\t"+dcf.format(relativeTime.getAverage())+"\t"+dcf.format(relativeTime.getMax())+"\t"+dcf.format(relativeTime.getMin()));
 
 
