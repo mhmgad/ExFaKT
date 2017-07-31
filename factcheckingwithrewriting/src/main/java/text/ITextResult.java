@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by gadelrab on 3/31/17.
  */
-public interface ITextResult extends  IWeightedObject{
+public interface ITextResult {
 
 
 

@@ -83,13 +83,5 @@ public class FactSpottingResult implements ITextResult{
                 '}';
     }
 
-    @Override
-    public double getWeight() {
-        return 0;
-    }
 
-    @Override
-    public double getCost() {
-        return 0;
-    }
 }
