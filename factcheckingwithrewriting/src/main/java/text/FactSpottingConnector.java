@@ -36,7 +36,7 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
     @Override
     public ITextResult queryText(ILiteral queryLiteral) {
         logger.debug(queryLiteral.toString());
-        System.out.println("Query: "+queryLiteral.toString());
+        //System.out.println("Query: "+queryLiteral.toString());
         Fact f=toFact(queryLiteral);
 
         ISpottedEvidence evidence=spotter.spot(f);
@@ -50,7 +50,8 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
 
         String predicate=queryLiteral.getAtom().getPredicate().getPredicateSymbol();
         ITuple tuple = queryLiteral.getAtom().getTuple();
-        List<String> args=tuple.stream().map(arg->arg.isGround()? ((String)arg.getValue()):arg.toString()).collect(Collectors.toList());
+//        List<String> args=tuple.stream().map(arg->arg.isGround()? ((String)arg.getValue()):arg.toString()).collect(Collectors.toList());
+        List<String> args=tuple.stream().map(arg->arg.isGround()? ((String)arg.getValue()):"").collect(Collectors.toList());
 
         return new Fact(predicate,args);
 
