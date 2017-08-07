@@ -36,12 +36,12 @@ public class EvaluatorFactory {
         switch (evalMethod){
 
             case SLD_ITR:
-                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.DFS );
+                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.DFS,config.getMaxExplanations(),config.getMaxRuleDepth() );
             case HEURISTIC:
-                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.HEURISTIC );
+                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.HEURISTIC,config.getMaxExplanations(),config.getMaxRuleDepth()  );
             case SLD:
             default:
-                return new ExtendedSLDNFEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG );
+                return new ExtendedSLDNFEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG,config.getMaxExplanations(),config.getMaxRuleDepth() );
 
         }
 

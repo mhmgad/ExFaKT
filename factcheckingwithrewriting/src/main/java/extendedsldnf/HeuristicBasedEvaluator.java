@@ -30,15 +30,16 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     AbstractQueriesPool.ComparisionMethod compareMethod= AbstractQueriesPool.ComparisionMethod.DFS;
+//
+//    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules,AbstractQueriesPool.ComparisionMethod compareMethod) {
+//        super(facts, rules);
+//        this.compareMethod=compareMethod;
+//    }
 
-    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules,AbstractQueriesPool.ComparisionMethod compareMethod) {
-        super(facts, rules);
+    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,AbstractQueriesPool.ComparisionMethod compareMethod,int maxExplanations,int maxRuleDepth) {
+        super(facts, rules, textConnector, partialBindingType, suspectsFromKG, maxExplanations, maxRuleDepth);
         this.compareMethod=compareMethod;
-    }
 
-    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,AbstractQueriesPool.ComparisionMethod compareMethod) {
-        super(facts, rules, textConnector, partialBindingType, suspectsFromKG);
-        this.compareMethod=compareMethod;
     }
 
 
@@ -70,6 +71,9 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
         ILiteralSelector literalSelector=new StandardLiteralSelector();
 
         while (!pool.isEmpty()){
+
+            if(explanations.size()>10)
+                break;
             // Global selection
             ExtQuerySubs chosenQuery=pool.selectQuery();
 
@@ -85,7 +89,7 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
                 continue;
             }
 
-            if(chosenQuery.getTreeDepth()>=_MAX_NESTING_LEVEL)
+            if(chosenQuery.getRulesDepth()>=_MAX_NESTING_LEVEL)
                 continue;
 
             // Local literal selection

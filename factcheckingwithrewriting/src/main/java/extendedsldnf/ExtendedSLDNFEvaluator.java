@@ -75,7 +75,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
     private  Configuration.PartialBindingType partialBindingType;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected static final int _MAX_NESTING_LEVEL = 20;
+    protected static final int _MAX_NESTING_LEVEL = 5;
 
 
     private IExtendedFacts mFacts;
@@ -86,6 +86,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
     private static final SimpleRelationFactory srf = new SimpleRelationFactory();
     static final RuleManipulator rm = new RuleManipulator();
+    public int maxRuleDepth;
 
 
     /**
@@ -95,7 +96,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
      * @param rules list of rules
      */
     public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules) {
-        this(facts,rules,null, Configuration.PartialBindingType.NONE,false);
+        this(facts,rules,null, Configuration.PartialBindingType.NONE,false,Integer.MAX_VALUE,10);
     }
 
 
@@ -105,7 +106,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
      * @param facts one or many facts
      * @param rules list of rules
      */
-    public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG) {
+    public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,int maxExplanations,int maxRuleDepth) {
         mFacts = facts;
         mRules = getOrderedRules(rules);
 
