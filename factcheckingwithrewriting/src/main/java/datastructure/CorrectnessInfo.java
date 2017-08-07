@@ -3,6 +3,7 @@ package datastructure;
 import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.api.basics.IQuery;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
 
     IQueryExplanations posExplanations;
     IQueryExplanations negExplanations;
+
+    DecimalFormat dcf = new DecimalFormat("0.000");
 
     public IQuery getPosQuery() {
         return posQuery;
@@ -90,7 +93,7 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
     }
 
     public String getTabRepr() {
-        return getPosQuery()+"\t"+posExplanations.size()+"\t"+negExplanations.size()+"\t"+posExplanations.getScoreOnSize()+"\t"+negExplanations.getScoreOnSize()+"\t"+getScore()+"\t"+isCorrect();
+        return getPosQuery()+"\t"+posExplanations.size()+"\t"+negExplanations.size()+"\t"+dcf.format(posExplanations.getScoreOnSize())+"\t"+dcf.format(negExplanations.getScoreOnSize())+"\t"+dcf.format(getScore())+"\t"+isCorrect();
     }
 
     public boolean isCorrect() {
