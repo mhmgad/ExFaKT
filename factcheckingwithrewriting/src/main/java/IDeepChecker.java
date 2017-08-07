@@ -10,5 +10,5 @@ public interface IDeepChecker<T extends IQuery> {
 
     public IQueryExplanations check(T queryFact);
 
-    IQueryExplanations check(Fact fact);
+    public IQueryExplanations check(Fact fact);
 }

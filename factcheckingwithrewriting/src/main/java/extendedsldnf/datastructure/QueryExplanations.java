@@ -102,6 +102,15 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
         return getExplanations().size()==1 && hasDirectExplanation();
     }
 
+    /**
+     * sum(1/explanationSize)
+     * @return
+     */
+    @Override
+    public double getScoreOnSize() {
+        return getExplanations().stream().mapToDouble(ex -> 1.0 / (ex.size())).sum();
+    }
+
     @Override
     public boolean hasIndirectExplanation() {
         return (!isEmpty())&&!getExplanations().stream().allMatch(Explanation::isDirectEvidence);

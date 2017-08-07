@@ -22,6 +22,8 @@ public interface IQueryExplanations {
 
     public boolean isDirectExplanation();
 
+    public double getScoreOnSize();
+
 
     public int size();
 }

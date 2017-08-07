@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by gadelrab on 3/22/17.
  */
-public class RuleBasedChecker implements IDeepChecker<IQuery>{
+public class ExplanationsExtractor implements IDeepChecker<IQuery>{
 
 
     private IEvaluationStrategy evaluationStrategy;
@@ -68,7 +68,7 @@ public class RuleBasedChecker implements IDeepChecker<IQuery>{
 
 
 
-    public RuleBasedChecker() throws EvaluationException {
+    public ExplanationsExtractor() throws EvaluationException {
         // load Config
         config= Configuration.getInstance();
         // Store the configuration object against the current thread.

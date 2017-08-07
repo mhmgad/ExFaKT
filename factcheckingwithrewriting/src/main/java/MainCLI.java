@@ -1,13 +1,19 @@
 import config.Configuration;
+import de.mpii.datastructures.Fact;
 import extendedsldnf.datastructure.IQueryExplanations;
 import mpi.tools.javatools.util.FileUtils;
 import org.apache.commons.cli.*;
+import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.IQuery;
+import org.deri.iris.compiler.ParserException;
 import utils.DataUtils;
 import utils.Enums;
 import utils.eval.ResultsEvaluator;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +44,7 @@ public class MainCLI {
     private BufferedWriter outputCostFile;
     private BufferedWriter outputCostSummaryFile;
     private Option evalMethodOp;
+    private Option checkFactOp;
 
 
     public MainCLI() {
@@ -83,6 +90,11 @@ public class MainCLI {
         //Evaluator Implementation
         evalMethodOp = Option.builder("eval").longOpt("EvaluationMethod").hasArg().desc("Evaluation Method").argName("method").build();
         options.addOption(evalMethodOp);
+
+
+        // check facts or normal flow
+        checkFactOp =Option.builder("cf").longOpt("ckeckFact").hasArg(false).desc( "Check correctness of a fact").build();
+        options.addOption(checkFactOp);
     }
 
     public void run(CommandLine cmd) throws Exception{
@@ -124,6 +136,36 @@ public class MainCLI {
         if(cmd.hasOption(evalMethodOp.getOpt())) {
             configuration.setEvaluationMethod(Enums.EvalMethod.valueOf(cmd.getOptionValue(evalMethodOp.getOpt(), Enums.EvalMethod.SLD.name())));
         }
+
+        if(cmd.hasOption(checkFactOp.getOpt())){
+            checkFact(configuration);
+        }
+        else {
+            extractExplanations( configuration);
+        }
+
+
+    }
+
+    private void checkFact(Configuration configuration) throws EvaluationException, IOException, ParserException {
+
+        Fact f=new Fact("diedIn", Arrays.asList("John F. Kennedy","Dallas"));
+
+        List<IQuery> queries = DataUtils.loadQueries(configuration.getQueiesFiles());
+        FactChecker fc=new FactChecker();
+
+        List<FactChecker.CorrectnessInfo> correctnessInfos=queries.parallelStream().map(q->fc.checkCorrectness(q)).collect(Collectors.toList());
+
+        for (FactChecker.CorrectnessInfo info:correctnessInfos) {
+            String result="\n"+info+"\n";
+            System.out.println(result);
+            if(this.outputFile!=null)
+                this.outputFile.write(result);
+
+        }
+        if(this.outputFile!=null)
+            this.outputFile.close();
+
     }
 
     private CommandLine parse(String[] args) throws ParseException {
@@ -136,24 +178,28 @@ public class MainCLI {
         instance.defineOptions();
         instance.run(instance.parse(args));
 
-        Configuration configuration=Configuration.getInstance();
+//        Configuration configuration=Configuration.getInstance();
 
-        RuleBasedChecker rfc=new RuleBasedChecker();
-        List<IQueryExplanations> explanations=new LinkedList<>();
+
+
+    }
+
+    private void extractExplanations(Configuration configuration) throws EvaluationException, ParserException, IOException {
+        ExplanationsExtractor rfc=new ExplanationsExtractor();
         List<IQuery> queries = DataUtils.loadQueries(configuration.getQueiesFiles());
 
-        explanations.addAll(processList(rfc,queries));
+        List<IQueryExplanations> explanations=queries.parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
 
 //        Iterator<IExplanation> explansItr=explainations.iterator();
         for (IQueryExplanations explanation:explanations) {
             String result="\nQuery:\t"+explanation.getQuery()+"\n"+explanation+"\n";
             System.out.println(result);
-            if(instance.outputFile!=null)
-                instance.outputFile.write(result);
+            if(this.outputFile!=null)
+                this.outputFile.write(result);
 
         }
-        if(instance.outputFile!=null)
-            instance.outputFile.close();
+        if(this.outputFile!=null)
+            this.outputFile.close();
 
 
         System.out.println("Recall: "+explanations.stream().filter(exp-> !exp.isEmpty()).count()+"/"+(queries.size()));
@@ -162,23 +208,18 @@ public class MainCLI {
 
         System.out.println(evals.toString());
 
-        if(instance.outputFile!=null) {
-            evals.dump(instance.outputStatsFile);
-            evals.dumpSummary(instance.outputStatsSummaryFile);
-
-        }
-        
-        if(instance.outputCostFile!=null){
-            evals.dumpCost(instance.outputCostFile);
-            evals.dumpCostSummary(instance.outputCostSummaryFile);
+        if(this.outputFile!=null) {
+            evals.dump(this.outputStatsFile);
+            evals.dumpSummary(this.outputStatsSummaryFile);
 
         }
 
+        if(this.outputCostFile!=null){
+            evals.dumpCost(this.outputCostFile);
+            evals.dumpCostSummary(this.outputCostSummaryFile);
+
+        }
     }
 
 
-
-    private static List<IQueryExplanations> processList(RuleBasedChecker rfc, List<IQuery> queries) {
-        return queries.stream().map(q->rfc.check(q)).collect(Collectors.toList());
-    }
 }
