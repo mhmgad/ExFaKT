@@ -51,13 +51,9 @@ public class DatalogProgramExecuter {
 
         evaluationStrategyFactory = new StratifiedBottomUpEvaluationStrategyFactory( new SemiNaiveEvaluatorFactory() );
 
-        try {
-            queries=DataUtils.loadQueries(queriesFiles);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParserException e) {
-            e.printStackTrace();
-        }
+
+            queries=DataUtils.loadQueries(config,queriesFiles);
+
 
     }
 

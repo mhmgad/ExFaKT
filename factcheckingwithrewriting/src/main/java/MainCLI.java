@@ -152,11 +152,11 @@ public class MainCLI {
 
     }
 
-    private List<IQueryExplanations> checkFact(Configuration configuration) throws EvaluationException, IOException, ParserException {
+    private List<IQueryExplanations> checkFact(Configuration configuration) throws EvaluationException, IOException {
 
 //        Fact f=new Fact("diedIn", Arrays.asList("John F. Kennedy","Dallas"));
 
-        List<IQuery> queries = DataUtils.loadQueries(configuration.getQueiesFiles());
+        List<IQuery> queries = DataUtils.loadQueries(configuration);
         FactChecker fc=new FactChecker();
 
         List<CorrectnessInfo> correctnessInfos=queries.parallelStream().map(q->fc.checkCorrectness(q)).collect(Collectors.toList());
@@ -204,9 +204,9 @@ public class MainCLI {
 
     }
 
-    private List<IQueryExplanations> extractExplanations(Configuration configuration) throws EvaluationException, ParserException, IOException {
+    private List<IQueryExplanations> extractExplanations(Configuration configuration) throws EvaluationException, IOException {
         ExplanationsExtractor rfc=new ExplanationsExtractor();
-        List<IQuery> queries = DataUtils.loadQueries(configuration.getQueiesFiles());
+        List<IQuery> queries = DataUtils.loadQueries(configuration);
 
         List<IQueryExplanations> explanations=queries.parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
 

@@ -29,8 +29,7 @@ public class DataUtils {
      * @return
      */
     public static IExtendedFacts loadFacts(Configuration conf) {
-        IFactsLoader factsLoader= FactsLoaderFactory.getLoader(conf);
-        return factsLoader.loadFacts(conf.getFactsFiles());
+       return loadFacts(conf,conf.getFactsFiles());
     }
 
     /**
@@ -64,10 +63,14 @@ public class DataUtils {
 
     }
 
-
-    public static List<IQuery> loadQueries(Configuration conf,List<String> queiesFiles) throws FileNotFoundException, ParserException {
-        // we need to match the queries to RDF type
+    public static List<IQuery> loadQueries(Configuration conf, List<String> queriesFiles) {
+        // we need to match the queries to facts type
         IFactsLoader factsLoader= FactsLoaderFactory.getLoader(conf);
-        return factsLoader.parseQueries(queiesFiles);
+        return factsLoader.parseQueries(queriesFiles);
+    }
+
+    public static List<IQuery> loadQueries(Configuration conf) {
+        // we need to match the queries to facts type
+        return loadQueries(conf,conf.getQueiesFiles());
     }
 }
