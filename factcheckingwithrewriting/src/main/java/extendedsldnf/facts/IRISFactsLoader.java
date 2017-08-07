@@ -2,11 +2,16 @@ package extendedsldnf.facts;
 
 import config.Configuration;
 import org.deri.iris.api.basics.IPredicate;
+import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.compiler.Parser;
+import org.deri.iris.compiler.ParserException;
 import org.deri.iris.storage.IRelation;
 import org.deri.iris.storage.IRelationFactory;
+import utils.DataUtils;
 
 import java.io.BufferedReader;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +30,18 @@ public class IRISFactsLoader extends IFactsLoader{
         //this.relationFactory = relationFactory;
     }
 
+    @Override
+    public List<IQuery> parseQueries(BufferedReader fileReader) {
+        List<IQuery> queries=new LinkedList<>();
+        Parser pr=new Parser();
+        try {
+            pr.parse(fileReader);
+        } catch (ParserException e) {
+            e.printStackTrace();
+        }
+        queries.addAll(pr.getQueries());
+        return queries;
+    }
 
 
     public Map<IPredicate, IRelation> parseFacts(BufferedReader filereader) {

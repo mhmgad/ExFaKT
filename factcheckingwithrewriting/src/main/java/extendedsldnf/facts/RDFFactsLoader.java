@@ -1,8 +1,7 @@
 package extendedsldnf.facts;
 
 import config.Configuration;
-import org.deri.iris.api.basics.IPredicate;
-import org.deri.iris.api.basics.ITuple;
+import org.deri.iris.api.basics.*;
 import org.deri.iris.api.factory.IBasicFactory;
 import org.deri.iris.api.factory.ITermFactory;
 import org.deri.iris.api.terms.ITerm;
@@ -14,6 +13,8 @@ import org.deri.iris.terms.TermFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +32,7 @@ public class RDFFactsLoader extends IFactsLoader{
 
     @Override
     public Map<IPredicate, IRelation> parseFacts(BufferedReader fileReader) {
-        //TODO parse the file check if it is implmented in RDF-IRIS-reasoner
+        //TODO parse the file check if it is implemented in RDF-IRIS-reasoner
 
         Map<IPredicate, IRelation> factsMap=new HashMap<>();
 
@@ -72,6 +73,50 @@ public class RDFFactsLoader extends IFactsLoader{
             e.printStackTrace();
         }
         return factsMap;
+    }
+
+
+
+    @Override
+    public List<IQuery> parseQueries(BufferedReader fileReader) {
+        //TODO parse the file check if it is implemented in RDF-IRIS-reasoner
+
+        List<IQuery>queries=new LinkedList<>();
+
+        try {
+            IBasicFactory basicFactory = BasicFactory.getInstance();
+            ITermFactory termFactory= TermFactory.getInstance();
+            IRelationFactory relationFactory=getRelationFactory();
+            IRelation relation=null;
+
+            for(String line=fileReader.readLine();line!=null;line=fileReader.readLine()){
+
+                if(line==null || line.isEmpty())
+                    continue;
+
+                String[] parts=line.split("\t");
+
+                // Create the predicate
+                String cleanPredicateName= getCleanPredicateName(parts[1]);
+                IPredicate predicate= basicFactory.createPredicate(cleanPredicateName,2);
+
+                // arguments
+                ITerm term1= termFactory.createString(parts[0]);
+                ITerm term2= termFactory.createString(parts[2]);
+                ITuple tuple= basicFactory.createTuple(term1,term2);
+
+                IAtom atom = basicFactory.createAtom(predicate, tuple);
+
+
+                ILiteral literal = basicFactory.createLiteral(true, atom);
+
+                queries.add(basicFactory.createQuery(literal));
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  queries;
     }
 
     private String getCleanPredicateName(String predicateName) {

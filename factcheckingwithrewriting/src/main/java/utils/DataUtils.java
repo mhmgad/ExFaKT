@@ -65,19 +65,9 @@ public class DataUtils {
     }
 
 
-    public static List<IQuery> loadQueries(List<String> queiesFiles) throws FileNotFoundException, ParserException {
-
-        List<IQuery> queries=new LinkedList<>();
-
-        for (String filename:queiesFiles) {
-            BufferedReader br = FileUtils.getBufferedUTF8Reader(filename);
-
-            Parser pr=new Parser();
-            pr.parse(br);
-            queries.addAll(pr.getQueries());
-        }
-
-
-        return queries;
+    public static List<IQuery> loadQueries(Configuration conf,List<String> queiesFiles) throws FileNotFoundException, ParserException {
+        // we need to match the queries to RDF type
+        IFactsLoader factsLoader= FactsLoaderFactory.getLoader(conf);
+        return factsLoader.parseQueries(queiesFiles);
     }
 }

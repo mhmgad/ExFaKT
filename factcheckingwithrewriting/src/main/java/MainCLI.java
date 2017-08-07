@@ -180,7 +180,7 @@ public class MainCLI {
         sb.append(Joiner.on('\n').join(correctnessInfos.stream().map(inf->inf.getTabRepr()).collect(Collectors.toList())));
 
         try {
-            this.outputCorrectnessFile.write(sb.toString());
+            this.outputCorrectnessFile.write(sb.toString()+"\n");
             this.outputCorrectnessFile.close();
         } catch (IOException e) {
             e.printStackTrace();
