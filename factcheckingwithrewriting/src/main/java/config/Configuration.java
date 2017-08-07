@@ -175,8 +175,8 @@ public class Configuration extends org.deri.iris.Configuration {
             conf.setSuspectsFromKG(Boolean.parseBoolean(prop.getProperty(SUSPECTS_FROM_KG, "false")));
             conf.setSpottingConfFile(prop.getProperty(FACT_SPOTTING_CONF, null));
             conf.setEvaluationMethod(Enums.EvalMethod.valueOf(prop.getProperty(EVALUATION_METHOD, Enums.EvalMethod.SLD.name())));
-            conf.setMaxRuleNesting(Integer.getInteger(prop.getProperty(MAX_RULE_NESTING, "" + conf.getMaxRuleNesting())));
-            conf.setMaxExplanations(Integer.getInteger(prop.getProperty(MAX_EXPLANATIONS, "" + conf.getMaxExplanations())));
+            conf.setMaxRuleNesting(Integer.valueOf(prop.getProperty(MAX_RULE_NESTING, "" + conf.getMaxRuleNesting())));
+            conf.setMaxExplanations(Integer.valueOf(prop.getProperty(MAX_EXPLANATIONS, "" + conf.getMaxExplanations())));
             conf.setExtraProp(prop);
 
 
