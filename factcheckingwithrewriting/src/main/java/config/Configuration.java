@@ -7,11 +7,8 @@ import utils.Enums;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import static utils.StringUtils.asList;
 
@@ -33,6 +30,8 @@ public class Configuration extends org.deri.iris.Configuration {
     private static final String SUSPECTS_FROM_KG = "suspectsFromKG";
     public static final String FACT_SPOTTING_CONF = "factSpotting.config";
     private static final String EVALUATION_METHOD = "evalMethod";
+    private static final String MAX_EXPLANATIONS="maxExplanations";
+    private static final String MAX_RULE_NESTING="maxRuleNesting";
 
 
     private static Configuration instance;
@@ -49,7 +48,7 @@ public class Configuration extends org.deri.iris.Configuration {
     private String spottingConfFile;
     private Enums.EvalMethod evaluationMethod= Enums.EvalMethod.SLD;
     private int maxExplanations=10;
-    private int maxRuleDepth=3;
+    private int maxRuleNesting =3;
 
     public void setExtraProp(Properties extraProp) {
         this.extraProperties = extraProp;
@@ -83,8 +82,16 @@ public class Configuration extends org.deri.iris.Configuration {
         return maxExplanations;
     }
 
-    public int getMaxRuleDepth() {
-        return maxRuleDepth;
+    public int getMaxRuleNesting() {
+        return maxRuleNesting;
+    }
+
+    public void setMaxExplanations(int maxExplanations) {
+        this.maxExplanations = maxExplanations;
+    }
+
+    public void setMaxRuleNesting(int maxRuleNesting) {
+        this.maxRuleNesting = maxRuleNesting;
     }
 
 
@@ -164,10 +171,12 @@ public class Configuration extends org.deri.iris.Configuration {
             conf.setFactsFiles(asList(prop.getProperty(FACTS_FILES, "")));
             conf.setQueiesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
             conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
-            conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE,"NONE")));
-            conf.setSuspectsFromKG(Boolean.parseBoolean(prop.getProperty(SUSPECTS_FROM_KG,"false")));
-            conf.setSpottingConfFile(prop.getProperty(FACT_SPOTTING_CONF,null));
-            conf.setEvaluationMethod(Enums.EvalMethod.valueOf(prop.getProperty(EVALUATION_METHOD,Enums.EvalMethod.SLD.name())));
+            conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE, "NONE")));
+            conf.setSuspectsFromKG(Boolean.parseBoolean(prop.getProperty(SUSPECTS_FROM_KG, "false")));
+            conf.setSpottingConfFile(prop.getProperty(FACT_SPOTTING_CONF, null));
+            conf.setEvaluationMethod(Enums.EvalMethod.valueOf(prop.getProperty(EVALUATION_METHOD, Enums.EvalMethod.SLD.name())));
+            conf.setMaxRuleNesting(Integer.getInteger(prop.getProperty(MAX_RULE_NESTING, "" + conf.getMaxRuleNesting())));
+            conf.setMaxExplanations(Integer.getInteger(prop.getProperty(MAX_EXPLANATIONS, "" + conf.getMaxExplanations())));
             conf.setExtraProp(prop);
 
 

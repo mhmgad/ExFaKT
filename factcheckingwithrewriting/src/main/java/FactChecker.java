@@ -1,5 +1,5 @@
+import datastructure.CorrectnessInfo;
 import de.mpii.datastructures.Fact;
-import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.*;
 import org.deri.iris.api.factory.IBasicFactory;
@@ -8,54 +8,8 @@ import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class FactChecker {
-
-
-    public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
-
-        IQuery posQuery;
-        IQuery negQuery;
-
-        IQueryExplanations posExplanations;
-        IQueryExplanations negExplanations;
-
-        public CorrectnessInfo(IQuery posQuery, IQuery negQuery, IQueryExplanations posExplanations, IQueryExplanations negExplanations) {
-            this.posQuery = posQuery;
-            this.negQuery = negQuery;
-            this.posExplanations = posExplanations;
-            this.negExplanations = negExplanations;
-        }
-
-        public double getScore(){
-        // different between positiveExplanations Size score and negative ones
-            return  posExplanations.getScoreOnSize()-negExplanations.getScoreOnSize();
-        }
-
-        @Override
-        public String toString() {
-            return "CorrectnessInfo{" +
-                    "posQuery=" + posQuery +
-                    ", negQuery=" + negQuery +
-                    ", correctnessScore="+getScore()+
-                    ", posExplScore=" +  posExplanations.getScoreOnSize() + " ("+posExplanations.size()+")"+
-                    ", negExplScore=" + -negExplanations.getScoreOnSize() + " ("+negExplanations.size()+")"+
-                    '}';
-        }
-
-
-        @Override
-        public int compareTo(CorrectnessInfo o) {
-            int strDiff= this.posQuery.getLiterals().get(0).compareTo(o.posQuery.getLiterals().get(0));
-            if(strDiff!=0)
-                return strDiff;
-            else
-                return Double.compare(this.getScore(),o.getScore());
-
-        }
-    }
 
 
     ExplanationsExtractor extractor;

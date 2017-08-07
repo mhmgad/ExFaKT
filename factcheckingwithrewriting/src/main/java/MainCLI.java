@@ -1,5 +1,6 @@
+import com.google.common.base.Joiner;
 import config.Configuration;
-import de.mpii.datastructures.Fact;
+import datastructure.CorrectnessInfo;
 import extendedsldnf.datastructure.IQueryExplanations;
 import mpi.tools.javatools.util.FileUtils;
 import org.apache.commons.cli.*;
@@ -11,10 +12,7 @@ import utils.Enums;
 import utils.eval.ResultsEvaluator;
 
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +43,7 @@ public class MainCLI {
     private BufferedWriter outputCostSummaryFile;
     private Option evalMethodOp;
     private Option checkFactOp;
+    private BufferedWriter outputCorrectnessFile;
 
 
     public MainCLI() {
@@ -113,6 +112,10 @@ public class MainCLI {
             outputStatsSummaryFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats.summary");
             outputCostFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".cost");
             outputCostSummaryFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".cost.summary");
+            if(cmd.hasOption(checkFactOp.getOpt())){
+                outputCorrectnessFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".correctness");
+            }
+
         }
 
         if(cmd.hasOption(rulesFilesOp.getOpt())) {
@@ -137,34 +140,51 @@ public class MainCLI {
             configuration.setEvaluationMethod(Enums.EvalMethod.valueOf(cmd.getOptionValue(evalMethodOp.getOpt(), Enums.EvalMethod.SLD.name())));
         }
 
+        List<IQueryExplanations> explanations;
         if(cmd.hasOption(checkFactOp.getOpt())){
-            checkFact(configuration);
+            explanations=checkFact(configuration);
         }
         else {
-            extractExplanations( configuration);
+            explanations=extractExplanations(configuration);
         }
+        outputExplanations(explanations);
 
 
     }
 
-    private void checkFact(Configuration configuration) throws EvaluationException, IOException, ParserException {
+    private List<IQueryExplanations> checkFact(Configuration configuration) throws EvaluationException, IOException, ParserException {
 
-        Fact f=new Fact("diedIn", Arrays.asList("John F. Kennedy","Dallas"));
+//        Fact f=new Fact("diedIn", Arrays.asList("John F. Kennedy","Dallas"));
 
         List<IQuery> queries = DataUtils.loadQueries(configuration.getQueiesFiles());
         FactChecker fc=new FactChecker();
 
-        List<FactChecker.CorrectnessInfo> correctnessInfos=queries.parallelStream().map(q->fc.checkCorrectness(q)).collect(Collectors.toList());
+        List<CorrectnessInfo> correctnessInfos=queries.parallelStream().map(q->fc.checkCorrectness(q)).collect(Collectors.toList());
+        List<IQueryExplanations> explanations=correctnessInfos.stream().map(CorrectnessInfo::getPosNegExplanations).flatMap(List::stream).collect(Collectors.toList());
 
-        for (FactChecker.CorrectnessInfo info:correctnessInfos) {
-            String result="\n"+info+"\n";
-            System.out.println(result);
-            if(this.outputFile!=null)
-                this.outputFile.write(result);
 
+        if(this.outputFile!=null){
+
+            dumpCorrectnessInfo(correctnessInfos);
         }
-        if(this.outputFile!=null)
-            this.outputFile.close();
+
+
+        return explanations;
+
+    }
+
+    private void dumpCorrectnessInfo(List<CorrectnessInfo> correctnessInfos) {
+
+        StringBuilder sb=new StringBuilder();
+        sb.append(CorrectnessInfo.getTabReprHeader()+"\n");
+        sb.append(Joiner.on('\n').join(correctnessInfos.stream().map(inf->inf.getTabRepr()).collect(Collectors.toList())));
+
+        try {
+            this.outputCorrectnessFile.write(sb.toString());
+            this.outputCorrectnessFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -184,13 +204,19 @@ public class MainCLI {
 
     }
 
-    private void extractExplanations(Configuration configuration) throws EvaluationException, ParserException, IOException {
+    private List<IQueryExplanations> extractExplanations(Configuration configuration) throws EvaluationException, ParserException, IOException {
         ExplanationsExtractor rfc=new ExplanationsExtractor();
         List<IQuery> queries = DataUtils.loadQueries(configuration.getQueiesFiles());
 
         List<IQueryExplanations> explanations=queries.parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
 
 //        Iterator<IExplanation> explansItr=explainations.iterator();
+
+
+        return explanations;
+    }
+
+    private void outputExplanations(List<IQueryExplanations> explanations) throws IOException {
         for (IQueryExplanations explanation:explanations) {
             String result="\nQuery:\t"+explanation.getQuery()+"\n"+explanation+"\n";
             System.out.println(result);
@@ -201,8 +227,6 @@ public class MainCLI {
         if(this.outputFile!=null)
             this.outputFile.close();
 
-
-        System.out.println("Recall: "+explanations.stream().filter(exp-> !exp.isEmpty()).count()+"/"+(queries.size()));
 
         ResultsEvaluator evals=new ResultsEvaluator(explanations);
 
@@ -219,6 +243,8 @@ public class MainCLI {
             evals.dumpCostSummary(this.outputCostSummaryFile);
 
         }
+
+        System.out.println("Recall: "+explanations.stream().filter(exp-> !exp.isEmpty()).count()+"/"+(explanations.size()));
     }
 
 

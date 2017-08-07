@@ -26,19 +26,18 @@ import static utils.Enums.ActionType.ORG;
 public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
 
-
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    AbstractQueriesPool.ComparisionMethod compareMethod= AbstractQueriesPool.ComparisionMethod.DFS;
+    AbstractQueriesPool.ComparisionMethod compareMethod = AbstractQueriesPool.ComparisionMethod.DFS;
 //
 //    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules,AbstractQueriesPool.ComparisionMethod compareMethod) {
 //        super(facts, rules);
 //        this.compareMethod=compareMethod;
 //    }
 
-    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,AbstractQueriesPool.ComparisionMethod compareMethod,int maxExplanations,int maxRuleDepth) {
+    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, AbstractQueriesPool.ComparisionMethod compareMethod, int maxExplanations, int maxRuleDepth) {
         super(facts, rules, textConnector, partialBindingType, suspectsFromKG, maxExplanations, maxRuleDepth);
-        this.compareMethod=compareMethod;
+        this.compareMethod = compareMethod;
 
     }
 
@@ -46,52 +45,53 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
     @Override
     public IRelation evaluate(IQuery query) throws EvaluationException {
 
-        ExtQuerySubs extendedQueryWithSubstitution = new ExtQuerySubs(query, new HashMap<>(),null,0,0);
-        extendedQueryWithSubstitution.setEvidenceNode(new EvidenceNode(null,ORG));
+        ExtQuerySubs extendedQueryWithSubstitution = new ExtQuerySubs(query, new HashMap<>(), null, 0, 0);
+        extendedQueryWithSubstitution.setEvidenceNode(new EvidenceNode(null, ORG));
 
-        CostAccumulator costAccumulator=new CostAccumulator();
-        IQueriesPool pool= QueriesPoolFactory.getPool(compareMethod);
+        CostAccumulator costAccumulator = new CostAccumulator();
+        IQueriesPool pool = QueriesPoolFactory.getPool(compareMethod);
         pool.add(extendedQueryWithSubstitution);
-        List<Explanation> solutions = findSolutionsIteratively(pool,costAccumulator);
+        List<Explanation> solutions = findSolutionsIteratively(pool, costAccumulator);
 
-        QueryExplanations returnedSolution=new QueryExplanations(query,solutions,costAccumulator.clone());
+        QueryExplanations returnedSolution = new QueryExplanations(query, solutions, costAccumulator.clone());
 
         logger.debug("------------");
         //logger.debug("Relation " + relation);
         logger.debug("Original Query: " + query);
-        logger.debug("Solutions: "+ solutions);
+        logger.debug("Solutions: " + solutions);
 
         return returnedSolution;
     }
 
     private List<Explanation> findSolutionsIteratively(IQueriesPool pool, CostAccumulator costAccumulator) {
 
-        List<Explanation> explanations=new LinkedList<>();
+        List<Explanation> explanations = new LinkedList<>();
 
-        ILiteralSelector literalSelector=new StandardLiteralSelector();
+        ILiteralSelector literalSelector = new StandardLiteralSelector();
 
-        while (!pool.isEmpty()){
+        while (!pool.isEmpty()) {
 
-            //
-            if(explanations.size()>getMaxExplanations())
+            //Stop when reaches enough explanations
+            if (explanations.size() >= getMaxExplanations())
                 break;
 
             // Global selection
-            ExtQuerySubs chosenQuery=pool.selectQuery();
+            ExtQuerySubs chosenQuery = pool.selectQuery();
 
-            logger.debug("Selected Query:"+ chosenQuery.toString()+" "+chosenQuery.getEvidenceNode().toString());
-            logger.debug("Pool Size:"+ pool.size());
+            logger.debug("Selected Query:" + chosenQuery.toString() + " " + chosenQuery.getEvidenceNode().toString());
+            logger.debug("Pool Size:" + pool.size());
 
             IQuery newQuery = chosenQuery.getQuery();
 
             // Empty query i.e. Success
             if (newQuery.getLiterals().isEmpty()) {
-                logger.debug("VarMap: "+chosenQuery.getSubstitution());
+                logger.debug("VarMap: " + chosenQuery.getSubstitution());
                 explanations.add(createExplanation(chosenQuery, costAccumulator));
                 continue;
             }
 
-            if(chosenQuery.getRulesDepth()>=getMaxRuleDepth())
+            //stop when maximum nesting reached
+            if (chosenQuery.getRulesDepth() >= getMaxRuleDepth())
                 continue;
 
             // Local literal selection
@@ -101,14 +101,14 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
             try {
                 // Getting sub-queries
                 List<ExtQuerySubs> subqueries = getSubQueryList(chosenQuery, selectedLiteral, costAccumulator);
-                logger.debug("Subqueries: "+ subqueries);
-                logger.debug("Number of Subqueries: "+subqueries.size());
+                logger.debug("Subqueries: " + subqueries);
+                logger.debug("Number of Subqueries: " + subqueries.size());
                 pool.addAll(subqueries);
             } catch (EvaluationException e) {
                 e.printStackTrace();
             }
 
-            logger.debug("Pool Size after:"+ pool.size());
+            logger.debug("Pool Size after:" + pool.size());
 
         }
 
@@ -123,10 +123,10 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
     public Explanation createExplanation(ExtQuerySubs query, CostAccumulator costAccumulator) {
         Explanation solution = new Explanation();
 
-       for(ExtQuerySubs currentQuery = query; currentQuery!=null; currentQuery=currentQuery.getParent()){
-           if(currentQuery.getEvidenceNode().getSourceActionType()!=ORG) {
-               solution.add(currentQuery.getEvidenceNode());
-           }
+        for (ExtQuerySubs currentQuery = query; currentQuery != null; currentQuery = currentQuery.getParent()) {
+            if (currentQuery.getEvidenceNode().getSourceActionType() != ORG) {
+                solution.add(currentQuery.getEvidenceNode());
+            }
         }
 
         solution.setCost(costAccumulator.clone());
