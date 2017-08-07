@@ -70,6 +70,7 @@ import static utils.Enums.ActionType.*;
  */
 public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGenerator {
 
+    private  int maxExplanations;
     private boolean suspectsFromKG;
     private  ITextConnector textConnector;
     private  Configuration.PartialBindingType partialBindingType;
@@ -86,7 +87,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
     private static final SimpleRelationFactory srf = new SimpleRelationFactory();
     static final RuleManipulator rm = new RuleManipulator();
-    public int maxRuleDepth;
+    private int maxRuleDepth;
 
 
     /**
@@ -115,6 +116,9 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         this.textConnector=textConnector;
         this.partialBindingType=partialBindingType;
         this.suspectsFromKG=suspectsFromKG;
+        this.maxExplanations=maxExplanations;
+
+        this.maxRuleDepth=maxRuleDepth;
 
     }
 
@@ -733,5 +737,21 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         solution.add(currentQuery.getEvidenceNode());
         solution.setCost(costAccumulator.clone());
         return solution;
+    }
+
+    public int getMaxExplanations() {
+        return maxExplanations;
+    }
+
+    public void setMaxExplanations(int maxExplanations) {
+        this.maxExplanations = maxExplanations;
+    }
+
+    public int getMaxRuleDepth() {
+        return maxRuleDepth;
+    }
+
+    public void setMaxRuleDepth(int maxRuleDepth) {
+        this.maxRuleDepth = maxRuleDepth;
     }
 }

@@ -49,7 +49,7 @@ public class Configuration extends org.deri.iris.Configuration {
     private String spottingConfFile;
     private Enums.EvalMethod evaluationMethod= Enums.EvalMethod.SLD;
     private int maxExplanations=10;
-    private int maxRuleDepth=5;
+    private int maxRuleDepth=3;
 
     public void setExtraProp(Properties extraProp) {
         this.extraProperties = extraProp;

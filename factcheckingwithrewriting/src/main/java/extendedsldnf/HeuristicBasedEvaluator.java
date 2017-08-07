@@ -72,8 +72,10 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 
         while (!pool.isEmpty()){
 
-            if(explanations.size()>10)
+            //
+            if(explanations.size()>getMaxExplanations())
                 break;
+
             // Global selection
             ExtQuerySubs chosenQuery=pool.selectQuery();
 
@@ -89,7 +91,7 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
                 continue;
             }
 
-            if(chosenQuery.getRulesDepth()>=_MAX_NESTING_LEVEL)
+            if(chosenQuery.getRulesDepth()>=getMaxRuleDepth())
                 continue;
 
             // Local literal selection
