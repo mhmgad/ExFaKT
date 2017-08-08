@@ -63,9 +63,9 @@ public class FactChecker {
     }
 
     public static void main(String[] args) throws EvaluationException {
-        Fact f=new Fact("diedIn",Arrays.asList("John F. Kennedy","Dallas"));
-        FactChecker fc=new FactChecker();
-        System.out.println(fc.checkCorrectness(f));
+////        Fact f=new Fact("diedIn",Arrays.asList("John F. Kennedy","Dallas"));
+//        FactChecker fc=new FactChecker();
+//        System.out.println(fc.checkCorrectness(f));
     }
 
 }

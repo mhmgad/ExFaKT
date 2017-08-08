@@ -9,6 +9,6 @@ import org.deri.iris.api.basics.ILiteral;
 public interface ITextConnector {
 
 
-    public ITextResult queryText(ILiteral queryLiteral);
+    public ITextResult queryText(ILiteral queryLiteral) throws Exception;
 
 }

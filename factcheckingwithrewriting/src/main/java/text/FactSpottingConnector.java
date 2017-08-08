@@ -1,6 +1,7 @@
 package text;
 
 import config.Configuration;
+import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
 import de.mpii.datastructures.IFact;
 import de.mpii.factspotting.FactSpotterFactory;
@@ -34,7 +35,7 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
 
 
     @Override
-    public ITextResult queryText(ILiteral queryLiteral) {
+    public ITextResult queryText(ILiteral queryLiteral) throws Exception {
         logger.debug(queryLiteral.toString());
         //System.out.println("Query: "+queryLiteral.toString());
         Fact f=toFact(queryLiteral);
@@ -46,15 +47,19 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
 
     }
 
-    private Fact toFact(ILiteral queryLiteral) {
+    private Fact toFact(ILiteral queryLiteral) throws Exception {
 
         String predicate=queryLiteral.getAtom().getPredicate().getPredicateSymbol();
         ITuple tuple = queryLiteral.getAtom().getTuple();
 //        List<String> args=tuple.stream().map(arg->arg.isGround()? ((String)arg.getValue()):arg.toString()).collect(Collectors.toList());
+        if(tuple.size()==2){
         List<String> args=tuple.stream().map(arg->arg.isGround()? ((String)arg.getValue()):"").collect(Collectors.toList());
-
-        return new Fact(predicate,args);
-
+            return new BinaryFact(args.get(0),predicate,args.get(1));
+        }
+        else
+        {
+            throw new Exception("Only Binary predicates are supported");
+        }
 
     }
 }

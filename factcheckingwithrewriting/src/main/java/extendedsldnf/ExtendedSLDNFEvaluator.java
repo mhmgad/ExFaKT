@@ -360,7 +360,12 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 
         // Check text
-        ITextResult result = textConnector.queryText(queryLiteral);
+        ITextResult result = null;
+        try {
+            result = textConnector.queryText(queryLiteral);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // support is found
         if(!result.found()){
