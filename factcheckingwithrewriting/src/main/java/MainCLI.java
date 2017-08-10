@@ -166,7 +166,7 @@ public class MainCLI {
         List<IQueryExplanations> explanations=correctnessInfos.stream().map(CorrectnessInfo::getPosNegExplanations).flatMap(List::stream).collect(Collectors.toList());
 
         outputExplanations(explanations);
-        evaluateResults(explanations,null,queries);
+        evaluateResults(explanations,correctnessInfos,queries);
 
 
 
