@@ -260,7 +260,7 @@ public class ResultsEvaluator {
 
         int accuracyTotal=0;
         for (List<CorrectnessInfo> gInfo: groupedCorrectness.values()   ) {
-            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).mapToInt(g -> groundTruth.get(g.getGrouping())).boxed().collect(Collectors.toList());
+            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).mapToInt(g -> groundTruth.get(g.getPosQuery())).boxed().collect(Collectors.toList());
             long trueAlter=labels.stream().filter(l-> l.intValue()==1).count();
             long falseAlter=labels.stream().filter(l-> l.intValue()==0).count();
             long groundTruthScore=trueAlter*falseAlter;
