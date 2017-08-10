@@ -246,7 +246,7 @@ public class MainCLI {
 
             evals.dumpCorrectnessInfo(outputCorrectnessFile);
 
-            evals.evaluateRanking(groundTruth);
+            System.out.println("Accuracy: "+evals.evaluateRanking(groundTruth));
 
         }
 
