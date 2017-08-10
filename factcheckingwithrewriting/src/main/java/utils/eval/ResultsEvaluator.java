@@ -256,6 +256,7 @@ public class ResultsEvaluator {
      */
     public double evaluateRanking(Map<IQuery,Integer> groundTruth){
         Map<String, List<CorrectnessInfo>> groupedCorrectness = correctnessInfos.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).collect(Collectors.groupingBy(CorrectnessInfo::getGrouping));
+        System.out.println("groups :"+groupedCorrectness.keySet()+"\n"+ groupedCorrectness.size() );
 
 
         int accuracyTotal=0;
