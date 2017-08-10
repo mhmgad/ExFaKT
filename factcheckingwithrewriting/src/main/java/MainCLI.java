@@ -6,13 +6,13 @@ import mpi.tools.javatools.util.FileUtils;
 import org.apache.commons.cli.*;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.IQuery;
-import org.deri.iris.compiler.ParserException;
 import utils.DataUtils;
 import utils.Enums;
 import utils.eval.ResultsEvaluator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +44,7 @@ public class MainCLI {
     private Option evalMethodOp;
     private Option checkFactOp;
     private BufferedWriter outputCorrectnessFile;
+
 
 
     public MainCLI() {
@@ -146,8 +147,10 @@ public class MainCLI {
         }
         else {
             explanations=extractExplanations(configuration);
+
         }
-        outputExplanations(explanations);
+
+
 
 
     }
@@ -156,37 +159,22 @@ public class MainCLI {
 
 //        Fact f=new Fact("diedIn", Arrays.asList("John F. Kennedy","Dallas"));
 
-        List<IQuery> queries = DataUtils.loadQueries(configuration);
+        LinkedHashMap<IQuery, Integer> queries = DataUtils.loadQueries(configuration);
         FactChecker fc=new FactChecker();
 
-        List<CorrectnessInfo> correctnessInfos=queries.parallelStream().map(q->fc.checkCorrectness(q)).collect(Collectors.toList());
+        List<CorrectnessInfo> correctnessInfos=queries.keySet().parallelStream().map(q->fc.checkCorrectness(q)).collect(Collectors.toList());
         List<IQueryExplanations> explanations=correctnessInfos.stream().map(CorrectnessInfo::getPosNegExplanations).flatMap(List::stream).collect(Collectors.toList());
 
+        outputExplanations(explanations);
+        evaluateResults(explanations,null,queries);
 
-        if(this.outputFile!=null){
-
-            dumpCorrectnessInfo(correctnessInfos);
-        }
 
 
         return explanations;
 
     }
 
-    private void dumpCorrectnessInfo(List<CorrectnessInfo> correctnessInfos) {
 
-        StringBuilder sb=new StringBuilder();
-        sb.append(CorrectnessInfo.getTabReprHeader()+"\n");
-        sb.append(Joiner.on('\n').join(correctnessInfos.stream().map(inf->inf.getTabRepr()).collect(Collectors.toList())));
-
-        try {
-            this.outputCorrectnessFile.write(sb.toString()+"\n");
-            this.outputCorrectnessFile.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     private CommandLine parse(String[] args) throws ParseException {
         return parser.parse(options,args);
@@ -206,12 +194,14 @@ public class MainCLI {
 
     private List<IQueryExplanations> extractExplanations(Configuration configuration) throws EvaluationException, IOException {
         ExplanationsExtractor rfc=new ExplanationsExtractor();
-        List<IQuery> queries = DataUtils.loadQueries(configuration);
+        LinkedHashMap<IQuery, Integer> queries = DataUtils.loadQueries(configuration);
 
-        List<IQueryExplanations> explanations=queries.parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
+        List<IQueryExplanations> explanations=queries.keySet().parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
 
 //        Iterator<IExplanation> explansItr=explainations.iterator();
 
+        outputExplanations(explanations);
+        evaluateResults(explanations,null,queries);
 
         return explanations;
     }
@@ -228,7 +218,15 @@ public class MainCLI {
             this.outputFile.close();
 
 
-        ResultsEvaluator evals=new ResultsEvaluator(explanations);
+
+
+        System.out.println("Recall: "+explanations.stream().filter(exp-> !exp.isEmpty()).count()+"/"+(explanations.size()));
+    }
+
+    private void evaluateResults(List<IQueryExplanations> explanations,List<CorrectnessInfo> correctnessInfo,LinkedHashMap<IQuery, Integer> groundTruth) {
+
+
+        ResultsEvaluator evals=new ResultsEvaluator(explanations,correctnessInfo);
 
         System.out.println(evals.toString());
 
@@ -244,7 +242,15 @@ public class MainCLI {
 
         }
 
-        System.out.println("Recall: "+explanations.stream().filter(exp-> !exp.isEmpty()).count()+"/"+(explanations.size()));
+        if(this.outputCorrectnessFile!=null){
+
+            evals.dumpCorrectnessInfo(outputCorrectnessFile);
+
+            evals.evaluateRanking(groundTruth);
+
+        }
+
+
     }
 
 

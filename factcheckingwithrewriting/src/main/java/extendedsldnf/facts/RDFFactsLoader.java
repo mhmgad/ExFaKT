@@ -12,10 +12,7 @@ import org.deri.iris.terms.TermFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gadelrab on 4/12/17.
@@ -78,10 +75,10 @@ public class RDFFactsLoader extends IFactsLoader{
 
 
     @Override
-    public List<IQuery> parseQueries(BufferedReader fileReader) {
+    public LinkedHashMap<IQuery, Integer> parseQueries(BufferedReader fileReader) {
         //TODO parse the file check if it is implemented in RDF-IRIS-reasoner
 
-        List<IQuery>queries=new LinkedList<>();
+        LinkedHashMap<IQuery, Integer> queries=new LinkedHashMap<>();
 
         try {
             IBasicFactory basicFactory = BasicFactory.getInstance();
@@ -110,7 +107,10 @@ public class RDFFactsLoader extends IFactsLoader{
 
                 ILiteral literal = basicFactory.createLiteral(true, atom);
 
-                queries.add(basicFactory.createQuery(literal));
+                Integer label= (parts.length>3)? Integer.valueOf(parts[3]) :1;
+
+
+                queries.put(basicFactory.createQuery(literal),label);
 
             }
         } catch (IOException e) {

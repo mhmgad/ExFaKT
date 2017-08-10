@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -82,16 +83,17 @@ public abstract class IFactsLoader {
 
     }
 
-    public List<IQuery> parseQueries(List<String> filePaths) {
-        List<IQuery> queries=new LinkedList<>();
+    public LinkedHashMap<IQuery, Integer> parseQueries(List<String> filePaths) {
+        LinkedHashMap<IQuery, Integer> queries=new LinkedHashMap<>();
 
         for (String filePath:filePaths) {
-            queries.addAll( parseQueries(filePath));
+//            queries.addAll( parseQueries(filePath));
+            queries.putAll( parseQueries(filePath));
         }
         return queries;
     }
 
-    public List<IQuery> parseQueries(String file) {
+    public LinkedHashMap<IQuery, Integer> parseQueries(String file) {
         try {
             return  parseQueries(FileUtils.getBufferedUTF8Reader(file));
         } catch (FileNotFoundException e) {
@@ -101,11 +103,11 @@ public abstract class IFactsLoader {
     }
 
 
-    public abstract List<IQuery> parseQueries(BufferedReader fileReader);
+    public abstract LinkedHashMap<IQuery, Integer> parseQueries(BufferedReader fileReader);
 
     public abstract Map<IPredicate, IRelation> parseFacts(BufferedReader fileReader);
 
-    public List<IQuery> parseQueries(FileInputStream file) {
+    public LinkedHashMap<IQuery, Integer> parseQueries(FileInputStream file) {
         return parseQueries(FileUtils.getBufferedUTF8Reader(file));
     }
 

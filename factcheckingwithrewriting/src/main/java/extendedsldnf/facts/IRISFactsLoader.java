@@ -1,15 +1,21 @@
 package extendedsldnf.facts;
 
 import config.Configuration;
+import mpi.tools.javatools.util.FileUtils;
+import org.apache.xpath.operations.Bool;
 import org.deri.iris.api.basics.IPredicate;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
 import org.deri.iris.storage.IRelation;
 import org.deri.iris.storage.IRelationFactory;
+import org.deri.iris.storage.simple.SimpleRelationFactory;
 import utils.DataUtils;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +37,25 @@ public class IRISFactsLoader extends IFactsLoader{
     }
 
     @Override
-    public List<IQuery> parseQueries(BufferedReader fileReader) {
-        List<IQuery> queries=new LinkedList<>();
-        Parser pr=new Parser();
+    public LinkedHashMap<IQuery, Integer> parseQueries(BufferedReader fileReader) {
+        LinkedHashMap<IQuery, Integer> queries=new LinkedHashMap<>();
+
+
         try {
-            pr.parse(fileReader);
-        } catch (ParserException e) {
+            for (String line=fileReader.readLine();line!=null;line=fileReader.readLine()) {
+                if(line.isEmpty())
+                    continue;
+                String[] queryAndLabel=line.trim().split("\t");
+                Parser pr=new Parser();
+                pr.parse(queryAndLabel[0]);
+                Integer label= (queryAndLabel.length>1)? Integer.valueOf(queryAndLabel[1]) :1;
+                pr.getQueries().forEach(q-> queries.put(q,label));
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        queries.addAll(pr.getQueries());
+
         return queries;
     }
 
@@ -67,6 +83,14 @@ public class IRISFactsLoader extends IFactsLoader{
             instance=new IRISFactsLoader(relationFactory);
         }
         return instance;
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        IRISFactsLoader in = getInstance(new SimpleRelationFactory());
+        BufferedReader fileReader = FileUtils.getBufferedUTF8Reader("testQueries.iris");
+        System.out.println(in.parseQueries(fileReader));
+
+
     }
 
 

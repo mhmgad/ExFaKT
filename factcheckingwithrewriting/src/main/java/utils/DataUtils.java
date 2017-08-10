@@ -12,9 +12,7 @@ import org.deri.iris.compiler.ParserException;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by gadelrab on 5/31/17.
@@ -63,14 +61,19 @@ public class DataUtils {
 
     }
 
-    public static List<IQuery> loadQueries(Configuration conf, List<String> queriesFiles) {
+    public static LinkedHashMap<IQuery, Integer> loadQueries(Configuration conf, List<String> queriesFiles) {
         // we need to match the queries to facts type
         IFactsLoader factsLoader= FactsLoaderFactory.getLoader(conf);
         return factsLoader.parseQueries(queriesFiles);
     }
 
-    public static List<IQuery> loadQueries(Configuration conf) {
+    public static LinkedHashMap<IQuery, Integer> loadQueries(Configuration conf) {
         // we need to match the queries to facts type
         return loadQueries(conf,conf.getQueiesFiles());
+    }
+
+    public static void main(String[] args) {
+        List<IRule> mRules=DataUtils.loadRules(Arrays.asList("/home/gadelrab/ideaProjects/RuleBasedFactChecking/rules.tst"));
+
     }
 }

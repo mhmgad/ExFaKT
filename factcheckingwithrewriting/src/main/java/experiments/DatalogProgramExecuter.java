@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -35,7 +36,7 @@ public class DatalogProgramExecuter {
 
     private  Configuration config;
     StratifiedBottomUpEvaluationStrategyFactory evaluationStrategyFactory;
-    List<IQuery> queries;
+    Collection<IQuery> queries;
     List<IRule> rules;
     IExtendedFacts facts;
 
@@ -52,7 +53,7 @@ public class DatalogProgramExecuter {
         evaluationStrategyFactory = new StratifiedBottomUpEvaluationStrategyFactory( new SemiNaiveEvaluatorFactory() );
 
 
-            queries=DataUtils.loadQueries(config,queriesFiles);
+            queries=DataUtils.loadQueries(config,queriesFiles).keySet();
 
 
     }

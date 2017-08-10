@@ -25,5 +25,6 @@ public interface IQueryExplanations {
     public double getScoreOnSize();
 
 
+
     public int size();
 }

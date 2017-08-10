@@ -2,9 +2,11 @@ package utils.eval;
 
 import com.google.common.base.Joiner;
 
+import datastructure.CorrectnessInfo;
 import extendedsldnf.CostAccumulator;
 import extendedsldnf.datastructure.Explanation;
 import extendedsldnf.datastructure.IQueryExplanations;
+import org.deri.iris.api.basics.IQuery;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -21,6 +23,7 @@ import java.util.stream.IntStream;
 public class ResultsEvaluator {
 
 
+    private final List<CorrectnessInfo> correctnessInfos;
     DecimalFormat dcf = new DecimalFormat("0.000");
 
     private int hasExplanationsCount;
@@ -39,10 +42,10 @@ public class ResultsEvaluator {
 
     List<IQueryExplanations> queryExplanations;
 
-    public ResultsEvaluator(List<IQueryExplanations> queryExplanations) {
+    public ResultsEvaluator(List<IQueryExplanations> queryExplanations, List<CorrectnessInfo> correctnessInfos) {
 
         this.queryExplanations=queryExplanations;
-
+        this.correctnessInfos=correctnessInfos;
         evaluate(queryExplanations);
     }
 
@@ -82,6 +85,7 @@ public class ResultsEvaluator {
         explanationsWithTextPerQuery=getAverageAndMax(explanationsStats,QueryExplanationsStats::getExplanationsWithTextCount);
         explanationsWithTextOnlyPerQuery=getAverageAndMax(explanationsStats,QueryExplanationsStats::getExplanationsWithTextOnlyCount);
         explanationsWithKGFactsOnlyPerQuery=getAverageAndMax(explanationsStats,QueryExplanationsStats::getExplanationsWithKGFactsOnlyCount);
+
 
 
     }
@@ -241,6 +245,57 @@ public class ResultsEvaluator {
             e.printStackTrace();
         }
 
+
+    }
+
+    /**
+     * Average accuracy through groups as described in Ndapa's paper
+     * TODO check if accuracy is averaged
+     * @param groundTruth
+     * @return
+     */
+    public double evaluateRanking(Map<IQuery,Integer> groundTruth){
+        Map<String, List<CorrectnessInfo>> groupedCorrectness = correctnessInfos.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).collect(Collectors.groupingBy(CorrectnessInfo::getGrouping));
+
+
+        int accuracyTotal=0;
+        for (List<CorrectnessInfo> gInfo: groupedCorrectness.values()   ) {
+            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).mapToInt(g -> groundTruth.get(g)).boxed().collect(Collectors.toList());
+            long trueAlter=labels.stream().filter(l-> l.intValue()==1).count();
+            long falseAlter=labels.stream().filter(l-> l.intValue()==0).count();
+            long groundTruthScore=trueAlter*falseAlter;
+
+
+
+            long predictionsCount=0;
+            //(τ(fi)=T:τ(fj)=F) (β(fi) > β(fj))
+            for(int i=0;i<labels.size();i++){
+                if(labels.get(i)==1) {
+                    long zeroCount = labels.stream().skip(i).filter(l-> l.intValue()==0).count();
+                    predictionsCount+=zeroCount;
+                }
+
+            }
+            double accuracy= (0.0+predictionsCount)/groundTruthScore;
+            accuracyTotal+=accuracy;
+
+        }
+        return accuracyTotal/groupedCorrectness.size();
+
+    }
+
+    public void dumpCorrectnessInfo(BufferedWriter bufferedWriter) {
+
+        StringBuilder sb=new StringBuilder();
+        sb.append(CorrectnessInfo.getTabReprHeader()+"\n");
+        sb.append(Joiner.on('\n').join(correctnessInfos.stream().map(inf->inf.getTabRepr()).collect(Collectors.toList())));
+
+        try {
+           bufferedWriter.write(sb.toString()+"\n");
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

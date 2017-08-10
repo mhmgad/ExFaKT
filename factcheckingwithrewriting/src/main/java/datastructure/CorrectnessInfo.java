@@ -1,7 +1,10 @@
 package datastructure;
 
 import extendedsldnf.datastructure.IQueryExplanations;
+import org.deri.iris.api.basics.IAtom;
+import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IQuery;
+import org.deri.iris.basics.Atom;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -98,5 +101,11 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
 
     public boolean isCorrect() {
        return getScore()>0;
+    }
+
+
+    public String getGrouping(){
+        IAtom a = posQuery.getLiterals().get(0).getAtom();
+        return a.getPredicate().getPredicateSymbol()+" "+a.getTuple().get(0).toString();
     }
 }
