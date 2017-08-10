@@ -255,16 +255,20 @@ public class ResultsEvaluator {
      * @return
      */
     public double evaluateRanking(Map<IQuery,Integer> groundTruth){
-        Map<String, List<CorrectnessInfo>> groupedCorrectness = correctnessInfos.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).collect(Collectors.groupingBy(CorrectnessInfo::getGrouping));
+        Map<String, List<CorrectnessInfo>> groupedCorrectness = correctnessInfos.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).collect(Collectors.groupingBy(CorrectnessInfo::getGroup));
         System.out.println("groups :"+groupedCorrectness.keySet()+"\n"+ groupedCorrectness.size() );
 
 
         int accuracyTotal=0;
         for (List<CorrectnessInfo> gInfo: groupedCorrectness.values()   ) {
-            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).mapToInt(g -> groundTruth.get(g.getPosQuery())).boxed().collect(Collectors.toList());
+            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore).reversed()).mapToInt(g -> groundTruth.get(g.getPosQuery())).boxed().collect(Collectors.toList());
+            System.out.println(gInfo.get(0).getGroup()+": ");
+            System.out.println("labels="+labels);
+
             long trueAlter=labels.stream().filter(l-> l.intValue()==1).count();
             long falseAlter=labels.stream().filter(l-> l.intValue()==0).count();
             long groundTruthScore=trueAlter*falseAlter;
+            System.out.println("groundTruthScore="+groundTruthScore+"("+trueAlter+"x"+falseAlter+")");
 
 
 
@@ -278,6 +282,8 @@ public class ResultsEvaluator {
 
             }
             double accuracy= (0.0+predictionsCount)/groundTruthScore;
+
+            System.out.println("acc: "+accuracy);
             accuracyTotal+=accuracy;
 
         }

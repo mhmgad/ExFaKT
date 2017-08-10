@@ -104,7 +104,7 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
     }
 
 
-    public String getGrouping(){
+    public String getGroup(){
         IAtom a = posQuery.getLiterals().get(0).getAtom();
         return a.getPredicate().getPredicateSymbol()+" "+a.getTuple().get(0).toString();
     }
