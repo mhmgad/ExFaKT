@@ -11,6 +11,7 @@ import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.ITuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.Converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
     public ITextResult queryText(ILiteral queryLiteral) throws Exception {
         logger.debug(queryLiteral.toString());
         //System.out.println("Query: "+queryLiteral.toString());
-        Fact f=toFact(queryLiteral);
+        Fact f= Converter.toFact(queryLiteral);
 
         ISpottedEvidence evidence=spotter.spot(f);
         return new FactSpottingResult(evidence,queryLiteral);
@@ -47,19 +48,5 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
 
     }
 
-    private Fact toFact(ILiteral queryLiteral) throws Exception {
 
-        String predicate=queryLiteral.getAtom().getPredicate().getPredicateSymbol();
-        ITuple tuple = queryLiteral.getAtom().getTuple();
-//        List<String> args=tuple.stream().map(arg->arg.isGround()? ((String)arg.getValue()):arg.toString()).collect(Collectors.toList());
-        if(tuple.size()==2){
-        List<String> args=tuple.stream().map(arg->arg.isGround()? ((String)arg.getValue()):"").collect(Collectors.toList());
-            return new BinaryFact(args.get(0),predicate,args.get(1));
-        }
-        else
-        {
-            throw new Exception("Only Binary predicates are supported");
-        }
-
-    }
 }

@@ -13,6 +13,8 @@ import java.util.stream.IntStream;
 
 public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
 
+    public static String[] header=new String[]{"Query","posExplans","negExplans","scoreSizePosExplan","scoreSizeNegExplan","sizeScore","sizeSlabel","posQuality","negQuality","queryqScore","qualityLabel","posDocsCount","negDocsCount","DocsCScore","DocsSizeLabel","GTLabel"};
+
     IQuery posQuery;
     IQuery negQuery;
 
@@ -108,7 +110,7 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
 
     public static String getTabReprHeader(){
 
-        String[] header=new String[]{"Query","posExplans","negExplans","scoreSizePosExplan","scoreSizeNegExplan","sizeScore","sizeSlabel","posQuality","negQuality","queryqScore","qualityLabel","posDocsCount","negDocsCount","DocsCScore","DocsSizeLabel","GTLabel"};
+
         List<String> headerWithNum = IntStream.range(0, header.length).mapToObj(i ->  "(" + i + ")" + header[i]).collect(Collectors.toList());
         return Joiner.on('\t').join(headerWithNum);
     }

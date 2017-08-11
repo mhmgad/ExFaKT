@@ -1,8 +1,15 @@
 package experiments;
 
 import com.google.common.base.Joiner;
+import datastructure.CorrectnessInfo;
+import de.mpii.datastructures.BinaryFact;
+import de.mpii.datastructures.Fact;
 import mpi.tools.javatools.util.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.deri.iris.api.basics.IQuery;
+import org.deri.iris.compiler.Parser;
+import org.deri.iris.compiler.ParserException;
+import utils.Converter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,19 +24,21 @@ public class EvaluateLabels {
         String key;
         List<Integer> sortedLabels;
         double accuracy;
+        List<Double> scores;
 
         public double getAccuracy() {
             return accuracy;
         }
 
-        public Group(String key, List<Integer> sortedLabels, double accuracy) {
+        public Group(String key, List<Integer> sortedLabels,List<Double> scores, double accuracy) {
             this.key = key;
             this.sortedLabels = sortedLabels;
+            this.scores=scores;
             this.accuracy = accuracy;
         }
 
         public String toString(){
-            return key+"\t"+sortedLabels+"\t"+accuracy;
+            return key+"\t"+accuracy+"\t"+sortedLabels+"\t"+scores;
         }
 
 
@@ -100,6 +109,7 @@ static class Record {
             List<Record>  gInfo = groupedCorrectness.get(key);
 
             List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(Record::getScore).reversed()).mapToInt(g -> data.get(g)).boxed().collect(Collectors.toList());
+            List<Double> scores = gInfo.stream().sorted(Comparator.comparing(Record::getScore).reversed()).mapToDouble(Record::getScore).boxed().collect(Collectors.toList());
 //            System.out.print(gInfo.get(0).getGroup() + ": ");
 //            System.out.print(labels);
 
@@ -119,7 +129,7 @@ static class Record {
             }
             double accuracy = (0.0 + predictionsCount) / groundTruthScore;
 
-            groups.add(new Group(key,labels,accuracy));
+            groups.add(new Group(key,labels,scores,accuracy));
 
 //            System.out.println("acc: " + predictionsCount + "/" + groundTruthScore + "=" + accuracy);
             accuracyTotal += accuracy;
@@ -136,7 +146,7 @@ static class Record {
     }
 
 
-    public static LinkedHashMap<Record,Integer> loadFile(String filePath, int rankingColumn, int gtLabelColumn) throws IOException {
+    public static LinkedHashMap<Record,Integer> loadFile(String filePath, int rankingColumn, int gtLabelColumn) throws Exception {
         LinkedHashMap<Record,Integer> data= new LinkedHashMap<>();
 
         BufferedReader br = FileUtils.getBufferedUTF8Reader(filePath);
@@ -146,10 +156,25 @@ static class Record {
                 continue;
 
             String ps[]=l.trim().split("\t");
-            if(!StringUtils.isNumeric(ps[rankingColumn]))
+            if(!ps[rankingColumn].trim().matches("[0-9.]*")) {
+                System.out.println("not a number"+ps[rankingColumn]);
                 continue;
+            }
 
-            data.put(new Record(ps[0]+"\t"+ps[1]+"\t"+ps[2],Double.parseDouble(ps[rankingColumn])), Integer.valueOf(ps[gtLabelColumn]));
+            Fact f=null;
+            if(ps[0].startsWith("?-"))
+            {Parser pr=new Parser();
+                pr.parse(ps[0]);
+                List<IQuery> qs=pr.getQueries();
+                f= Converter.toFact(qs.get(0).getLiterals().get(0));
+            }
+            else
+            {
+                f=new BinaryFact(ps[0],ps[1],ps[2]);
+            }
+
+
+            data.put(new Record(f.toSearchableString(),Double.parseDouble(ps[rankingColumn])), Integer.valueOf(ps[gtLabelColumn]));
 
 
         }
@@ -171,14 +196,14 @@ static class Record {
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 
-        String inputFile="verbalizedQueries.txt.label";
+        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/fact_spotting_data/exper2/out/rules_heursitic.out.correctness";
 
-        int rankingScoreColumn=3;
-        int labelColumn=5;
+        int rankingScoreColumn=11;
+        int labelColumn=15;
 
-        String outputFile=inputFile+"."+rankingScoreColumn+".acc";
+        String outputFile=inputFile+"."+rankingScoreColumn+"_"+ CorrectnessInfo.header[rankingScoreColumn]+".acc";
 
         if(args.length>0)
         {
