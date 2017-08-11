@@ -58,6 +58,11 @@ public class FactSpottingResult implements ITextResult{
         return evidence.readable();
     }
 
+    @Override
+    public int getDocumentsCount() {
+        return evidence.size();
+    }
+
     private List<Map<IVariable, ITerm>>  createMaps(List<IVariable> variables, List<String> entities) {
         List<Map<IVariable, ITerm>> variableMappings=new LinkedList<>();
         Set<String> entitiesSet=new HashSet<>(entities);

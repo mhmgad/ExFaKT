@@ -20,12 +20,12 @@ public class FactChecker {
 
 
 
-    public CorrectnessInfo checkCorrectness(IQuery query){
+    public CorrectnessInfo checkCorrectness(IQuery query, int groundTruthLabel){
         IQuery negQuery=negativeQuery(query);
 
 
 
-        return new CorrectnessInfo(query,negQuery,extractor.check(query),extractor.check(negQuery));
+        return new CorrectnessInfo(query,negQuery,extractor.check(query),extractor.check(negQuery),groundTruthLabel);
 
     }
 
@@ -47,13 +47,13 @@ public class FactChecker {
 
 
 
-    public CorrectnessInfo checkCorrectness(Fact fact) {
+    public CorrectnessInfo checkCorrectness(Fact fact,int groundTruthLabel) {
 
         Parser parser = new Parser();
         try {
             parser.parse(fact.getIRISRepresenation());
             IQuery query = parser.getQueries().get(0);
-            return checkCorrectness(query);
+            return checkCorrectness(query, groundTruthLabel);
 
         } catch (ParserException e) {
             e.printStackTrace();
@@ -61,6 +61,9 @@ public class FactChecker {
         return null;
 
     }
+
+
+
 
     public static void main(String[] args) throws EvaluationException {
 ////        Fact f=new Fact("diedIn",Arrays.asList("John F. Kennedy","Dallas"));

@@ -52,6 +52,9 @@ public class ExtQuerySubs extends QueryWithSubstitution{
 
     public void setEvidenceNode(EvidenceNode evidenceNode) {
         this.evidenceNode = evidenceNode;
+        this.evidenceNode.setTreeDepth(treeDepth);
+        this.evidenceNode.setRulesDepth(treeDepth);
+
     }
 
     public EvidenceNode getEvidenceNode() {

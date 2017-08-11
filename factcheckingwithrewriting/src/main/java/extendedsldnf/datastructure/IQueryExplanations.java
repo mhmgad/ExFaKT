@@ -27,4 +27,8 @@ public interface IQueryExplanations {
 
 
     public int size();
+
+    double getAvgQuality();
+
+    public int documentLevelCount();
 }

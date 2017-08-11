@@ -19,6 +19,8 @@ public class EvidenceNode{
     private ITextResult textResults;
     ILiteral queryLiteral;
     Enums.ActionType sourceActionType = Enums.ActionType.ORG;
+    private int treeDepth;
+    private int rulesDepth;
 
 
     public void setRule(IRule rule) {
@@ -66,6 +68,8 @@ public class EvidenceNode{
                         ", rule=" + rule:"" )+
                 ((isVariableBinding())?
                         ", variableMap=" + variableBindingMap:"" )+
+                ", rulesDepth="+ this.rulesDepth+
+                ", treeDepth="+ this.rulesDepth+
                 "}"+((sourceActionType == Enums.ActionType.TEXT_VALID || sourceActionType == Enums.ActionType.KG_VALID)? "**":"" );
     }
 
@@ -107,5 +111,30 @@ public class EvidenceNode{
         return getSourceActionType().equals(Enums.ActionType.RULE_EXPAND);
     }
 
+    /**
+     * Quality of the node is measured as the quality of the fact / depth of the node
+     * Quality = 1 if it is KG fact and value [0-1] for Text. For now text quality =0.5
+     * For other nodes it returns 0
+     * @return
+     */
+    public  double nodeQuality() {
 
+        if(isVariableBinding()||isRuleExpansion())
+            return 0;
+        double sourceQ= isKGFact()? 1:0.5;
+        return sourceQ/rulesDepth;
+    }
+
+    public void setTreeDepth(int treeDepth) {
+        this.treeDepth = treeDepth;
+    }
+
+    public void setRulesDepth(int rulesDepth) {
+        this.rulesDepth = rulesDepth;
+    }
+
+    public  int getRetrievedDocsCount() {
+        if(!isTextMention()) return 0;
+        return textResults.getDocumentsCount();
+    }
 }

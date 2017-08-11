@@ -2,9 +2,7 @@ package datastructure;
 
 import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.api.basics.IAtom;
-import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IQuery;
-import org.deri.iris.basics.Atom;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -19,6 +17,15 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
     IQueryExplanations negExplanations;
 
     DecimalFormat dcf = new DecimalFormat("0.000");
+    private int gTLabel;
+    private Object GTLabel;
+
+    public CorrectnessInfo(IQuery posQuery, IQuery negQuery, IQueryExplanations posExplanations, IQueryExplanations negExplanations, int groundTruthLabel) {
+        this.posQuery = posQuery;
+        this.negQuery = negQuery;
+        this.posExplanations = posExplanations;
+        this.negExplanations = negExplanations;
+    }
 
     public IQuery getPosQuery() {
         return posQuery;
@@ -53,13 +60,10 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
     }
 
     public CorrectnessInfo(IQuery posQuery, IQuery negQuery, IQueryExplanations posExplanations, IQueryExplanations negExplanations) {
-        this.posQuery = posQuery;
-        this.negQuery = negQuery;
-        this.posExplanations = posExplanations;
-        this.negExplanations = negExplanations;
+       this( posQuery,  negQuery,  posExplanations,  negExplanations,0);
     }
 
-    public double getScore(){
+    public double getSizeScore(){
     // different between positiveExplanations Size score and negative ones
         return  posExplanations.getScoreOnSize()-negExplanations.getScoreOnSize();
     }
@@ -69,7 +73,7 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
         return "CorrectnessInfo{" +
                 "posQuery=" + posQuery +
                 ", negQuery=" + negQuery +
-                ", correctnessScore="+getScore()+
+                ", correctnessScore="+ getSizeScore()+
                 ", posExplScore=" +  posExplanations.getScoreOnSize() + " ("+posExplanations.size()+")"+
                 ", negExplScore=" + negExplanations.getScoreOnSize() + " ("+negExplanations.size()+")"+
                 '}';
@@ -82,7 +86,7 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
 //        if(strDiff!=0)
 //            return strDiff;
 //        else
-            return Double.compare(this.getScore(),o.getScore());
+            return Double.compare(this.getSizeScore(),o.getSizeScore());
 
     }
 
@@ -91,16 +95,36 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
     }
 
 
+    public double getExplanationsQuality(boolean isPositive){
+        IQueryExplanations explanations = (isPositive) ? posExplanations : negExplanations;
+        return explanations.getAvgQuality();
+
+    }
+
+
     public static String getTabReprHeader(){
-        return "Query\tposExplans\tnegExplans\tscoreSizePosExplan\tscoreSizeNegExplan\tcorrectnessSizeScore\tlabel";
+        StringBuilder sb=new StringBuilder();
+        sb.append("Query\tposExplans\tnegExplans");
+        sb.append("\tscoreSizePosExplan\tscoreSizeNegExplan\tsizeScore\tsizeSlabel");
+        sb.append("\tposQuality\tnegQuality\tqueryqScore\tqualityLabel");
+        sb.append("\tposDocsCount\tnegDocsCount\tDocsCScore\tDocsSizeLabel");
+        sb.append("\tGTLabel");
+        return sb.toString();
     }
 
     public String getTabRepr() {
-        return getPosQuery()+"\t"+posExplanations.size()+"\t"+negExplanations.size()+"\t"+dcf.format(posExplanations.getScoreOnSize())+"\t"+dcf.format(negExplanations.getScoreOnSize())+"\t"+dcf.format(getScore())+"\t"+isCorrect();
+        StringBuilder sb=new StringBuilder();
+        sb.append(getPosQuery() + "\t" + posExplanations.size() + "\t" + negExplanations.size());
+        sb.append("\t" + dcf.format(posExplanations.getScoreOnSize()) + "\t" + dcf.format(negExplanations.getScoreOnSize()) + "\t" + dcf.format(getSizeScore()) + "\t" + getSizeLabel());
+        sb.append("\t" + dcf.format(getExplanationsQuality(true)) + "\t" + dcf.format(getExplanationsQuality(false)) + "\t" + dcf.format(getQualityScore()) + "\t" + getQualityLabel());
+        sb.append("\t" + posExplanations.documentLevelCount() + "\t" + negExplanations.documentLevelCount() + "\t" +getDocsCountSocre() +"\t" + getDocsCountLabel());
+        sb.append("\t"+ getGTLabel());
+
+        return sb.toString();
     }
 
-    public boolean isCorrect() {
-       return getScore()>0;
+    public int getSizeLabel() {
+       return (getSizeScore()>0)? 1:0;
     }
 
 
@@ -108,4 +132,31 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
         IAtom a = posQuery.getLiterals().get(0).getAtom();
         return a.getPredicate().getPredicateSymbol()+" "+a.getTuple().get(0).toString();
     }
+
+    public void setGTLabel(int label) {
+        this.gTLabel=label;
+    }
+
+
+    public Object getGTLabel() {
+        return GTLabel;
+    }
+
+    public double getQualityScore() {
+        return getExplanationsQuality(true) - getExplanationsQuality(false);
+    }
+
+    public double getDocsCountSocre() {
+        return posExplanations.documentLevelCount()-negExplanations.documentLevelCount();
+    }
+
+    public int getQualityLabel() {
+        return (getQualityScore()>0)? 1:0;
+    }
+
+    public int getDocsCountLabel() {
+        return (getDocsCountSocre()>0)? 1:0;
+    }
+
+
 }

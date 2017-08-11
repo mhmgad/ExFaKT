@@ -20,4 +20,5 @@ public interface ITextResult {
 
     public String readable();
 
+    int getDocumentsCount();
 }

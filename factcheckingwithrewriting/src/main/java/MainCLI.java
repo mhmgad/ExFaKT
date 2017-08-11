@@ -162,8 +162,11 @@ public class MainCLI {
         LinkedHashMap<IQuery, Integer> queries = DataUtils.loadQueries(configuration);
         FactChecker fc=new FactChecker();
 
-        List<CorrectnessInfo> correctnessInfos=queries.keySet().parallelStream().map(q->fc.checkCorrectness(q)).collect(Collectors.toList());
+        List<CorrectnessInfo> correctnessInfos=queries.keySet().parallelStream().map(q->fc.checkCorrectness(q,queries.get(q))).collect(Collectors.toList());
         List<IQueryExplanations> explanations=correctnessInfos.stream().map(CorrectnessInfo::getPosNegExplanations).flatMap(List::stream).collect(Collectors.toList());
+
+
+
 
         outputExplanations(explanations);
         evaluateResults(explanations,correctnessInfos,queries);

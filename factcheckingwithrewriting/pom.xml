@@ -61,7 +61,10 @@
                     <id>create_exper</id>
                 </program>
 
-
+                <program>
+                    <mainClass>experiments.EvaluateLabels</mainClass>
+                    <id>eval_labels</id>
+                </program>
 
             </programs>
 

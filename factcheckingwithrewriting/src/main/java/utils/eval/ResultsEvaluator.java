@@ -255,13 +255,13 @@ public class ResultsEvaluator {
      * @return
      */
     public double evaluateRanking(Map<IQuery,Integer> groundTruth){
-        Map<String, List<CorrectnessInfo>> groupedCorrectness = correctnessInfos.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore)).collect(Collectors.groupingBy(CorrectnessInfo::getGroup));
+        Map<String, List<CorrectnessInfo>> groupedCorrectness = correctnessInfos.stream().sorted(Comparator.comparing(CorrectnessInfo::getSizeScore)).collect(Collectors.groupingBy(CorrectnessInfo::getGroup));
         System.out.println("groups :"+groupedCorrectness.keySet()+"\n"+ groupedCorrectness.size() );
 
 
         double accuracyTotal=0;
         for (List<CorrectnessInfo> gInfo: groupedCorrectness.values()   ) {
-            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getScore).reversed()).mapToInt(g -> groundTruth.get(g.getPosQuery())).boxed().collect(Collectors.toList());
+            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getSizeScore).reversed()).mapToInt(g -> groundTruth.get(g.getPosQuery())).boxed().collect(Collectors.toList());
             System.out.print(gInfo.get(0).getGroup()+": ");
             System.out.print(labels);
 

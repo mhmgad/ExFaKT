@@ -56,6 +56,13 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     }
 
     @Override
+    public double getAvgQuality() {
+        if(size()==0)
+            return 0;
+        return explanations.stream().mapToDouble(Explanation::getQualityScore).average().getAsDouble();
+    }
+
+    @Override
     public ITuple get(int index) {
         //TODO Remove this
         System.out.println("Getting tuple is not supported!");
@@ -120,4 +127,13 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     public CostAccumulator getCostAccumulator() {
         return costAccumulator;
     }
+
+    /**
+     * count the number of documents retrieved. It sums from all explanations. However, only representative if it is a direct spotting.
+     * @return
+     */
+    public int documentLevelCount(){
+            return explanations.stream().flatMap(Explanation::getTextEvidencesStream).mapToInt(EvidenceNode::getRetrievedDocsCount).sum();
+    }
+
 }

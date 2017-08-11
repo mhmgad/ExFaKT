@@ -6,6 +6,8 @@ import extendedsldnf.CostAccumulator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by gadelrab on 3/8/17.
@@ -55,7 +57,11 @@ public class Explanation implements Comparable<Explanation> {
     }
 
     public int getTextEvidencesCount(){
-        return ((int) evidenceNodes.stream().filter(EvidenceNode::isTextMention).count());
+        return ((int) getTextEvidencesStream().count());
+    }
+
+    public Stream<EvidenceNode> getTextEvidencesStream() {
+        return evidenceNodes.stream().filter(EvidenceNode::isTextMention);
     }
 
     public int getKGEvidencesCount(){
@@ -63,8 +69,17 @@ public class Explanation implements Comparable<Explanation> {
     }
 
     public int getVerificationCount(){
-        return (int) evidenceNodes.stream().filter(EvidenceNode::isVerification).count();
+        return (int) getVerificationEvidenceNodesStream().count();
     }
+
+//    public List<EvidenceNode> getVerificationEvidences(){
+//        return getVerificationEvidenceNodesStream().collect(Collectors.toList());
+//    }
+
+    public Stream<EvidenceNode> getVerificationEvidenceNodesStream() {
+        return evidenceNodes.stream().filter(EvidenceNode::isVerification);
+    }
+
 
     public boolean isEmpty(){
         return  evidenceNodes.isEmpty();
@@ -119,4 +134,14 @@ public class Explanation implements Comparable<Explanation> {
     }
 
 
+    /**
+     * sum(evidencesQuality) for the grounded atoms
+     * @return
+     */
+    public  double getQualityScore() {
+
+        return getVerificationEvidenceNodesStream().mapToDouble(EvidenceNode::nodeQuality).sum();
+
+
+    }
 }
