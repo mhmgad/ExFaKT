@@ -2,6 +2,7 @@ package experiments;
 
 import com.google.common.base.Joiner;
 import mpi.tools.javatools.util.FileUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -145,6 +146,8 @@ static class Record {
                 continue;
 
             String ps[]=l.trim().split("\t");
+            if(!StringUtils.isNumeric(ps[rankingColumn]))
+                continue;
 
             data.put(new Record(ps[0]+"\t"+ps[1]+"\t"+ps[2],Double.parseDouble(ps[rankingColumn])), Integer.valueOf(ps[gtLabelColumn]));
 
