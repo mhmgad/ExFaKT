@@ -22,9 +22,9 @@ import static org.deri.iris.factory.Factory.BASIC;
 public class Converter {
 
 
-    public static Fact toFact(ILiteral queryLiteral) throws Exception {
+    public static BinaryFact toFact(ILiteral queryLiteral) throws Exception {
 
-        String predicate="<"+queryLiteral.getAtom().getPredicate().getPredicateSymbol()+">";
+        String predicate=queryLiteral.getAtom().getPredicate().getPredicateSymbol();
         ITuple tuple = queryLiteral.getAtom().getTuple();
 //        List<String> args=tuple.stream().map(arg->arg.isGround()? ((String)arg.getValue()):arg.toString()).collect(Collectors.toList());
         if(tuple.size()==2){
