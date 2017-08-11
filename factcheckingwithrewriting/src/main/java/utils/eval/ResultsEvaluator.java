@@ -248,48 +248,48 @@ public class ResultsEvaluator {
 
     }
 
-    /**
-     * Average accuracy through groups as described in Ndapa's paper
-     * TODO check if accuracy is averaged
-     * @param groundTruth
-     * @return
-     */
-    public double evaluateRanking(Map<IQuery,Integer> groundTruth){
-        Map<String, List<CorrectnessInfo>> groupedCorrectness = correctnessInfos.stream().sorted(Comparator.comparing(CorrectnessInfo::getSizeScore)).collect(Collectors.groupingBy(CorrectnessInfo::getGroup));
-        System.out.println("groups :"+groupedCorrectness.keySet()+"\n"+ groupedCorrectness.size() );
-
-
-        double accuracyTotal=0;
-        for (List<CorrectnessInfo> gInfo: groupedCorrectness.values()   ) {
-            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getSizeScore).reversed()).mapToInt(g -> groundTruth.get(g.getPosQuery())).boxed().collect(Collectors.toList());
-            System.out.print(gInfo.get(0).getGroup()+": ");
-            System.out.print(labels);
-
-            long trueAlter=labels.stream().filter(l-> l.intValue()==1).count();
-            long falseAlter=labels.stream().filter(l-> l.intValue()==0).count();
-            long groundTruthScore=trueAlter*falseAlter;
-
-
-
-
-            long predictionsCount=0;
-            //(τ(fi)=T:τ(fj)=F) (β(fi) > β(fj))
-            for(int i=0;i<labels.size();i++){
-                if(labels.get(i)==1) {
-                    long zeroCount = labels.stream().skip(i).filter(l-> l.intValue()==0).count();
-                    predictionsCount+=zeroCount;
-                }
-
-            }
-            double accuracy= (0.0+predictionsCount)/groundTruthScore;
-
-            System.out.println( "acc: "+ predictionsCount+"/"+groundTruthScore+"="+accuracy);
-            accuracyTotal+=accuracy;
-
-        }
-        return accuracyTotal/groupedCorrectness.size();
-
-    }
+//    /**
+//     * Average accuracy through groups as described in Ndapa's paper
+//     * TODO check if accuracy is averaged
+//     * @param groundTruth
+//     * @return
+//     */
+//    public double evaluateRanking(Map<IQuery,Integer> groundTruth){
+//        Map<String, List<CorrectnessInfo>> groupedCorrectness = correctnessInfos.stream().sorted(Comparator.comparing(CorrectnessInfo::getSizeScore)).collect(Collectors.groupingBy(CorrectnessInfo::getGroup));
+//        System.out.println("groups :"+groupedCorrectness.keySet()+"\n"+ groupedCorrectness.size() );
+//
+//
+//        double accuracyTotal=0;
+//        for (List<CorrectnessInfo> gInfo: groupedCorrectness.values()   ) {
+//            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(CorrectnessInfo::getSizeScore).reversed()).mapToInt(g -> groundTruth.get(g.getPosQuery())).boxed().collect(Collectors.toList());
+//            System.out.print(gInfo.get(0).getGroup()+": ");
+//            System.out.print(labels);
+//
+//            long trueAlter=labels.stream().filter(l-> l.intValue()==1).count();
+//            long falseAlter=labels.stream().filter(l-> l.intValue()==0).count();
+//            long groundTruthScore=trueAlter*falseAlter;
+//
+//
+//
+//
+//            long predictionsCount=0;
+//            //(τ(fi)=T:τ(fj)=F) (β(fi) > β(fj))
+//            for(int i=0;i<labels.size();i++){
+//                if(labels.get(i)==1) {
+//                    long zeroCount = labels.stream().skip(i).filter(l-> l.intValue()==0).count();
+//                    predictionsCount+=zeroCount;
+//                }
+//
+//            }
+//            double accuracy= (0.0+predictionsCount)/groundTruthScore;
+//
+//            System.out.println( "acc: "+ predictionsCount+"/"+groundTruthScore+"="+accuracy);
+//            accuracyTotal+=accuracy;
+//
+//        }
+//        return accuracyTotal/groupedCorrectness.size();
+//
+//    }
 
     public void dumpCorrectnessInfo(BufferedWriter bufferedWriter) {
 

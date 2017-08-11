@@ -200,10 +200,10 @@ static class Record {
 
         String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/fact_spotting_data/exper2/out/rules_heursitic.out.correctness";
 
-        int rankingScoreColumn=11;
+        int rankingScoreColumn=13;
         int labelColumn=15;
 
-        String outputFile=inputFile+"."+rankingScoreColumn+"_"+ CorrectnessInfo.header[rankingScoreColumn]+".acc";
+
 
         if(args.length>0)
         {
@@ -211,7 +211,7 @@ static class Record {
             rankingScoreColumn=Integer.valueOf(args[0]);
             labelColumn=Integer.valueOf(args[1]);
         }
-
+        String outputFile=inputFile+"."+rankingScoreColumn+"_"+ CorrectnessInfo.header[rankingScoreColumn]+".acc";
 
         LinkedHashMap<Record, Integer> data = loadFile(inputFile,rankingScoreColumn,labelColumn);
         List<Group> groups=evaluateRanking(data);
