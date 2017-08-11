@@ -122,7 +122,7 @@ public class EvidenceNode{
         if(isVariableBinding()||isRuleExpansion())
             return 0;
         double sourceQ= isKGFact()? 1:0.5;
-        return sourceQ/rulesDepth;
+        return sourceQ/(Math.max(rulesDepth,1));
     }
 
     public void setTreeDepth(int treeDepth) {

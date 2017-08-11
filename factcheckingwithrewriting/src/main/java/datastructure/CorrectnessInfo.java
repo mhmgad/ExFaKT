@@ -1,5 +1,6 @@
 package datastructure;
 
+import com.google.common.base.Joiner;
 import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.api.basics.IAtom;
 import org.deri.iris.api.basics.IQuery;
@@ -7,6 +8,8 @@ import org.deri.iris.api.basics.IQuery;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
 
@@ -18,9 +21,10 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
 
     DecimalFormat dcf = new DecimalFormat("0.000");
     private int gTLabel;
-    private Object GTLabel;
+    private int GTLabel;
 
     public CorrectnessInfo(IQuery posQuery, IQuery negQuery, IQueryExplanations posExplanations, IQueryExplanations negExplanations, int groundTruthLabel) {
+        this.GTLabel=groundTruthLabel;
         this.posQuery = posQuery;
         this.negQuery = negQuery;
         this.posExplanations = posExplanations;
@@ -59,9 +63,9 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
         this.negExplanations = negExplanations;
     }
 
-    public CorrectnessInfo(IQuery posQuery, IQuery negQuery, IQueryExplanations posExplanations, IQueryExplanations negExplanations) {
-       this( posQuery,  negQuery,  posExplanations,  negExplanations,0);
-    }
+//    public CorrectnessInfo(IQuery posQuery, IQuery negQuery, IQueryExplanations posExplanations, IQueryExplanations negExplanations) {
+//       this( posQuery,  negQuery,  posExplanations,  negExplanations,0);
+//    }
 
     public double getSizeScore(){
     // different between positiveExplanations Size score and negative ones
@@ -103,13 +107,10 @@ public class CorrectnessInfo implements Comparable<CorrectnessInfo>{
 
 
     public static String getTabReprHeader(){
-        StringBuilder sb=new StringBuilder();
-        sb.append("Query\tposExplans\tnegExplans");
-        sb.append("\tscoreSizePosExplan\tscoreSizeNegExplan\tsizeScore\tsizeSlabel");
-        sb.append("\tposQuality\tnegQuality\tqueryqScore\tqualityLabel");
-        sb.append("\tposDocsCount\tnegDocsCount\tDocsCScore\tDocsSizeLabel");
-        sb.append("\tGTLabel");
-        return sb.toString();
+
+        String[] header=new String[]{"Query","posExplans","negExplans","scoreSizePosExplan","scoreSizeNegExplan","sizeScore","sizeSlabel","posQuality","negQuality","queryqScore","qualityLabel","posDocsCount","negDocsCount","DocsCScore","DocsSizeLabel","GTLabel"};
+        List<String> headerWithNum = IntStream.range(0, header.length).mapToObj(i ->  "(" + i + ")" + header[i]).collect(Collectors.toList());
+        return Joiner.on('\t').join(headerWithNum);
     }
 
     public String getTabRepr() {
