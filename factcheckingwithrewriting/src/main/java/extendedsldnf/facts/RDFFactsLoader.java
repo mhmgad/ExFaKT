@@ -99,7 +99,7 @@ public class RDFFactsLoader extends IFactsLoader{
 
                 // arguments
                 ITerm term1= parts[0].startsWith("?")? termFactory.createVariable(parts[0].substring(1)):termFactory.createString(parts[0]);
-                ITerm term2= parts[1].startsWith("?")? termFactory.createVariable(parts[1].substring(1)):termFactory.createString(parts[1]);
+                ITerm term2= parts[2].startsWith("?")? termFactory.createVariable(parts[2].substring(1)):termFactory.createString(parts[2]);
                 ITuple tuple= basicFactory.createTuple(term1,term2);
 
                 IAtom atom = basicFactory.createAtom(predicate, tuple);
