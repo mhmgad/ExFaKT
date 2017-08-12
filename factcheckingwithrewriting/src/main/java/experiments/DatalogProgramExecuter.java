@@ -1,6 +1,8 @@
 package experiments;
 
 import config.Configuration;
+import de.mpii.datastructures.BinaryFact;
+import de.mpii.datastructures.Fact;
 import extendedsldnf.datastructure.IExtendedFacts;
 
 import mpi.tools.javatools.util.FileUtils;
@@ -84,7 +86,11 @@ public class DatalogProgramExecuter {
 
                 for (int i = 0; i < relationSize; i++) {
                     //System.out.println(relation.get(i));
-                    bw.write("?- "+q.getLiterals().get(0).getAtom().getPredicate().toString()+relation.get(i).toString()+".");
+                    Fact f=new BinaryFact(relation.get(i).get(0).toString(),"<"+q.getLiterals().get(0).getAtom().getPredicate()+">",relation.get(i).get(1).toString());
+                    bw.write(f.toSearchableString());
+
+//                    bw.write("?- "+q.getLiterals().get(0).getAtom().getPredicate().toString()+relation.get(i).toString()+".");
+//                    bw.write("?- "+q.getLiterals().get(0).getAtom().getPredicate().toString()+relation.get(i).toString()+".");
                     bw.newLine();
                 }
 
