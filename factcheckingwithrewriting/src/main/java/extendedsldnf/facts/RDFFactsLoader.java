@@ -98,8 +98,8 @@ public class RDFFactsLoader extends IFactsLoader{
                 IPredicate predicate= basicFactory.createPredicate(cleanPredicateName,2);
 
                 // arguments
-                ITerm term1= termFactory.createString(parts[0]);
-                ITerm term2= termFactory.createString(parts[2]);
+                ITerm term1= parts[0].startsWith("?")? termFactory.createVariable(parts[0].substring(1)):termFactory.createString(parts[0]);
+                ITerm term2= parts[1].startsWith("?")? termFactory.createVariable(parts[1].substring(1)):termFactory.createString(parts[1]);
                 ITuple tuple= basicFactory.createTuple(term1,term2);
 
                 IAtom atom = basicFactory.createAtom(predicate, tuple);
