@@ -64,6 +64,8 @@ public class DatalogProgramExecuter {
             IEvaluationStrategy str=evaluationStrategyFactory.createEvaluator(facts,rules,config);
             BufferedWriter bw= FileUtils.getBufferedUTF8Writer(outputfile);
             for (IQuery q: queries) {
+
+                logger.debug(q.toString());
                 List<IVariable> variableBindings = new ArrayList<IVariable>();
                 IRelation relation =  str.evaluateQuery(q,variableBindings);
 
