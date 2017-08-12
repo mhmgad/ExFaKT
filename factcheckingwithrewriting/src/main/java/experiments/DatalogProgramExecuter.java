@@ -86,7 +86,7 @@ public class DatalogProgramExecuter {
 
                 for (int i = 0; i < relationSize; i++) {
                     //System.out.println(relation.get(i));
-                    Fact f=new BinaryFact(relation.get(i).get(0).toString(),"<"+q.getLiterals().get(0).getAtom().getPredicate()+">",relation.get(i).get(1).toString());
+                    Fact f=new BinaryFact(relation.get(i).get(0).getValue().toString(),"<"+q.getLiterals().get(0).getAtom().getPredicate()+">",relation.get(i).get(1).getValue().toString());
                     bw.write(f.toSearchableString());
 
 //                    bw.write("?- "+q.getLiterals().get(0).getAtom().getPredicate().toString()+relation.get(i).toString()+".");
