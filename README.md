@@ -28,7 +28,7 @@ This project depends on 2 other projects:
  
  There are 2 main configiration files 
  * Rewriting Configuration: `QueryRewriting/src/main/resources/fact_checking_rewriting.properties`
- * Fact Spotting Configuration: `FactSpotting/src/main/resources/factchecking.properties`
+ * Fact Spotting Configuration: `FactChecking/src/main/resources/factchecking.properties`
  
  Sample of the configurations can be find in '/src/main/resources/sample_conf' folders. Most of the paramters can be overritten  by the CLI arguments.
  
