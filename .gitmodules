@@ -1,11 +1,3 @@
-#[submodule "iris-reasoner"]
-#	path = iris-reasoner
-#	url = https://github.molgen.mpg.de/gadelrab/iris-reasoner
-
-#[submodule "iris-example"]
-#	path = iris-example
-#	url = https://github.molgen.mpg.de/gadelrab/iris-example
-
 [submodule "FactChecking"]
 	path = FactChecking
 	url = https://github.molgen.mpg.de/gadelrab/FactChecking.git
