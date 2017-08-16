@@ -107,31 +107,7 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
         </dependency>
-            <!--<dependency>-->
-                <!--<groupId> org.apache.cassandra</groupId>-->
-                <!--<artifactId>cassandra-all</artifactId>-->
-                <!--<version>3.10</version>-->
 
-                <!--<exclusions>-->
-                    <!--<exclusion>-->
-                        <!--<groupId>org.slf4j</groupId>-->
-                        <!--<artifactId>slf4j-log4j12</artifactId>-->
-
-                    <!--</exclusion>-->
-                    <!--<exclusion>-->
-                        <!--<groupId>log4j</groupId>-->
-                        <!--<artifactId>log4j</artifactId>-->
-                    <!--</exclusion>-->
-                <!--</exclusions>-->
-
-            <!--</dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-        <!--<dependency>-->
-            <!--<groupId>ch.qos.logback</groupId>-->
-            <!--<artifactId>logback-classic</artifactId>-->
-            <!--<version>1.2.3</version>-->
-        <!--</dependency>-->
 
 
     </dependencies>
