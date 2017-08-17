@@ -1,4 +1,3 @@
-import com.google.common.base.Joiner;
 import config.Configuration;
 import datastructure.CorrectnessInfo;
 import extendedsldnf.datastructure.IQueryExplanations;
@@ -106,7 +105,7 @@ public class MainCLI {
         Configuration configuration=Configuration.getInstance();
 
         //set output
-        String outputFilePath=cmd.getOptionValue(outFileOp.getOpt(),null);
+        String outputFilePath = cmd.getOptionValue(outFileOp.getOpt(), null);
         if(outputFilePath!=null){
             outputFile=FileUtils.getBufferedUTF8Writer(outputFilePath);
             outputStatsFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats");

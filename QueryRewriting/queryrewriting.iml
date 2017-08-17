@@ -11,8 +11,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="factchecking" />
-    <orderEntry type="module" module-name="factchecking" />
     <orderEntry type="library" name="Maven: org.elasticsearch:elasticsearch:5.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:6.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers-common:6.3.0" level="project" />
