@@ -104,6 +104,12 @@ public class MainCLI {
 
         Configuration configuration=Configuration.getInstance();
 
+        if(cmd.hasOption(helpOp.getOpt())){
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp( "check_facts.sh", options );
+            System.exit(0);
+        }
+
         //set output
         String outputFilePath = cmd.getOptionValue(outFileOp.getOpt(), null);
         if(outputFilePath!=null){

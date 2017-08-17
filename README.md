@@ -42,8 +42,18 @@ This project depends on 2 other projects:
  
  `sh QueryRewriting/assemble/bin/check_facts.sh`
  
- Arguments (to be added)
+ Arguments
  ```
+ usage: check_facts.sh [options]
+  -cf,--ckeckFact                                Check correctness of a fact
+  -conf,--configurationFile <file>               Input configuration file
+  -eval,--EvaluationMethod <method>              Evaluation Method
+  -f,--factsFiles <file>                         Facts File
+  -h,--help                                      Show Help
+  -o,--outputFile <file>                         Output File
+  -q,--queryFiles <file>                         Query File in IRIS format
+  -r,--rulesFiles <file>                         Rules File
+  -spotConf,--spottingConfigurationFile <file>   Spotting configuration file
  ```
  
   ### Evaluate fact checking rankings ###
