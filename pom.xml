@@ -15,7 +15,7 @@
         <!--</module>-->
         <!--<module>iris-example</module>-->
         <module>FactChecking</module>
-        <module>factcheckingwithrewriting</module>
+        <module>QueryRewriting</module>
 
     </modules>
 
