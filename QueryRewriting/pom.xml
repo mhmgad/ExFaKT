@@ -84,8 +84,8 @@
         <!--</dependency>-->
 
         <dependency>
-            <groupId>mpii.tools</groupId>
-            <artifactId>factchecking</artifactId>
+            <groupId>factchecking</groupId>
+            <artifactId>fact-spotting</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
