@@ -1,3 +1,6 @@
+package checker;
+
+import checker.IDeepChecker;
 import config.Configuration;
 import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
@@ -15,7 +18,6 @@ import org.deri.iris.compiler.ParserException;
 import org.deri.iris.evaluation.IEvaluationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import text.FactSpottingConnector;
 import utils.DataUtils;
 
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
 /**
  * Created by gadelrab on 3/22/17.
  */
-public class ExplanationsExtractor implements IDeepChecker<IQuery>{
+public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
 
     private IEvaluationStrategy evaluationStrategy;

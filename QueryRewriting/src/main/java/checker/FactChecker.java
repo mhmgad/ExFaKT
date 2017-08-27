@@ -1,3 +1,5 @@
+package checker;
+
 import datastructure.CorrectnessInfo;
 import de.mpii.datastructures.Fact;
 import org.deri.iris.EvaluationException;
@@ -67,7 +69,7 @@ public class FactChecker {
 
     public static void main(String[] args) throws EvaluationException {
 ////        Fact f=new Fact("diedIn",Arrays.asList("John F. Kennedy","Dallas"));
-//        FactChecker fc=new FactChecker();
+//        checker.FactChecker fc=new checker.FactChecker();
 //        System.out.println(fc.checkCorrectness(f));
     }
 

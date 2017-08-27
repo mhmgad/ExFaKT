@@ -1,3 +1,5 @@
+package checker;
+
 import de.mpii.datastructures.Fact;
 import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.api.basics.IQuery;

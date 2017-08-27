@@ -1,3 +1,5 @@
+import checker.ExplanationsExtractor;
+import checker.FactChecker;
 import config.Configuration;
 import datastructure.CorrectnessInfo;
 import extendedsldnf.datastructure.IQueryExplanations;
