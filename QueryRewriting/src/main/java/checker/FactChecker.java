@@ -9,15 +9,25 @@ import org.deri.iris.basics.BasicFactory;
 import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Arrays;
 
+@Singleton
 public class FactChecker {
 
 
     ExplanationsExtractor extractor;
+    private final static FactChecker instance=new FactChecker();
 
-    public FactChecker() throws EvaluationException {
-        this.extractor = new ExplanationsExtractor();
+    @Inject
+    public FactChecker()  {
+
+        try {
+            this.extractor = new ExplanationsExtractor();
+        } catch (EvaluationException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -65,6 +75,9 @@ public class FactChecker {
     }
 
 
+    public synchronized static FactChecker getInstance(){
+        return instance;
+    }
 
 
     public static void main(String[] args) throws EvaluationException {
