@@ -1,10 +1,12 @@
 package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
+import com.google.gson.annotations.JsonAdapter;
 import extendedsldnf.CostAccumulator;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
+import utils.json.adapters.IQueryAdapter;
 
 import java.util.*;
 
@@ -19,6 +21,9 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
      * successful rewriting paths
      */
     private SortedSet<Explanation> explanations;
+
+
+    @JsonAdapter(IQueryAdapter.class)
     private IQuery query;
 
 

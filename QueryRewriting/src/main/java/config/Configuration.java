@@ -66,7 +66,7 @@ public class Configuration extends org.deri.iris.Configuration {
         this.spottingConfFile = spottingConfFile;
     }
 
-    public String setSpottingConfFile() {
+    public String getSpottingConfFile() {
         return spottingConfFile;
     }
 
@@ -284,4 +284,7 @@ public class Configuration extends org.deri.iris.Configuration {
         return extraProperties.getProperty(prop,null);
     }
 
+    public static String getConfigurationFile() {
+        return configurationFile;
+    }
 }

@@ -1,12 +1,16 @@
 package extendedsldnf.datastructure;
 
+import com.google.gson.*;
+import com.google.gson.annotations.JsonAdapter;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
 import text.ITextResult;
 import utils.Enums;
+import utils.json.adapters.ILiteralAdapter;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Objects;
 
@@ -17,6 +21,8 @@ public class EvidenceNode{
     private IRule rule;
     private Map<IVariable, ITerm> variableBindingMap;
     private ITextResult textResults;
+
+
     ILiteral queryLiteral;
     Enums.ActionType sourceActionType = Enums.ActionType.ORG;
     private int treeDepth;
@@ -137,4 +143,18 @@ public class EvidenceNode{
         if(!isTextMention()) return 0;
         return textResults.getDocumentsCount();
     }
+
+
+//    public static class Serializer implements JsonSerializer<EvidenceNode>, JsonDeserializer<EvidenceNode> {
+//
+//        @Override
+//        public JsonElement serialize(EvidenceNode evidenceNode, Type type, JsonSerializationContext jsonSerializationContext) {
+//
+//        }
+//
+//        @Override
+//        public EvidenceNode deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+//            return null;
+//        }
+//    }
 }

@@ -22,12 +22,7 @@ public class FactChecker {
 
     @Inject
     public FactChecker()  {
-
-        try {
             this.extractor = new ExplanationsExtractor();
-        } catch (EvaluationException e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -63,7 +58,7 @@ public class FactChecker {
 
         Parser parser = new Parser();
         try {
-            parser.parse(fact.getIRISRepresenation());
+            parser.parse(fact.getIRISQueryRepresenation());
             IQuery query = parser.getQueries().get(0);
             return checkCorrectness(query, groundTruthLabel);
 

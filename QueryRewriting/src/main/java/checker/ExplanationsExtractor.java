@@ -20,13 +20,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.DataUtils;
 
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
  * Created by gadelrab on 3/22/17.
  */
+@Singleton
 public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
+
+    private static final ExplanationsExtractor explanationsExtractor=new ExplanationsExtractor();
 
     private IEvaluationStrategy evaluationStrategy;
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -70,7 +74,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
 
 
-    public ExplanationsExtractor() throws EvaluationException {
+    public ExplanationsExtractor() {
         // load Config
         config= Configuration.getInstance();
         // Store the configuration object against the current thread.
@@ -144,7 +148,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
         Parser parser = new Parser();
         try {
-            parser.parse(fact.getIRISRepresenation());
+            parser.parse(fact.getIRISQueryRepresenation());
             IQuery query = parser.getQueries().get(0);
             return check(query);
 
@@ -153,6 +157,11 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
         }
         return null;
 
+    }
+
+
+    public static synchronized ExplanationsExtractor getInstance(){
+        return explanationsExtractor;
     }
 
 

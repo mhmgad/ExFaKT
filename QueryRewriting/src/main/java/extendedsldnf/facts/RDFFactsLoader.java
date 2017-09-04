@@ -9,6 +9,7 @@ import org.deri.iris.basics.BasicFactory;
 import org.deri.iris.storage.IRelation;
 import org.deri.iris.storage.IRelationFactory;
 import org.deri.iris.terms.TermFactory;
+import de.mpii.utils.FactUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class RDFFactsLoader extends IFactsLoader{
                 String[] parts=line.split("\t");
 
                 // Create the predicate
-                String cleanPredicateName= getCleanPredicateName(parts[1]);
+                String cleanPredicateName= FactUtils.getCleanPredicateName(parts[1]);
                 IPredicate predicate= basicFactory.createPredicate(cleanPredicateName,2);
 
                 // arguments
@@ -94,7 +95,7 @@ public class RDFFactsLoader extends IFactsLoader{
                 String[] parts=line.split("\t");
 
                 // Create the predicate
-                String cleanPredicateName= getCleanPredicateName(parts[1]);
+                String cleanPredicateName= FactUtils.getCleanPredicateName(parts[1]);
                 IPredicate predicate= basicFactory.createPredicate(cleanPredicateName,2);
 
                 // arguments
@@ -119,14 +120,7 @@ public class RDFFactsLoader extends IFactsLoader{
         return  queries;
     }
 
-    private String getCleanPredicateName(String predicateName) {
-        if(predicateName.startsWith("<"))
-            predicateName= predicateName.replace("<","").replace(">","");
 
-
-        predicateName=predicateName.replaceAll(":","_").replaceAll("\\.","_");
-        return predicateName;
-    }
 
 
     public static RDFFactsLoader getInstance(Configuration configuration) {
