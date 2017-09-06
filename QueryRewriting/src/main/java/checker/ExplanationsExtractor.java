@@ -5,6 +5,7 @@ import config.Configuration;
 import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
 import de.mpii.factspotting.IFactSpotter;
+import de.mpii.factspotting.text.TextEvidence;
 import extendedsldnf.EvaluatorFactory;
 import extendedsldnf.ExtendedSLDNFEvaluator;
 import extendedsldnf.datastructure.IExtendedFacts;

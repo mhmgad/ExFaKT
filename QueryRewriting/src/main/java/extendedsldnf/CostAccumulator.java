@@ -1,10 +1,8 @@
 package extendedsldnf;
 
-import com.google.gson.annotations.JsonAdapter;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import utils.Enums;
-import utils.json.adapters.TObjectIntHashMapAdapter;
 
 /**
  * Created by gadelrab on 7/10/17.
@@ -18,7 +16,6 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
     double relativeCost;
 
 
-    @JsonAdapter(TObjectIntHashMapAdapter.class)
     TObjectIntHashMap<Enums.ActionType> individualCounts;
 
     static TObjectIntMap<Enums.ActionType> costMap;

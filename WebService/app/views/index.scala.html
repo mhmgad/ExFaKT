@@ -22,9 +22,10 @@
 
     @message
 
-    @helper.form(action=routes.HomeController.submit()){
+    @helper.form(action=routes.Explanations.explain()){
         <input type='text' name='query' />
-        <input type='submit' name='submit' value='Submit' />
+
+        <input type='explain' name='explain' value='Submit' />
     }
 
 }

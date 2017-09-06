@@ -1,16 +1,15 @@
 package extendedsldnf.datastructure;
 
-import com.google.gson.*;
 import com.google.gson.annotations.JsonAdapter;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
-import text.ITextResult;
+import text.FactSpottingResult;
 import utils.Enums;
 import utils.json.adapters.ILiteralAdapter;
+import utils.json.adapters.IRuleAdapter;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,11 +17,12 @@ import java.util.Objects;
  * Created by gadelrab on 4/26/17.
  */
 public class EvidenceNode{
+//    @JsonAdapter(IRuleAdapter.class)
     private IRule rule;
     private Map<IVariable, ITerm> variableBindingMap;
-    private ITextResult textResults;
+    private FactSpottingResult textResults;
 
-
+//    @JsonAdapter(ILiteralAdapter.class)
     ILiteral queryLiteral;
     Enums.ActionType sourceActionType = Enums.ActionType.ORG;
     private int treeDepth;
@@ -58,7 +58,7 @@ public class EvidenceNode{
         this.sourceActionType = sourceActionType;
     }
 
-    public void setTextResults(ITextResult textResults){
+    public void setTextResults(FactSpottingResult textResults){
         this.textResults=textResults;
 
     }

@@ -1,0 +1,1 @@
+wasBornIn(?x,?y):- birthPlace(?x,?z), in(?z,?y).

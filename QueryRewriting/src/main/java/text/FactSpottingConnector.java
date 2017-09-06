@@ -29,7 +29,7 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
 
 
     @Override
-    public ITextResult queryText(ILiteral queryLiteral) throws Exception {
+    public FactSpottingResult queryText(ILiteral queryLiteral) throws Exception {
         logger.debug(queryLiteral.toString());
         //System.out.println("Query: "+queryLiteral.toString());
         Fact f= Converter.toFact(queryLiteral);

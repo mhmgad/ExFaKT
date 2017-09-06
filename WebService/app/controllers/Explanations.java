@@ -15,7 +15,7 @@ import views.html.*;
  * This controller contains an action to handle HTTP requests
  * to the application's home page.
  */
-public class HomeController extends Controller {
+public class Explanations extends Controller {
 
 
     ExplanationsExtractor explanationsExtractor=ExplanationsExtractor.getInstance();
@@ -39,9 +39,9 @@ public class HomeController extends Controller {
 
     }
 
-    public Result submit(){
+    public Result explain(){
 
-        System.out.println("Heeere submit");
+        System.out.println("Heeere explain");
         return ok(index.render("Submitted"));
     }
 

@@ -8,18 +8,19 @@ import utils.json.CustomGson;
 
 import java.lang.reflect.Type;
 
-public class TObjectIntHashMapAdapter implements JsonSerializer<TObjectIntHashMap<Object>>, JsonDeserializer<TObjectIntHashMap<Enums.ActionType>>{
+public class TActionTypeIntHashMapAdapter implements JsonSerializer<TObjectIntHashMap<Enums.ActionType>>, JsonDeserializer<TObjectIntHashMap<Enums.ActionType>>{
+
 
 
     @Override
     public JsonElement serialize(TObjectIntHashMap tObjectIntMap, Type type, JsonSerializationContext jsonSerializationContext) {
 
-        CustomGson gson=CustomGson.getInstance();
+        Gson gson=CustomGson.getInstance().getGson();
         JsonArray entriesJson=new JsonArray();
         for (Object key: tObjectIntMap.keys()) {
             JsonObject entry=new JsonObject();
-            entry.add("key",gson.getGson().toJsonTree(key) );
-            entry.add("value",gson.getGson().toJsonTree(tObjectIntMap.get(key)));
+            entry.add("key",gson.toJsonTree(key) );
+            entry.add("value",gson.toJsonTree(tObjectIntMap.get(key)));
             entriesJson.add(entry);
 
 
@@ -33,9 +34,6 @@ public class TObjectIntHashMapAdapter implements JsonSerializer<TObjectIntHashMa
 
         JsonArray jsonArray = jsonElement.getAsJsonArray();
 
-        CustomGson gson=CustomGson.getInstance();
-
-        Type typeOfObject = new TypeToken<Enums.ActionType>() { }.getType();
         TObjectIntHashMap<Enums.ActionType> map=new TObjectIntHashMap<>();
 
         for (JsonElement jsonE: jsonArray) {

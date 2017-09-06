@@ -1,13 +1,15 @@
 package text;
 
 import com.google.common.collect.Sets;
+import com.google.gson.annotations.JsonAdapter;
 import de.mpii.factspotting.ISpottedEvidence;
+import utils.json.adapters.SpottedEvidenceJsonAdapter;
 import org.deri.iris.api.basics.ILiteral;
-import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.factory.ITermFactory;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
 import org.deri.iris.terms.TermFactory;
+import utils.json.adapters.ILiteralAdapter;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -15,8 +17,7 @@ import java.util.stream.IntStream;
 /**
  * Created by gadelrab on 3/31/17.
  */
-public class FactSpottingResult implements ITextResult{
-
+public class FactSpottingResult/* extends ITextResult*/{
 
 
     ILiteral query;
@@ -27,12 +28,12 @@ public class FactSpottingResult implements ITextResult{
         this.query=query;
     }
 
-    @Override
+//    @Override
     public boolean found() {
         return evidence!=null && evidence.isSupporting();
     }
 
-    @Override
+//    @Override
     public List<Map<IVariable, ITerm>> getVaribalesMappings() {
         List<Map<IVariable, ITerm>> variableMappings=new LinkedList<>();
 
@@ -53,12 +54,12 @@ public class FactSpottingResult implements ITextResult{
         return variableMappings;
     }
 
-    @Override
+//    @Override
     public String readable() {
         return evidence.readable();
     }
 
-    @Override
+//    @Override
     public int getDocumentsCount() {
         return evidence.size();
     }

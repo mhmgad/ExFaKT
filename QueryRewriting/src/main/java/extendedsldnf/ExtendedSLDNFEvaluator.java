@@ -23,15 +23,7 @@
 package extendedsldnf;
 
 import config.Configuration;
-
-
-import extendedsldnf.datastructure.ExtQuerySubs;
-import extendedsldnf.datastructure.Explanation;
-import extendedsldnf.datastructure.EvidenceNode;
-import extendedsldnf.datastructure.IQueryExplanations;
-import extendedsldnf.datastructure.IExtendedFacts;
-import extendedsldnf.datastructure.QueryExplanations;
-
+import extendedsldnf.datastructure.*;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.*;
 import org.deri.iris.api.builtins.IBuiltinAtom;
@@ -49,13 +41,15 @@ import org.deri.iris.storage.simple.SimpleRelationFactory;
 import org.deri.iris.utils.TermMatchingAndSubstitution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import text.FactSpottingResult;
 import text.ITextConnector;
-import text.ITextResult;
 import utils.Enums;
 
 import java.util.*;
 
 import static utils.Enums.ActionType.*;
+
+//import text.ITextResult;
 
 /**
  * Implementation of the SLDNF evaluator. Please keep in mind that
@@ -360,7 +354,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 
         // Check text
-        ITextResult result = null;
+        FactSpottingResult result = null;
         try {
             result = textConnector.queryText(queryLiteral);
         } catch (Exception e) {
