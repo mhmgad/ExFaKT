@@ -47,6 +47,12 @@ under the License.
             <groupId>factchecking</groupId>
             <artifactId>query-rewriting</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -76,6 +82,12 @@ under the License.
 
         <dependency>
             <groupId>com.typesafe.play</groupId>
+            <artifactId>play-java-forms_2.12</artifactId>
+            <version>${play2.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe.play</groupId>
             <artifactId>play-test_2.12</artifactId>
             <version>${play2.version}</version>
             <scope>test</scope>
@@ -96,7 +108,51 @@ under the License.
         </dependency>
 
 
+        <!-- https://mvnrepository.com/artifact/com.adrianhurt/play-bootstrap_2.12 -->
+        <dependency>
+            <groupId>com.adrianhurt</groupId>
+            <artifactId>play-bootstrap_2.12</artifactId>
+            <version>1.2-P26-B4</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>3.3.7-1</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>3.2.1</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>flot</artifactId>
+            <version>0.8.3</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.webjars/webjars-play_2.11 -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-play_2.12</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
+
+
+
+
     </dependencies>
+
+
 
     <build>
         <sourceDirectory>${basedir}/app</sourceDirectory>
@@ -109,6 +165,11 @@ under the License.
                 <directory>${basedir}/public</directory>
                 <targetPath>public</targetPath>
             </resource>
+
+            <resource>
+                <directory>${basedir}/target/sbt/web/public/main</directory>
+                <targetPath>public</targetPath>
+            </resource>
         </resources>
 
         <plugins>
@@ -119,8 +180,22 @@ under the License.
                 <extensions>true</extensions>
                 <configuration>
                     <mainLang>java</mainLang>
+
+                    <!-- only if using 'play-java-forms' module -->
+                    <templateAdditionalImports>play.data._ play.core.j.PlayFormsMagicForJava._</templateAdditionalImports>
                     <!--<routesGenerator>injection</routesGenerator>-->
                 </configuration>
+
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>default-play2-compile-assets</id>-->
+                        <!--<goals>-->
+                            <!--<goal>closure-compile</goal> &lt;!&ndash; only if precompiling js assets &ndash;&gt;-->
+                            <!--<goal>coffee-compile</goal> &lt;!&ndash; only if precompiling coffee assets &ndash;&gt;-->
+                            <!--<goal>less-compile</goal> &lt;!&ndash; only if precompiling less assets &ndash;&gt;-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
             </plugin>
 
             <plugin>
@@ -157,6 +232,26 @@ under the License.
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>com.google.code.sbtrun-maven-plugin</groupId>
+                <artifactId>sbtrun-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>compile-assets</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <args>web-assets:assets</args>
+                            <jvmArgs>-Dscala.version=${scala.version}</jvmArgs>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

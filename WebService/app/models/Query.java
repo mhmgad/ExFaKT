@@ -17,6 +17,15 @@ public class Query {
 
     public Query() {
     }
+
+    @Override
+    public String toString() {
+        return "Query{" +
+                "subject='" + subject + '\'' +
+                ", predicate='" + predicate + '\'' +
+                ", object='" + object + '\'' +
+                '}';
+    }
 }
 
 

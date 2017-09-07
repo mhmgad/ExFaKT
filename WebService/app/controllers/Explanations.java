@@ -1,15 +1,18 @@
 package controllers;
 
 import checker.ExplanationsExtractor;
-import checker.FactChecker;
-import config.Configuration;
-import de.mpii.datastructures.BinaryFact;
-import extendedsldnf.datastructure.Explanation;
-import extendedsldnf.datastructure.IQueryExplanations;
-import play.api.data.Form;
-import play.mvc.*;
 
-import views.html.*;
+import com.google.inject.Inject;
+import models.Query;
+
+
+import org.webjars.play.WebJarsUtil;
+import play.data.DynamicForm;
+import play.data.Form;
+import play.data.FormFactory;
+import play.mvc.Controller;
+import play.mvc.Result;
+import views.html.index;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -18,7 +21,20 @@ import views.html.*;
 public class Explanations extends Controller {
 
 
-    ExplanationsExtractor explanationsExtractor=ExplanationsExtractor.getInstance();
+
+//    ExplanationsExtractor explanationsExtractor=ExplanationsExtractor.getInstance();
+
+    private final FormFactory formFactory;
+
+
+
+
+    @Inject
+    public Explanations(final FormFactory formFactory) {
+        this.formFactory = formFactory;
+
+
+    }
 
     /**
      * An action that renders an HTML page with a welcome message.
@@ -33,7 +49,8 @@ public class Explanations extends Controller {
 //
 //        IQueryExplanations res = explanationsExtractor.check(new BinaryFact("Albert Einstein", "was_born_in", "ulm"));
 
-        return ok(index.render("Your new application is ready."));
+        Form<Query> form=formFactory.form(Query.class);
+        return ok(index.render(form));
 
 
 
@@ -41,8 +58,12 @@ public class Explanations extends Controller {
 
     public Result explain(){
 
+    Form<Query> qf=formFactory.form(Query.class).bindFromRequest();
+
+        System.out.println(qf.get());
+        System.out.println(new Query(qf.field("subject").getValue().get().toString(),qf.field("predicate").getValue().get().toString(),qf.field("object").getValue().get().toString()));
         System.out.println("Heeere explain");
-        return ok(index.render("Submitted"));
+        return ok(index.render(qf));
     }
 
 }

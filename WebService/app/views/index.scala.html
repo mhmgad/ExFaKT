@@ -1,10 +1,15 @@
+@(queryForm: Form[Query])
 
+@* @implicitFC = @{ b4.horizontal.fieldConstructor("col-md-2", "col-md-10") } *@
+
+@import b4.vertical.fieldConstructor
 
 @*
  * This template takes a single argument, a String containing a
  * message to display.
- *@
-@(message: String)
+* @(message: String)
+* *@
+
 
 
 
@@ -13,19 +18,44 @@
  * argument is a `String` with the title of the page, the second
  * argument is an `Html` object containing the body of the page.
  *@
-@main("Welcome to Play") {
+@main("Explain Query") {
 
     @*
      * Get an `Html` object by calling the built-in Play welcome
      * template and passing a `String` message.
+    *  @message
      *@
 
-    @message
+     @* @b4.inline.form(routes.Explanations.explain) { implicit ifc =>*@
+    @b4.form(routes.Explanations.explain) {
 
-    @helper.form(action=routes.Explanations.explain()){
-        <input type='text' name='query' />
+        @b4.text(queryForm("subject"), '_hiddenLabel -> "Subject", 'placeholder -> "<Albert_Einstein>" )
+        @b4.text(queryForm("predicate"), '_hiddenLabel -> "Predicate", 'placeholder -> "<wasBornIn>" )
+        @b4.text(queryForm("object"), '_hiddenLabel -> "Object", 'placeholder -> "<Germany>" )
+        @b4.submit('class -> "btn btn btn-primary"){ Explain }
+        @b4.textarea(queryForm("rules"), '_hiddenLabel -> "Rules", 'placeholder -> "a(?x,?y) :- b(x?,?y).",  'rows -> 3)
 
-        <input type='explain' name='explain' value='Submit' />
     }
+
+    @* @helper.form(action = routes.Explanations.explain) {*@
+
+        @* @helper.inputText(queryForm("subject"), 'value-> "test")*@
+       @* @helper.inputText(queryForm("predicate"))*@
+        @* @helper.inputText(queryForm("object"))*@
+
+       @*<input  name='subject' value='@queryForm("subject")'/>*@
+        @*<input  name='predicate' value='@queryForm("predicate")' />*@
+        @*<input  name='object' value='@queryForm("object")'/>*@
+
+        @*<input type='submit' name='explain' value='Explain' />*@
+
+    @*}*@
+
+    @*
+    @helper.form(action=routes.Explanations.explain()){*@
+        @*<input type='text' name='query' />*@
+
+        @*<input type='submit' name='explain' value='Explain' />*@
+    @*}*@
 
 }
