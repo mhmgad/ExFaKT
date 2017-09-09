@@ -1,18 +1,13 @@
 package controllers;
 
-import checker.ExplanationsExtractor;
-
 import com.google.inject.Inject;
+import extendedsldnf.datastructure.IQueryExplanations;
 import models.Query;
-
-
-import org.webjars.play.WebJarsUtil;
-import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.index;
+import views.html.*;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -49,8 +44,8 @@ public class Explanations extends Controller {
 //
 //        IQueryExplanations res = explanationsExtractor.check(new BinaryFact("Albert Einstein", "was_born_in", "ulm"));
 
-        Form<Query> form=formFactory.form(Query.class);
-        return ok(index.render(form));
+
+        return ok(index.render(new Query("<Albert_Einstein>","<birthPlace>","<Ulm>","")));
 
 
 
@@ -59,11 +54,13 @@ public class Explanations extends Controller {
     public Result explain(){
 
     Form<Query> qf=formFactory.form(Query.class).bindFromRequest();
+    Query q=qf.get();
+        System.out.println("explain "+q);
+//        System.out.println(new Query(qf.field("subject").getValue().get().toString(),qf.field("predicate").getValue().get().toString(),qf.field("object").getValue().get().toString(),qf.field("rules").getValue().get().toString()));
 
-        System.out.println(qf.get());
-        System.out.println(new Query(qf.field("subject").getValue().get().toString(),qf.field("predicate").getValue().get().toString(),qf.field("object").getValue().get().toString()));
-        System.out.println("Heeere explain");
-        return ok(index.render(qf));
+        IQueryExplanations explanations = q.explain();
+        System.out.println(explanations);
+        return ok(explans.render(q,explanations));
     }
 
 }

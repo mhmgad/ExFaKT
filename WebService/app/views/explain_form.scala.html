@@ -1,0 +1,46 @@
+@(query:Query)
+<div class="py-2 text-center">
+    <div class="container">
+<div class="row">
+    <div class="col-md-12">
+<form class="text-center justify-content-center" method="get" action="@routes.Explanations.explain()">
+    <div class="py-2">
+        @*<div class="container">*@
+            <div class="form-row justify-content-center align-baseline">
+                <div class="form-group col-md-3">
+                    <input name="subject" class="form-control text-center m-1" placeholder="<Albert_Einstein>" value="@query.getSubject()">
+                </div>
+                <div class="form-group col-md-3">
+                    <input  name="predicate" class="form-control m-1 text-center" placeholder="<wasBornIn>" value="@query.getPredicate()">
+                </div>
+                <div class="form-group col-md-3">
+                    <input  name="object" class="form-control m-1 text-center" placeholder="<Germany>" value="@query.getObject()">
+                </div>
+
+                <div class="form-group col-md-3">
+                    <button type="submit" class="btn btn-primary text-center btn-block m-1">Explain!</button>
+                </div>
+             </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12 text-left">
+                        <label class="col-form-label-lg">Rules</label>
+                        <textarea name="rules" class="form-control" rows="3" placeholder="a(?x,?y):- b(?x,?z), c(?z,?y)." > @query.getRules() </textarea>
+
+
+
+                </div>
+
+             </div>
+        </div>
+
+    @*</div>*@
+
+
+
+</form>
+
+    </div>
+</div>
+    </div>
+</div>

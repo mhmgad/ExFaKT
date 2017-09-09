@@ -117,34 +117,34 @@ under the License.
 
 
         <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>3.3.7-1</version>
-            <scope>runtime</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.webjars</groupId>-->
+            <!--<artifactId>bootstrap</artifactId>-->
+            <!--<version>3.3.7-1</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
 
-        <!-- https://mvnrepository.com/artifact/org.webjars/jquery -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>jquery</artifactId>
-            <version>3.2.1</version>
-            <scope>runtime</scope>
-        </dependency>
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.webjars/jquery &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.webjars</groupId>-->
+            <!--<artifactId>jquery</artifactId>-->
+            <!--<version>3.2.1</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>flot</artifactId>
-            <version>0.8.3</version>
-            <scope>runtime</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.webjars</groupId>-->
+            <!--<artifactId>flot</artifactId>-->
+            <!--<version>0.8.3</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.webjars/webjars-play_2.11 -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>webjars-play_2.12</artifactId>
-            <version>2.6.2</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.webjars</groupId>-->
+            <!--<artifactId>webjars-play_2.12</artifactId>-->
+            <!--<version>2.6.2</version>-->
+        <!--</dependency>-->
 
 
 
@@ -166,10 +166,11 @@ under the License.
                 <targetPath>public</targetPath>
             </resource>
 
-            <resource>
-                <directory>${basedir}/target/sbt/web/public/main</directory>
-                <targetPath>public</targetPath>
-            </resource>
+            <!--For using sbt-->
+            <!--<resource>-->
+                <!--<directory>${basedir}/target/sbt/web/public/main</directory>-->
+                <!--<targetPath>public</targetPath>-->
+            <!--</resource>-->
         </resources>
 
         <plugins>
@@ -239,19 +240,20 @@ under the License.
                 <groupId>com.google.code.sbtrun-maven-plugin</groupId>
                 <artifactId>sbtrun-maven-plugin</artifactId>
                 <version>1.0.1</version>
-                <executions>
-                    <execution>
-                        <id>compile-assets</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <args>web-assets:assets</args>
-                            <jvmArgs>-Dscala.version=${scala.version}</jvmArgs>
-                        </configuration>
-                    </execution>
-                </executions>
+                <!--compile resources with sbt-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>compile-assets</id>-->
+                        <!--<phase>generate-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>run</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<args>web-assets:assets</args>-->
+                            <!--<jvmArgs>-Dscala.version=${scala.version}</jvmArgs>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
             </plugin>
         </plugins>
     </build>

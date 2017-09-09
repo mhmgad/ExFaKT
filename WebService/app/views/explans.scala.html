@@ -1,11 +1,21 @@
 
-@(queryForm: Form[Query])
+@import extendedsldnf.datastructure.IQueryExplanations
+@(query: Query,explanations: IQueryExplanations)
 
 
 
 @main( "Explanations"){
-    @index( queryForm)
+    @explain_form(query)
 
-
-
+    <div class="py-5">
+    @for(explan <- explanations.getExplanations) {
+        <div class="card-body">
+            <h4 class="card-title">Card title</h4>
+            <h6 class="card-subtitle text-muted">Support card subtitle</h6>
+            <p class="card-text p-y-1">@explan.toString()</p>
+            <a href="#" class="card-link">link</a>
+            <a href="#" class="card-link">Second link</a>
+        </div>
+    }
+    </div>
 }

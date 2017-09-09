@@ -30,7 +30,7 @@ public class Module extends AbstractModule {
         bind(Configuration.class).toInstance(Configuration.getInstance());
 
 
-//        bind(ExplanationsExtractor.class).toInstance(ExplanationsExtractor.getInstance());
+       bind(ExplanationsExtractor.class).toInstance(ExplanationsExtractor.getInstance());
     }
 
 
