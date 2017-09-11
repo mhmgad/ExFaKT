@@ -26,7 +26,7 @@
                         @if(node.getSourceActionType().toString().startsWith("TEXT")) {
 
                             <div class="list-group-item"><strong><em>@node.getQueryLiteral().toString()</em></strong>
-                                <a class="badge badge-pill badge-warning" data-toggle="collapse" href="#textE@{index}-@{eviIndex}">@node.getSourceActionType()</a>
+                                <a class="badge badge-pill badge-warning" data-toggle="collapse" href="#textE@{index}-@{eviIndex}">Text Evidence</a>
 
                                 <div class="panel-collapse collapse" id="textE@{index}-@{eviIndex}">
                                     <em>Text Evidences:</em>
@@ -43,7 +43,7 @@
                             </div>
                         }else{
                             <div class="list-group-item"><strong><em>@node.getQueryLiteral().toString()</em></strong>
-                                <a class="badge badge-pill badge-success">@node.getSourceActionType()</a>
+                                <a class="badge badge-pill badge-success">KG Fact</a>
                             </div>
                         }
 
