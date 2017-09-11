@@ -89,10 +89,11 @@ public class Query {
     }
 
     public IQueryExplanations explain(){
-        return explanationsExtractor.check(getAsFact());
+        return explanationsExtractor.check(getAsFact(),getRulesAsIRIS());
     }
 
 }
+
 
 
 

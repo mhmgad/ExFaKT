@@ -1,21 +1,53 @@
-
 @import extendedsldnf.datastructure.IQueryExplanations
-@(query: Query,explanations: IQueryExplanations)
+@(explanations: IQueryExplanations)
+<div class="py-2">
+
+    <div class="container">
+        <h3>Explanations</h3>
+        <hr>
+    </div>
+
+    @if(explanations == null) {
+        <div class="py-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="alert alert-secondary" role="alert">
+                            <h4 class="alert-heading">Explain a fact!</h4>
+                            <p>Write your candidate fact, a set of rules and press explain!</p>
+                        </div>
 
 
-
-@main( "Explanations"){
-    @explain_form(query)
-
-    <div class="py-5">
-    @for(explan <- explanations.getExplanations) {
-        <div class="card-body">
-            <h4 class="card-title">Card title</h4>
-            <h6 class="card-subtitle text-muted">Support card subtitle</h6>
-            <p class="card-text p-y-1">@explan.toString()</p>
-            <a href="#" class="card-link">link</a>
-            <a href="#" class="card-link">Second link</a>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+} else {
+    @if(explanations.size() == 0) {
+        <div class="py-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="alert alert-warning" role="alert">
+                            <h4 class="alert-heading">No Explanations!</h4>
+                            <p>Add more rules, facts or or text resources!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+
+    <div class="container">
+    @for((explan, index) <- explanations.getExplanations().zipWithIndex) {
+      @explan_card(explan,index)
     }
     </div>
+
 }
+    </div>

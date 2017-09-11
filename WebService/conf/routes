@@ -9,7 +9,7 @@ GET     /                           controllers.Explanations.index
 # An example controller showing how to write asynchronous code
 GET     /message                    controllers.AsyncController.message
 
-GET     /explain                           controllers.Explanations.explain
+POST     /                           controllers.Explanations.explain
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -1,17 +1,14 @@
 package checker;
 
-import checker.IDeepChecker;
 import config.Configuration;
 import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
 import de.mpii.factspotting.IFactSpotter;
-import de.mpii.factspotting.text.TextEvidence;
 import extendedsldnf.EvaluatorFactory;
 import extendedsldnf.ExtendedSLDNFEvaluator;
 import extendedsldnf.datastructure.IExtendedFacts;
 import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.ConfigurationThreadLocalStorage;
-import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.compiler.Parser;
@@ -22,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import utils.DataUtils;
 
 import javax.inject.Singleton;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by gadelrab on 3/22/17.
@@ -43,10 +40,10 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
 
     /**
-     * Rewriting rules (iris rules)
+     * Rewriting defaultRules (iris defaultRules)
      *
      */
-    private List<IRule> rules;
+    private List<IRule> defaultRules;
 
     /**
      * Facts  (iris facts)
@@ -69,7 +66,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
     //private IKnowledgeBase knowledgeBase;
 
             // Evalautor
-    ExtendedSLDNFEvaluator evaluator ;
+
 
 
 
@@ -83,13 +80,13 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
 
         // Load Rules
-        rules=DataUtils.loadRules(config.getRulesFiles());
+        defaultRules =DataUtils.loadRules(config.getRulesFiles());
 
         if (logger.isDebugEnabled()) {
             logger.debug("IRIS knowledge-base init");
             logger.debug("========================");
 
-            for (IRule rule : rules) {
+            for (IRule rule : defaultRules) {
                 logger.debug(rule.toString());
             }
 
@@ -97,7 +94,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
         }
 
         //Create KB
-        //knowledgeBase= KnowledgeBaseFactory.createKnowledgeBase(factsMap,rules,config);
+        //knowledgeBase= KnowledgeBaseFactory.createKnowledgeBase(factsMap,defaultRules,config);
 
 
         // Load facts
@@ -113,14 +110,13 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 // Init evaluation Strategy .. useful if we are going to optimize the program
 //        if (config.programOptmimisers.size() > 0)
 //            evaluationStrategy = new OptimisedProgramStrategyAdaptor(facts,
-//                    rules, config);
+//                    defaultRules, config);
 //        else
 //            evaluationStrategy = config.evaluationStrategyFactory
-//                    .createEvaluator(facts, rules, config);
+//                    .createEvaluator(facts, defaultRules, config);
 
 
-        EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
-        evaluator = evaluatorFactory.getEvaluator(facts, rules);
+
 
 
 
@@ -131,10 +127,34 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
     @Override
     public IQueryExplanations check(IQuery query) {
+//        try {
+//
+//           // return (IExplaination) evaluationStrategy.evaluateQuery(query,null);
+//            ExtendedSLDNFEvaluator evaluator ;
+//            EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
+//            evaluator = evaluatorFactory.getEvaluator(facts, defaultRules);
+//            IQueryExplanations relation = evaluator.getExplanation(query);
+//            return  relation;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+
+        return check(query, new HashSet<>());
+    }
+
+    @Override
+    public IQueryExplanations check(IQuery query,Collection<IRule> specificRules) {
         try {
 
-           // return (IExplaination) evaluationStrategy.evaluateQuery(query,null);
+            // return (IExplaination) evaluationStrategy.evaluateQuery(query,null);
+            List<IRule> rules=new LinkedList<>(defaultRules);
+            rules.addAll(specificRules);
 
+
+            ExtendedSLDNFEvaluator evaluator ;
+            EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
+            evaluator = evaluatorFactory.getEvaluator(facts, rules);
             IQueryExplanations relation = evaluator.getExplanation(query);
             return  relation;
         } catch (Exception e) {
@@ -143,20 +163,25 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
         return null;
     }
 
-
     @Override
-    public IQueryExplanations check(Fact fact) {
+    public IQueryExplanations check(Fact fact, Collection<IRule> ruleSet) {
 
         Parser parser = new Parser();
         try {
             parser.parse(fact.getIRISQueryRepresenation());
             IQuery query = parser.getQueries().get(0);
-            return check(query);
+            return check(query,ruleSet);
 
         } catch (ParserException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    @Override
+    public IQueryExplanations check(Fact fact) {
+        return check(fact,new HashSet<>());
 
     }
 

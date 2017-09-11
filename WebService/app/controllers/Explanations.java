@@ -43,9 +43,9 @@ public class Explanations extends Controller {
 //        System.out.println(Configuration.getInstance().getSpottingConfFile());
 //
 //        IQueryExplanations res = explanationsExtractor.check(new BinaryFact("Albert Einstein", "was_born_in", "ulm"));
+        Query exampleQ = new Query("<Albert_Einstein>", "<wasBornIn>", "<Germany>", "wasBornIn(?x,?y):- birthPlace(?x,?z), in(?z,?y).");
 
-
-        return ok(index.render(new Query("<Albert_Einstein>","<birthPlace>","<Ulm>","")));
+        return ok(index.render(exampleQ,null));
 
 
 
@@ -60,7 +60,7 @@ public class Explanations extends Controller {
 
         IQueryExplanations explanations = q.explain();
         System.out.println(explanations);
-        return ok(explans.render(q,explanations));
+        return ok(index.render(q,explanations));
     }
 
 }

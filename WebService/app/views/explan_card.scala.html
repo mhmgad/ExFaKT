@@ -1,0 +1,48 @@
+@import extendedsldnf.datastructure.Explanation
+@(explan: Explanation, index: Int)
+
+
+<div class="card-body border border-secondary">
+    <h4 class="card-title">Explanation #@{
+        index + 1
+    }</h4>
+    <h5 class="card-subtitle text-muted">This fact is true as:</h5>
+    <div class="card-text py-1 m-1" >
+        @*<p class="card-text p-y-1">@explan.toString()</p>*@
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="header-panel">
+                    <h5 class="panel-title">
+                        <a data-toggle="collapse" href="#factsdiv@{index + 1}">Facts</a>
+                    </h5>
+                </div>
+                <div class="panel-collapse collapse show" id="factsdiv@{index + 1}">
+                    <ul class="list-group">
+
+                    @for(node <- explan.getVerificationEvidences()) {
+                        @if(node.getSourceActionType().toString().startsWith("TEXT")) {
+
+                            <li class="list-group-item"><strong><em>@node.getQueryLiteral().toString()</em></strong>
+                                <span class="badge badge-warning p-1" data-toggle="collapse" href="#factsdiv@{
+                                    index + 1
+                                }">@node.getSourceActionType()</span>
+                            </li>
+                        }else{
+                            <li class="list-group-item"><strong><em>@node.getQueryLiteral().toString()</em></strong>
+                                <span class="badge badge-success p-1" data-toggle="collapse" href="#factsdiv@{
+                                    index + 1
+                                }">@node.getSourceActionType()</span>
+                            </li>
+                        }
+
+                    }
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @*<a href="#" class="card-link">link</a>*@
+    @*<a href="#" class="card-link">Second link</a>*@
+</div>

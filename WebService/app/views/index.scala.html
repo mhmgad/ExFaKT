@@ -1,4 +1,6 @@
-@(query: Query)
+
+@import extendedsldnf.datastructure.IQueryExplanations
+@(query: Query,explanations:IQueryExplanations)
 
 @* @implicitFC = @{ b4.horizontal.fieldConstructor("col-md-2", "col-md-10") } *@
 
@@ -21,8 +23,10 @@
 @main("Explain Query") {
 
 
+@explain_form(query)
 
 
-                    @explain_form(query)
+
+ @explans(explanations)
 
 }
