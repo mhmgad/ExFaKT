@@ -17,7 +17,8 @@ import java.util.Objects;
  * Created by gadelrab on 4/26/17.
  */
 public class EvidenceNode{
-//    @JsonAdapter(IRuleAdapter.class)
+
+    //    @JsonAdapter(IRuleAdapter.class)
     private IRule rule;
     private Map<IVariable, ITerm> variableBindingMap;
     private FactSpottingResult textResults;
@@ -28,6 +29,13 @@ public class EvidenceNode{
     private int treeDepth;
     private int rulesDepth;
 
+    public IRule getRule() {
+        return rule;
+    }
+
+    public FactSpottingResult getTextResults() {
+        return textResults;
+    }
 
     public void setRule(IRule rule) {
         this.rule = rule;

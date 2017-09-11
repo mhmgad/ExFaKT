@@ -76,6 +76,10 @@ public class Explanation implements Comparable<Explanation> {
         return getVerificationEvidenceNodesStream().collect(Collectors.toList());
     }
 
+    public List<EvidenceNode> getRulesEvidences(){
+        return  evidenceNodes.stream().filter(EvidenceNode::isRuleExpansion).collect(Collectors.toList());
+    }
+
     public Stream<EvidenceNode> getVerificationEvidenceNodesStream() {
         return evidenceNodes.stream().filter(EvidenceNode::isVerification);
     }

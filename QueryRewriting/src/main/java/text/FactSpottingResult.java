@@ -28,7 +28,11 @@ public class FactSpottingResult/* extends ITextResult*/{
         this.query=query;
     }
 
-//    @Override
+    public ISpottedEvidence getEvidence() {
+        return evidence;
+    }
+
+    //    @Override
     public boolean found() {
         return evidence!=null && evidence.isSupporting();
     }
