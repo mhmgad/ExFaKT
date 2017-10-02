@@ -33,10 +33,10 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
     private IEvaluationStrategy evaluationStrategy;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    /**
-     * The engine used to spot facts
-     */
-    private IFactSpotter<BinaryFact> factIFactSpotter;
+//    /**
+//     * The engine used to spot facts
+//     */
+//    private IFactSpotter<BinaryFact> factIFactSpotter;
 
 
     /**
