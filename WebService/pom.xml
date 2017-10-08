@@ -109,11 +109,11 @@ under the License.
 
 
         <!-- https://mvnrepository.com/artifact/com.adrianhurt/play-bootstrap_2.12 -->
-        <dependency>
-            <groupId>com.adrianhurt</groupId>
-            <artifactId>play-bootstrap_2.12</artifactId>
-            <version>1.2-P26-B4</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.adrianhurt</groupId>-->
+            <!--<artifactId>play-bootstrap_2.12</artifactId>-->
+            <!--<version>1.2-P26-B4</version>-->
+        <!--</dependency>-->
 
 
         <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
