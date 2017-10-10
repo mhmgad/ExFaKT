@@ -25,8 +25,8 @@
                     @for((node, eviIndex) <- explan.getVerificationEvidences().zipWithIndex) {
                         @if(node.getSourceActionType().toString().startsWith("TEXT")) {
 
-                            <div class="list-group-item"><strong><em>@node.getQueryLiteral().toString()</em></strong>
-                                <a class="badge badge-pill badge-warning" data-toggle="collapse" href="#textE@{index}-@{eviIndex}">Text Evidence</a>
+                            <div class="list-group-item"><strong><em>@node.getReadableQuery().toString()</em></strong>
+                                <a class="badge badge-pill badge-warning" data-toggle="collapse" href="#textE@{index}-@{eviIndex}">Source:Text </a>
 
                                 <div class="panel-collapse collapse" id="textE@{index}-@{eviIndex}">
                                     <em>Text Evidences:</em>
@@ -42,8 +42,8 @@
 
                             </div>
                         }else{
-                            <div class="list-group-item"><strong><em>@node.getQueryLiteral().toString()</em></strong>
-                                <a class="badge badge-pill badge-success">KG Fact</a>
+                            <div class="list-group-item"><strong><em>@node.getReadableQuery().toString()</em></strong>
+                                <a class="badge badge-pill badge-success">Source: KG Fact</a>
                             </div>
                         }
 

@@ -1,11 +1,13 @@
 package extendedsldnf.datastructure;
 
 import com.google.gson.annotations.JsonAdapter;
+import de.mpii.datastructures.BinaryFact;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
 import text.FactSpottingResult;
+import utils.Converter;
 import utils.Enums;
 import utils.json.adapters.ILiteralAdapter;
 import utils.json.adapters.IRuleAdapter;
@@ -150,6 +152,17 @@ public class EvidenceNode{
     public  int getRetrievedDocsCount() {
         if(!isTextMention()) return 0;
         return textResults.getDocumentsCount();
+    }
+
+    public String getReadableQuery(){
+        try {
+            BinaryFact fact=Converter.toFact(queryLiteral);
+            return fact.toSearchableString().replace("\t"," ");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 
 
