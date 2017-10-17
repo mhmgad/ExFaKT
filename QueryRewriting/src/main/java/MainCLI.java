@@ -47,6 +47,7 @@ public class MainCLI {
     private BufferedWriter outputCorrectnessFile;
     private Option maxExplanationsOp;
     private Option maxRulesNestingOp;
+    private BufferedWriter outputConfigurationFile;
 
 
     public MainCLI() {
@@ -134,6 +135,8 @@ public class MainCLI {
             if(cmd.hasOption(checkFactOp.getOpt())){
                 outputCorrectnessFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".correctness");
             }
+            outputConfigurationFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".config.txt");
+
 
         }
 
@@ -168,6 +171,15 @@ public class MainCLI {
         }
 
         List<IQueryExplanations> explanations;
+        if(outputConfigurationFile!=null){
+            outputConfigurationFile.write(Configuration.getInstance().toString());
+            outputConfigurationFile.newLine();
+            outputConfigurationFile.newLine();
+            outputConfigurationFile.write(de.mpii.factspotting.config.Configuration.getInstance().toString());
+            outputConfigurationFile.newLine();
+            outputConfigurationFile.close();
+        }
+
         if(cmd.hasOption(checkFactOp.getOpt())){
             explanations=checkFact(configuration);
         }

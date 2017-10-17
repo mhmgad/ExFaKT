@@ -287,4 +287,23 @@ public class Configuration extends org.deri.iris.Configuration {
     public static String getConfigurationFile() {
         return configurationFile;
     }
+
+
+    @Override
+    public String toString() {
+        return "Configuration{" +'\n'+
+                "extraProperties=" + extraProperties +'\n'+
+                ", spottingConfFile='" + spottingConfFile + '\'' +'\n'+
+                ", evaluationMethod=" + evaluationMethod +'\n'+
+                ", maxExplanations=" + maxExplanations +'\n'+
+                ", maxRuleNesting=" + maxRuleNesting +'\n'+
+                ", spottingMethod=" + spottingMethod +'\n'+
+                ", rulesFiles=" + rulesFiles +'\n'+
+                ", factsFiles=" + factsFiles +'\n'+
+                ", queiesFiles=" + queiesFiles +'\n'+
+                ", factsFormat=" + factsFormat +'\n'+
+                ", partialBindingType=" + partialBindingType +'\n'+
+                ", suspectsFromKG=" + suspectsFromKG +'\n'+
+                '}';
+    }
 }
