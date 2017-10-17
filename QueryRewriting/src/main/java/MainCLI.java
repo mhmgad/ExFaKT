@@ -225,7 +225,7 @@ public class MainCLI {
         ExplanationsExtractor rfc=new ExplanationsExtractor();
         LinkedHashMap<IQuery, Integer> queries = DataUtils.loadQueries(configuration);
 
-        List<IQueryExplanations> explanations=queries.keySet().stream().map(q->rfc.check(q)).collect(Collectors.toList());
+        List<IQueryExplanations> explanations=queries.keySet().parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
 
 //        Iterator<IExplanation> explansItr=explainations.iterator();
 
