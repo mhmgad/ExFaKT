@@ -45,7 +45,8 @@ public class MainCLI {
     private Option evalMethodOp;
     private Option checkFactOp;
     private BufferedWriter outputCorrectnessFile;
-
+    private Option maxExplanationsOp;
+    private Option maxRulesNestingOp;
 
 
     public MainCLI() {
@@ -94,8 +95,18 @@ public class MainCLI {
 
 
         // check facts or normal flow
-        checkFactOp =Option.builder("cf").longOpt("ckeckFact").hasArg(false).desc( "Check correctness of a fact").build();
+        checkFactOp =Option.builder("cf").longOpt("checkFact").hasArg(false).desc( "Check correctness of a fact").build();
         options.addOption(checkFactOp);
+
+        // Max explanations
+        maxExplanationsOp =Option.builder("maxExp").longOpt("max-explanations").hasArg(true).argName("explans").desc( "Maximum number of explanations per query").build();
+        options.addOption(maxExplanationsOp);
+
+        // Max explanations
+        maxRulesNestingOp =Option.builder("maxR").longOpt("max-rules").hasArg(true).argName("rules").desc( "Maximum number of nested rules per explanation").build();
+        options.addOption(maxRulesNestingOp);
+
+
     }
 
     public void run(CommandLine cmd) throws Exception{
@@ -146,6 +157,14 @@ public class MainCLI {
 
         if(cmd.hasOption(evalMethodOp.getOpt())) {
             configuration.setEvaluationMethod(Enums.EvalMethod.valueOf(cmd.getOptionValue(evalMethodOp.getOpt(), Enums.EvalMethod.SLD.name())));
+        }
+
+        if(cmd.hasOption(maxExplanationsOp.getOpt())) {
+            configuration.setMaxExplanations(Integer.valueOf(cmd.getOptionValue(maxExplanationsOp.getOpt(), "5")));
+        }
+
+        if(cmd.hasOption(maxRulesNestingOp.getOpt())) {
+            configuration.setMaxRuleNesting(Integer.valueOf(cmd.getOptionValue(maxRulesNestingOp.getOpt(), "5")));
         }
 
         List<IQueryExplanations> explanations;
