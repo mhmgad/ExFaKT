@@ -3,8 +3,13 @@
 <div class="py-2">
 
     <div class="container">
-        <h3>Explanations</h3>
-        <hr>
+        @if(explanations!=null) {
+            <h3>Explanations for <strong> @explanations.getQueryAsFact().toSearchableString() <strong> </h3>
+            <hr>
+        }else{
+
+        }
+
     </div>
 
     @if(explanations == null) {

@@ -2,10 +2,12 @@ package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
 import com.google.gson.annotations.JsonAdapter;
+import de.mpii.datastructures.Fact;
 import extendedsldnf.CostAccumulator;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
+import utils.Converter;
 import utils.json.adapters.IQueryAdapter;
 
 import java.util.*;
@@ -97,6 +99,16 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     @Override
     public IQuery getQuery() {
         return this.query;
+    }
+
+    @Override
+    public Fact getQueryAsFact() {
+        try {
+            return Converter.toFact(getQuery().getLiterals().get(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

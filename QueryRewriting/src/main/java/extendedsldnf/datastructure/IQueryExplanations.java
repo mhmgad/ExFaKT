@@ -1,5 +1,6 @@
 package extendedsldnf.datastructure;
 
+import de.mpii.datastructures.Fact;
 import org.deri.iris.api.basics.IQuery;
 
 import java.util.Collection;
@@ -13,6 +14,8 @@ public interface IQueryExplanations {
     boolean isEmpty();
 
     public IQuery getQuery();
+
+    public Fact getQueryAsFact();
 
     public Collection<Explanation> getExplanations();
 
