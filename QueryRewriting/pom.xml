@@ -13,14 +13,27 @@
     <version>1.0</version>
     <artifactId>query-rewriting</artifactId>
 
+
+
     <build>
     <plugins>
 
+
+        <plugin>
+            <groupId>com.google.code.play2-maven-plugin</groupId>
+            <artifactId>play2-maven-plugin</artifactId>
+            <version>${play2.plugin.version}</version>
+            <configuration>
+                <playVersion>${play2.version}</playVersion>
+                <runSkip>true</runSkip>
+            </configuration>
+        </plugin>
 
 
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
+            <version>${compiler.plugin.version}</version>
             <configuration>
                 <source>1.8</source>
                 <target>1.8</target>

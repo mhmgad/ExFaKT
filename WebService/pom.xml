@@ -22,10 +22,16 @@ under the License.
     <modelVersion>4.0.0</modelVersion>
     <groupId>factchecking</groupId>
     <artifactId>web-service</artifactId>
-    <version>1.0.0</version>
+    <version>1.0</version>
     <packaging>play2</packaging>
 
     <name>Fact checker Webservice</name>
+
+    <parent>
+        <artifactId>rule-based-factchecking</artifactId>
+        <groupId>factchecking</groupId>
+        <version>1.0</version>
+    </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,6 +45,7 @@ under the License.
 
         <play2.plugin.version>1.0.0-rc1</play2.plugin.version>
         <sbt-compiler.plugin.version>1.0.0</sbt-compiler.plugin.version>
+        <compiler.plugin.version>3.5.1</compiler.plugin.version>
     </properties>
 
     <dependencies>
@@ -181,7 +188,9 @@ under the License.
                 <extensions>true</extensions>
                 <configuration>
                     <mainLang>java</mainLang>
-
+                    <runSkip>false</runSkip>
+                    <httpsPort>9350</httpsPort>
+                    <httpPort>9350</httpPort>
                     <!-- only if using 'play-java-forms' module -->
                     <templateAdditionalImports>play.data._ play.core.j.PlayFormsMagicForJava._</templateAdditionalImports>
                     <!--<routesGenerator>injection</routesGenerator>-->
@@ -228,7 +237,7 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>${compiler.plugin.version}</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -240,20 +249,6 @@ under the License.
                 <groupId>com.google.code.sbtrun-maven-plugin</groupId>
                 <artifactId>sbtrun-maven-plugin</artifactId>
                 <version>1.0.1</version>
-                <!--compile resources with sbt-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>compile-assets</id>-->
-                        <!--<phase>generate-resources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>run</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<args>web-assets:assets</args>-->
-                            <!--<jvmArgs>-Dscala.version=${scala.version}</jvmArgs>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
             </plugin>
         </plugins>
     </build>

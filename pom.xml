@@ -8,16 +8,114 @@
     <artifactId>rule-based-factchecking</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <modules>
-        <!--<module>-->
-            <!--iris-reasoner-->
-        <!--</module>-->
-        <!--<module>iris-example</module>-->
-        <module>FactChecking</module>
-        <module>QueryRewriting</module>
+        <play2.version>2.6.2</play2.version>
+        <scala.version>2.12.3</scala.version>
 
-    </modules>
+        <jar.plugin.version>2.6</jar.plugin.version>
+        <surefire.plugin.version>2.19.1</surefire.plugin.version>
+
+        <play2.plugin.version>1.0.0-rc1</play2.plugin.version>
+        <sbt-compiler.plugin.version>1.0.0</sbt-compiler.plugin.version>
+        <compiler.plugin.version>3.5.1</compiler.plugin.version>
+    </properties>
+
+
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>FactChecking</module>
+                <module>QueryRewriting</module>
+
+
+            </modules>
+        </profile>
+        <profile>
+            <id>web</id>
+            <modules>
+                <module>WebService</module>
+                <module>FactChecking</module>
+                <module>QueryRewriting</module>
+
+
+            </modules>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.google.code.play2-maven-plugin</groupId>
+                        <artifactId>play2-maven-plugin</artifactId>
+                        <version>${play2.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <mainLang>java</mainLang>
+                            <mainModule>web-service</mainModule>
+                            <httpsPort>9350</httpsPort>
+                            <httpPort>9350</httpPort>
+                            <!--<routesGenerator>injected</routesGenerator>-->
+                        </configuration>
+                    </plugin>
+
+
+                </plugins>
+
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <version>${compiler.plugin.version}</version>
+                            <configuration>
+                                <source>1.8</source>
+                                <target>1.8</target>
+                            </configuration>
+                        </plugin>
+
+                        <plugin>
+                            <groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
+                            <artifactId>sbt-compiler-maven-plugin</artifactId>
+                            <version>${sbt-compiler.plugin.version}</version>
+                        </plugin>
+
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <version>${surefire.plugin.version}</version>
+                        </plugin>
+
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-jar-plugin</artifactId>
+                            <version>${jar.plugin.version}</version>
+                            <configuration>
+                                <archive>
+                                    <manifest>
+                                        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                        <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                    </manifest>
+                                </archive>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+
+            </build>
+
+
+
+        </profile>
+    </profiles>
+
+
+
 
 
 </project>
