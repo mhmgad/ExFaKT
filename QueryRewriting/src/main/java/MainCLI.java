@@ -255,12 +255,16 @@ public class MainCLI {
         for (IQueryExplanations explanation:explanations) {
             String result="\nQuery:\t"+explanation.getQuery()+"\n"+explanation+"\n";
             System.out.println(result);
-            Gson gson=new CustomGson().getGson();
+
             if(this.outputFile!=null) {
                 this.outputFile.write(result);
-                this.outputJSONFile.write(gson.toJson(explanation));
             }
 
+        }
+        Gson gson=new CustomGson().getGson();
+        if(this.outputFile!=null) {
+
+            this.outputJSONFile.write(gson.toJson(explanations));
         }
         if(this.outputFile!=null) {
             this.outputFile.close();
