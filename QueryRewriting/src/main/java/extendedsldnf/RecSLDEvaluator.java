@@ -86,6 +86,15 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
     private int maxRuleDepth;
 
 
+    /**
+     * Constructor
+     *
+     * @param facts one or many facts
+     * @param rules list of rules
+     */
+    public RecSLDEvaluator(IExtendedFacts facts, List<IRule> rules) {
+        this(facts,rules,null, Configuration.PartialBindingType.NONE,false,Integer.MAX_VALUE,10);
+    }
 
 
     /**
@@ -94,7 +103,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
      * @param facts one or many facts
      * @param rules list of rules
      */
-    public RecSLDEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, int maxExplanations, int maxRuleDepth) {
+    public RecSLDEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,int maxExplanations,int maxRuleDepth) {
         mFacts = facts;
         mRules = getOrderedRules(rules);
 
