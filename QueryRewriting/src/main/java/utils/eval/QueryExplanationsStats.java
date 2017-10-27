@@ -1,7 +1,6 @@
 package utils.eval;
 
 import com.google.common.base.Joiner;
-import extendedsldnf.ExtendedSLDNFEvaluator;
 import extendedsldnf.datastructure.Explanation;
 import extendedsldnf.datastructure.IQueryExplanations;
 

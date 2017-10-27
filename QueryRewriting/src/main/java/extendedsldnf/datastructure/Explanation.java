@@ -2,6 +2,7 @@ package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
 import extendedsldnf.CostAccumulator;
+import org.deri.iris.api.basics.IQuery;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,17 +16,25 @@ import java.util.stream.Stream;
 
 public class Explanation implements Comparable<Explanation> {
 
+    private final String method;
+    private final int genOrder;
+    private final String id;
     List<EvidenceNode> evidenceNodes=new LinkedList<>();
     private CostAccumulator cost;
+    private IQuery query;
 
 
-    public Explanation() {
-        this(new LinkedList<EvidenceNode>());
+    public Explanation(IQuery query,String method,int genOrder) {
+        this(new LinkedList<EvidenceNode>(), query, method, genOrder);
 
     }
 
-    public Explanation(List<EvidenceNode> evidenceNodes) {
+    public Explanation(List<EvidenceNode> evidenceNodes,IQuery query,String method,int genOrder) {
         this.evidenceNodes = evidenceNodes;
+        this.method=method;
+        this.genOrder=genOrder;
+        this.query=query;
+        this.id=query+"_"+method+"_"+genOrder;
     }
 
 
@@ -147,5 +156,33 @@ public class Explanation implements Comparable<Explanation> {
         return getVerificationEvidenceNodesStream().mapToDouble(EvidenceNode::nodeQuality).sum();
 
 
+    }
+
+    public void setQuery(IQuery query) {
+        this.query = query;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public int getGenOrder() {
+        return genOrder;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public List<EvidenceNode> getEvidenceNodes() {
+        return evidenceNodes;
+    }
+
+    public void setEvidenceNodes(List<EvidenceNode> evidenceNodes) {
+        this.evidenceNodes = evidenceNodes;
+    }
+
+    public IQuery getQuery() {
+        return query;
     }
 }

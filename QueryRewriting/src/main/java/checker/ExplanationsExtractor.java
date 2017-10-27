@@ -1,11 +1,9 @@
 package checker;
 
 import config.Configuration;
-import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
-import de.mpii.factspotting.IFactSpotter;
 import extendedsldnf.EvaluatorFactory;
-import extendedsldnf.ExtendedSLDNFEvaluator;
+import extendedsldnf.RecSLDEvaluator;
 import extendedsldnf.datastructure.IExtendedFacts;
 import extendedsldnf.datastructure.IQueryExplanations;
 import org.deri.iris.ConfigurationThreadLocalStorage;
@@ -152,7 +150,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
             rules.addAll(specificRules);
 
 
-            ExtendedSLDNFEvaluator evaluator ;
+            RecSLDEvaluator evaluator ;
             EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
             evaluator = evaluatorFactory.getEvaluator(facts, rules);
             IQueryExplanations relation = evaluator.getExplanation(query);

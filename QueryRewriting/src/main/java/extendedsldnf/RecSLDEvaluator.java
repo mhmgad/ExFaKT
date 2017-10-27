@@ -41,9 +41,11 @@ import org.deri.iris.storage.simple.SimpleRelationFactory;
 import org.deri.iris.utils.TermMatchingAndSubstitution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import text.FactSpottingConnector;
 import text.FactSpottingResult;
 import text.ITextConnector;
 import utils.Enums;
+import utils.SyncCounter;
 
 import java.util.*;
 
@@ -62,7 +64,7 @@ import static utils.Enums.ActionType.*;
  * @author gigi
  *
  */
-public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGenerator {
+public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator {
 
     private  int maxExplanations;
     private boolean suspectsFromKG;
@@ -84,15 +86,6 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
     private int maxRuleDepth;
 
 
-    /**
-     * Constructor
-     *
-     * @param facts one or many facts
-     * @param rules list of rules
-     */
-    public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules) {
-        this(facts,rules,null, Configuration.PartialBindingType.NONE,false,Integer.MAX_VALUE,10);
-    }
 
 
     /**
@@ -101,7 +94,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
      * @param facts one or many facts
      * @param rules list of rules
      */
-    public ExtendedSLDNFEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,int maxExplanations,int maxRuleDepth) {
+    public RecSLDEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, int maxExplanations, int maxRuleDepth) {
         mFacts = facts;
         mRules = getOrderedRules(rules);
 
@@ -113,6 +106,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         this.maxExplanations=maxExplanations;
 
         this.maxRuleDepth=maxRuleDepth;
+
 
     }
 
@@ -148,6 +142,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
         CostAccumulator costAccumulator=new CostAccumulator();
         List<Explanation> solutions = findAndSubstitute(extendedQueryWithSubstitution,costAccumulator);
 
+
         QueryExplanations returnedSolution=new QueryExplanations(query,solutions,costAccumulator.clone());
 
         logger.debug("------------");
@@ -168,7 +163,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
     public List<Explanation> findAndSubstitute(ExtQuerySubs query, CostAccumulator costAccumulator) throws EvaluationException {
         //Gad: successful path queries and variables
-        List<Explanation> solutions = findAndSubstitute(query, 0, false,costAccumulator);//, pathAccum,variablesMapsAccum,variableListAccum);
+        List<Explanation> solutions = findAndSubstitute(query, 0, false,costAccumulator,query.getQuery(),new SyncCounter());//, pathAccum,variablesMapsAccum,variableListAccum);
 //		logger.debug("Path to result: " + pathAccum.toString());
 //		logger.debug("substitutions Path: " + variablesMapsAccum.toString());
 //		logger.debug("Variables Path: " + variableListAccum.toString());
@@ -187,7 +182,7 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
      * @throws EvaluationException                   If something went wrong
      * @throws MaximumRecursionDepthReachedException since SLDNF evaluation does not detect infinite loops, this exception is thrown at a nesting level of 25
      */
-    public List<Explanation> findAndSubstitute(final ExtQuerySubs query, int recursionDepth, boolean inNegationAsFailureFlip, CostAccumulator costAccumulator) throws EvaluationException {
+    public List<Explanation> findAndSubstitute(final ExtQuerySubs query, int recursionDepth, boolean inNegationAsFailureFlip, CostAccumulator costAccumulator, IQuery orgQuery, SyncCounter counter) throws EvaluationException {
 
         // To stop infinite loop, remove this later
         // when tabling is implemented
@@ -234,13 +229,13 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
             // Success node (empty clause)
             if (newQuery.getLiterals().isEmpty()) {
                 logger.debug("VarMap: "+newQws.getSubstitution());
-                solutions.add(createExplanation(newQws, costAccumulator));
+                solutions.add(createExplanation(newQws, costAccumulator,orgQuery,counter.getCount()));
                 continue;
             }
 
             // Evaluate the new query (walk the subtree)
             //IRelation relationFromSubtree =
-            List<Explanation> solutionFromSubtree = findAndSubstitute(newQws, recursionDepth+1, inNegationAsFailureFlip,costAccumulator);
+            List<Explanation> solutionFromSubtree = findAndSubstitute(newQws, recursionDepth+1, inNegationAsFailureFlip,costAccumulator,orgQuery,counter);
 
             logger.debug(debugPrefix + "Old query: " + query.getQuery().getVariables() + query);
             logger.debug(debugPrefix + "New query: " + newQuery.getVariables() + newQuery + " | " + newVariableMap);
@@ -731,8 +726,8 @@ public class ExtendedSLDNFEvaluator implements ITopDownEvaluator, IExplanationGe
 
 
 
-    public Explanation createExplanation(ExtQuerySubs currentQuery, CostAccumulator costAccumulator) {
-        Explanation solution = new Explanation();
+    public Explanation createExplanation(ExtQuerySubs currentQuery, CostAccumulator costAccumulator, IQuery orgQuery,int generationOrder) {
+        Explanation solution = new Explanation(orgQuery, getClass().getName(),generationOrder);
         solution.add(currentQuery.getEvidenceNode());
         solution.setCost(costAccumulator.clone());
         return solution;

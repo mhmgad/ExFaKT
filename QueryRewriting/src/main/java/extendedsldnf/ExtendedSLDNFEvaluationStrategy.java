@@ -68,7 +68,7 @@ public class ExtendedSLDNFEvaluationStrategy implements IEvaluationStrategy {
 		if( query == null )
 			throw new IllegalArgumentException( "SLDEvaluationStrategy.evaluateQuery() - query must not be null." ); 
 		
-		ExtendedSLDNFEvaluator evaluator = new ExtendedSLDNFEvaluator( (IExtendedFacts) mFacts, mRules );
+		RecSLDEvaluator evaluator = new RecSLDEvaluator( (IExtendedFacts) mFacts, mRules );
 		IRelation relation = evaluator.evaluate(query);
 		if(outputVariables==null)
 			outputVariables=new LinkedList<>();

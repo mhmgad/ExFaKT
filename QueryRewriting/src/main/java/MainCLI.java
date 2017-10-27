@@ -1,5 +1,6 @@
 import checker.ExplanationsExtractor;
 import checker.FactChecker;
+import com.google.gson.Gson;
 import config.Configuration;
 import datastructure.CorrectnessInfo;
 import extendedsldnf.datastructure.IQueryExplanations;
@@ -10,6 +11,7 @@ import org.deri.iris.api.basics.IQuery;
 import utils.DataUtils;
 import utils.Enums;
 import utils.eval.ResultsEvaluator;
+import utils.json.CustomGson;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -48,6 +50,7 @@ public class MainCLI {
     private Option maxExplanationsOp;
     private Option maxRulesNestingOp;
     private BufferedWriter outputConfigurationFile;
+    private BufferedWriter outputJSONFile;
 
 
     public MainCLI() {
@@ -128,6 +131,7 @@ public class MainCLI {
         String outputFilePath = cmd.getOptionValue(outFileOp.getOpt(), null);
         if(outputFilePath!=null){
             outputFile=FileUtils.getBufferedUTF8Writer(outputFilePath);
+            outputJSONFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".json");
             outputStatsFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats");
             outputStatsSummaryFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats.summary");
             outputCostFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".cost");
@@ -251,12 +255,17 @@ public class MainCLI {
         for (IQueryExplanations explanation:explanations) {
             String result="\nQuery:\t"+explanation.getQuery()+"\n"+explanation+"\n";
             System.out.println(result);
-            if(this.outputFile!=null)
+            Gson gson=new CustomGson().getGson();
+            if(this.outputFile!=null) {
                 this.outputFile.write(result);
+                this.outputJSONFile.write(gson.toJson(explanation));
+            }
 
         }
-        if(this.outputFile!=null)
+        if(this.outputFile!=null) {
             this.outputFile.close();
+            this.outputJSONFile.close();
+        }
 
 
 

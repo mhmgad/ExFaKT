@@ -13,6 +13,7 @@ import org.deri.iris.storage.IRelation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import text.ITextConnector;
+import utils.SyncCounter;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,7 +24,8 @@ import static utils.Enums.ActionType.ORG;
 /**
  * Created by gadelrab on 7/14/17.
  */
-public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
+public class ItrSLDEvaluator extends RecSLDEvaluator {
+
 
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -35,7 +37,7 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
 //        this.compareMethod=compareMethod;
 //    }
 
-    public HeuristicBasedEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, AbstractQueriesPool.ComparisionMethod compareMethod, int maxExplanations, int maxRuleDepth) {
+    public ItrSLDEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, AbstractQueriesPool.ComparisionMethod compareMethod, int maxExplanations, int maxRuleDepth) {
         super(facts, rules, textConnector, partialBindingType, suspectsFromKG, maxExplanations, maxRuleDepth);
         this.compareMethod = compareMethod;
 
@@ -51,7 +53,9 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
         CostAccumulator costAccumulator = new CostAccumulator();
         IQueriesPool pool = QueriesPoolFactory.getPool(compareMethod);
         pool.add(extendedQueryWithSubstitution);
-        List<Explanation> solutions = findSolutionsIteratively(pool, costAccumulator);
+        List<Explanation> solutions = findSolutionsIteratively(pool, costAccumulator, query, new SyncCounter());
+
+        
 
         QueryExplanations returnedSolution = new QueryExplanations(query, solutions, costAccumulator.clone());
 
@@ -63,7 +67,9 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
         return returnedSolution;
     }
 
-    private List<Explanation> findSolutionsIteratively(IQueriesPool pool, CostAccumulator costAccumulator) {
+    private List<Explanation> findSolutionsIteratively(IQueriesPool pool, CostAccumulator costAccumulator, IQuery orgQuery, SyncCounter counter) {
+
+
 
         List<Explanation> explanations = new LinkedList<>();
 
@@ -86,7 +92,7 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
             // Empty query i.e. Success
             if (newQuery.getLiterals().isEmpty()) {
                 logger.debug("VarMap: " + chosenQuery.getSubstitution());
-                explanations.add(createExplanation(chosenQuery, costAccumulator));
+                explanations.add(createExplanation(chosenQuery, costAccumulator,orgQuery,counter.getCount()));
                 continue;
             }
 
@@ -120,8 +126,8 @@ public class HeuristicBasedEvaluator extends ExtendedSLDNFEvaluator {
     /**
      * Override the original method to loop over all parents to collect the path
      */
-    public Explanation createExplanation(ExtQuerySubs query, CostAccumulator costAccumulator) {
-        Explanation solution = new Explanation();
+    public Explanation createExplanation(ExtQuerySubs query, CostAccumulator costAccumulator, IQuery orgQuery, int generationOrder) {
+        Explanation solution = new Explanation(orgQuery, getClass().getName()+"-"+compareMethod,generationOrder);
 
         for (ExtQuerySubs currentQuery = query; currentQuery != null; currentQuery = currentQuery.getParent()) {
             if (currentQuery.getEvidenceNode().getSourceActionType() != ORG) {

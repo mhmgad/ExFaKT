@@ -27,21 +27,21 @@ public class EvaluatorFactory {
 //    }
 
 
-    public  ExtendedSLDNFEvaluator getEvaluator(IExtendedFacts facts, List<IRule> rules) {
+    public RecSLDEvaluator getEvaluator(IExtendedFacts facts, List<IRule> rules) {
        return getEvaluator(config.getEvaluationMethod(),facts,rules,new FactSpottingConnector(config),config.getPartialBindingType(),config.isSuspectsFromKG() );
 
     }
 
-    public  ExtendedSLDNFEvaluator getEvaluator(Enums.EvalMethod evalMethod, IExtendedFacts facts, List<IRule> rules, FactSpottingConnector factSpottingConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG) {
+    public RecSLDEvaluator getEvaluator(Enums.EvalMethod evalMethod, IExtendedFacts facts, List<IRule> rules, FactSpottingConnector factSpottingConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG) {
         switch (evalMethod){
 
             case SLD_ITR:
-                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.DFS,config.getMaxExplanations(),config.getMaxRuleNesting() );
+                return new ItrSLDEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.DFS,config.getMaxExplanations(),config.getMaxRuleNesting() );
             case HEURISTIC:
-                return new HeuristicBasedEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.HEURISTIC,config.getMaxExplanations(),config.getMaxRuleNesting()  );
+                return new ItrSLDEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.HEURISTIC,config.getMaxExplanations(),config.getMaxRuleNesting()  );
             case SLD:
             default:
-                return new ExtendedSLDNFEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG,config.getMaxExplanations(),config.getMaxRuleNesting() );
+                return new RecSLDEvaluator(facts, rules,factSpottingConnector,partialBindingType,suspectsFromKG,config.getMaxExplanations(),config.getMaxRuleNesting() );
 
         }
 
