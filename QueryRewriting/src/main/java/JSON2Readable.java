@@ -23,6 +23,7 @@ public class JSON2Readable{
 
     String inputFile=args[0];
     String outputFile=inputFile.replaceAll(".json",".txt");
+        System.out.println(inputFile);
 
 //        Configuration.setConfigurationFile("/home/gadelrab/ideaProjects/RuleBasedFactChecking/QueryRewriting/src/main/resources/simple.properties");
 //        ExplanationsExtractor explanationsExtractor = ExplanationsExtractor.getInstance();
@@ -49,7 +50,7 @@ public class JSON2Readable{
 
 
             data=data.replaceAll("\\}[\\s]*\\{","\\} SPLIT_MARK \\{");
-            System.out.println(data);
+//            System.out.println(data);
             List<String> records= Arrays.asList(data.split("SPLIT_MARK"));
 
             List<QueryExplanations> queryExplanationsList=records.stream().map(rec->gson.fromJson(rec.trim(), QueryExplanations.class)).collect(Collectors.toList());
@@ -62,7 +63,8 @@ public class JSON2Readable{
             }
 
             bw.close();
-            System.out.println(records.size());
+            System.out.println("input Size="+records.size());
+            System.out.println("output Size="+queryExplanationsList.size());
 //            System.out.println(res2);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
