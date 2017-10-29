@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
 public class FactSpottingResult/* extends ITextResult*/{
 
 
+
     ILiteral query;
     ISpottedEvidence evidence;
 

@@ -1,17 +1,27 @@
 package models;
 
 import checker.ExplanationsExtractor;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 import de.mpii.datastructures.BinaryFact;
 import extendedsldnf.datastructure.IQueryExplanations;
+import extendedsldnf.datastructure.QueryExplanations;
+import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
+import org.jongo.Jongo;
+import play.api.Play;
 
 import java.util.List;
 
-public class Query {
+public class Query extends QueryExplanations{
+
+    String id;
 
     ExplanationsExtractor explanationsExtractor=ExplanationsExtractor.getInstance();
+
+
 
     String subject;
     String predicate;
@@ -19,7 +29,17 @@ public class Query {
     String rules;
 
 
-    public Query(String subject, String predicate, String object,String rules) {
+
+    @Override
+    public IQuery getQuery() {
+        return super.getQuery();
+    }
+
+    public IQueryExplanations getQueryExplanations() {
+        return this;
+    }
+
+    public Query(String subject, String predicate, String object, String rules) {
         this.subject = subject;
         this.predicate = predicate;
         this.object = object;

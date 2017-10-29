@@ -1,7 +1,7 @@
 import checker.ExplanationsExtractor;
 import com.google.inject.AbstractModule;
-
 import config.Configuration;
+import io.ebean.EbeanServer;
 
 /**
  * This class is a Guice module that tells Guice how to bind several
@@ -31,6 +31,9 @@ public class Module extends AbstractModule {
 
 
        bind(ExplanationsExtractor.class).toInstance(ExplanationsExtractor.getInstance());
+
+        // bind the provider as eager singleton
+//        bind(EbeanServer.class).toProvider(EbeanServerProvider.class).asEagerSingleton();
     }
 
 

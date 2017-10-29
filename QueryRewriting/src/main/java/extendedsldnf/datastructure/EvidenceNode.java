@@ -1,5 +1,6 @@
 package extendedsldnf.datastructure;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import de.mpii.datastructures.BinaryFact;
 import org.deri.iris.api.basics.ILiteral;
@@ -9,6 +10,7 @@ import org.deri.iris.api.terms.IVariable;
 import text.FactSpottingResult;
 import utils.Converter;
 import utils.Enums;
+import utils.StringUtils;
 import utils.json.adapters.ILiteralAdapter;
 import utils.json.adapters.IRuleAdapter;
 
@@ -22,7 +24,9 @@ public class EvidenceNode{
 
     //    @JsonAdapter(IRuleAdapter.class)
     private IRule rule;
-    private Map<IVariable, ITerm> variableBindingMap;
+    //TODO to be fixed later
+    //@Expose(deserialize = false)
+    //private Map<IVariable, ITerm> variableBindingMap;
     private FactSpottingResult textResults;
 
 //    @JsonAdapter(ILiteralAdapter.class)
@@ -44,7 +48,7 @@ public class EvidenceNode{
     }
 
     public void setVariableBindingMap(Map<IVariable, ITerm> variableBindingMap) {
-        this.variableBindingMap = variableBindingMap;
+        //this.variableBindingMap = variableBindingMap;
     }
 
     public EvidenceNode(ILiteral queryLiteral, Enums.ActionType sourceActionType) {
@@ -81,10 +85,12 @@ public class EvidenceNode{
                 ((sourceActionType == Enums.ActionType.TEXT_VALID)?
                         ", text=" + textResults.readable():"" )+
                 ((sourceActionType == Enums.ActionType.RULE_EXPAND)?
-                        ", rule=" + rule:"" )+
-                ((isVariableBinding())?
-                        ", variableMap=" + variableBindingMap:"" )+
-                ", rulesDepth="+ this.rulesDepth+
+                        ", rule=" + rule:"" )
+                +
+//                ((isVariableBinding())?
+//                        ", variableMap=" + variableBindingMap:"" )+
+                ","+
+                " rulesDepth="+ this.rulesDepth+
                 ", treeDepth="+ this.rulesDepth+
                 "}"+((sourceActionType == Enums.ActionType.TEXT_VALID || sourceActionType == Enums.ActionType.KG_VALID)? "**":"" );
     }
@@ -162,6 +168,28 @@ public class EvidenceNode{
             e.printStackTrace();
         }
         return null;
+
+    }
+
+    public String getReadableString() {
+        try {
+        if(isRuleExpansion())
+            return rule.toString();
+        else
+            if(isKGFact()) {
+                    return Converter.toFact(queryLiteral).toReadableString()+"\t KG fact";
+            }
+            else
+                if(isTextMention()){
+                    String fact= Converter.toFact(queryLiteral).toReadableString()+"\t from the text";
+                    fact+="\n"+ StringUtils.indent(getTextResults().getEvidence().getReadableString());
+                    return fact;
+                }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
 
     }
 

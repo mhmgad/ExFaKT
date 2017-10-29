@@ -79,6 +79,11 @@
                     <id>eval_labels</id>
                 </program>
 
+                <program>
+                    <mainClass>JSON2Readable</mainClass>
+                    <id>json2readable</id>
+                </program>
+
             </programs>
 
 

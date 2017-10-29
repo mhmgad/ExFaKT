@@ -8,6 +8,7 @@ import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
 import utils.Converter;
+import utils.StringUtils;
 import utils.json.adapters.IQueryAdapter;
 
 import java.util.*;
@@ -29,9 +30,11 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
     private IQuery query;
 
 
-//    public Solutions() {
-//        this(new ArrayList<>());
-//    }
+    public QueryExplanations() {
+        this(null,new ArrayList<>(),null);
+    }
+
+
 
     public QueryExplanations(IQuery query, List<Explanation> explanations, CostAccumulator cost) {
         this.explanations = new TreeSet<>(explanations) ;
@@ -153,4 +156,29 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
             return explanations.stream().flatMap(Explanation::getTextEvidencesStream).mapToInt(EvidenceNode::getRetrievedDocsCount).sum();
     }
 
+    public void setCostAccumulator(CostAccumulator costAccumulator) {
+        this.costAccumulator = costAccumulator;
+    }
+
+    public void setExplanations(SortedSet<Explanation> explanations) {
+        this.explanations = explanations;
+    }
+
+    public void setQuery(IQuery query) {
+        this.query = query;
+    }
+
+    @Override
+    public String getReadableString(){
+        StringBuilder readable=new StringBuilder("Query:\t"+getQueryAsFact().toSearchableString().replaceAll("\t"," ").trim()+"\t("+explanations.size()+")");
+        readable.append('\n');
+
+        for (Explanation exp:explanations) {
+
+            readable.append(StringUtils.indent(exp.getReadableString()));
+        }
+        readable.append("\n**********************************************\n");
+
+        return readable.toString();
+    }
 }

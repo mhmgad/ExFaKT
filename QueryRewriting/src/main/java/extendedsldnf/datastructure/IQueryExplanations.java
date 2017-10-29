@@ -34,4 +34,6 @@ public interface IQueryExplanations {
     double getAvgQuality();
 
     public int documentLevelCount();
+
+    public String getReadableString();
 }

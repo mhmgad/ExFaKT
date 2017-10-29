@@ -46,9 +46,80 @@ under the License.
         <play2.plugin.version>1.0.0-rc1</play2.plugin.version>
         <sbt-compiler.plugin.version>1.0.0</sbt-compiler.plugin.version>
         <compiler.plugin.version>3.5.1</compiler.plugin.version>
+        <play2-ebean.version>4.0.2</play2-ebean.version>
     </properties>
 
     <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+
+        <!-- default SLF4J logging implementation, can be replaced by other -->
+        <!-- see https://www.playframework.com/documentation/2.6.x/SettingsLogger for more info -->
+        <!--<dependency>-->
+            <!--<groupId>com.typesafe.play</groupId>-->
+            <!--<artifactId>play-logback_2.12</artifactId>-->
+            <!--<version>${play2.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+
+        <!-- only if using JDBC -->
+        <dependency>
+            <groupId>com.typesafe.play</groupId>
+            <artifactId>play-jdbc_2.12</artifactId>
+            <version>${play2.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.1.4</version>
+        </dependency>
+
+
+        <!-- only if using JDBC evolutions -->
+        <dependency>
+            <groupId>com.typesafe.play</groupId>
+            <artifactId>play-jdbc-evolutions_2.12</artifactId>
+            <version>${play2.version}</version>
+        </dependency>
+
+
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver</artifactId>
+                <version>3.5.0</version>
+            </dependency>
+
+
+        <dependency>
+            <groupId>org.jongo</groupId>
+            <artifactId>jongo</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+
+
 
         <dependency>
             <groupId>factchecking</groupId>
@@ -59,6 +130,23 @@ under the License.
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+                <!--<exclusion>-->
+                    <!--<groupId>ch.qos.logback</groupId>-->
+                    <!--<artifactId>logback-classic</artifactId>-->
+                <!--</exclusion>-->
+
             </exclusions>
         </dependency>
 
@@ -72,25 +160,103 @@ under the License.
             <groupId>com.typesafe.play</groupId>
             <artifactId>play-guice_2.12</artifactId>
             <version>${play2.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+                <!--<exclusion>-->
+                    <!--<groupId>ch.qos.logback</groupId>-->
+                    <!--<artifactId>logback-classic</artifactId>-->
+                <!--</exclusion>-->
+
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>com.typesafe.play</groupId>
             <artifactId>play-java_2.12</artifactId>
             <version>${play2.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+                <!--<exclusion>-->
+                    <!--<groupId>ch.qos.logback</groupId>-->
+                    <!--<artifactId>logback-classic</artifactId>-->
+                <!--</exclusion>-->
+
+            </exclusions>
         </dependency>
+
+        <!-- only if using Ebean -->
+        <dependency>
+            <groupId>com.typesafe.play</groupId>
+            <artifactId>play-ebean_2.12</artifactId>
+            <version>${play2-ebean.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.typesafe.play</groupId>
             <artifactId>play-akka-http-server_2.12</artifactId>
             <version>${play2.version}</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+
+                <!--<exclusion>-->
+                    <!--<groupId>ch.qos.logback</groupId>-->
+                    <!--<artifactId>logback-classic</artifactId>-->
+                <!--</exclusion>-->
+
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>com.typesafe.play</groupId>
             <artifactId>play-java-forms_2.12</artifactId>
             <version>${play2.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+
+                <!--<exclusion>-->
+                    <!--<groupId>ch.qos.logback</groupId>-->
+                    <!--<artifactId>logback-classic</artifactId>-->
+                <!--</exclusion>-->
+
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -98,6 +264,18 @@ under the License.
             <artifactId>play-test_2.12</artifactId>
             <version>${play2.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+
+                <!--<exclusion>-->
+                    <!--<groupId>ch.qos.logback</groupId>-->
+                    <!--<artifactId>logback-classic</artifactId>-->
+                <!--</exclusion>-->
+
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -105,6 +283,18 @@ under the License.
             <artifactId>assertj-core</artifactId>
             <version>3.6.2</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+
+                <!--<exclusion>-->
+                    <!--<groupId>ch.qos.logback</groupId>-->
+                    <!--<artifactId>logback-classic</artifactId>-->
+                <!--</exclusion>-->
+
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -112,7 +302,23 @@ under the License.
             <artifactId>awaitility</artifactId>
             <version>2.0.0</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+
+                <!--<exclusion>-->
+                    <!--<groupId>ch.qos.logback</groupId>-->
+                    <!--<artifactId>logback-classic</artifactId>-->
+                <!--</exclusion>-->
+
+            </exclusions>
         </dependency>
+
+
+
+
 
 
         <!-- https://mvnrepository.com/artifact/com.adrianhurt/play-bootstrap_2.12 -->
@@ -191,6 +397,8 @@ under the License.
                     <runSkip>false</runSkip>
                     <httpsPort>9350</httpsPort>
                     <httpPort>9350</httpPort>
+                    <!-- only if using database evolutions -->
+                    <!--<serverJvmArgs>-Dplay.evolutions.db.default.autoApply=true</serverJvmArgs>-->
                     <!-- only if using 'play-java-forms' module -->
                     <templateAdditionalImports>play.data._ play.core.j.PlayFormsMagicForJava._</templateAdditionalImports>
                     <!--<routesGenerator>injection</routesGenerator>-->

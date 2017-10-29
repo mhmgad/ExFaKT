@@ -18,4 +18,8 @@ public class StringUtils {
         return files;
     }
 
+    public static String indent(String string){
+        return "\t"+string.replaceAll("\n","\n\t");
+    }
+
 }

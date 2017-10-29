@@ -12,6 +12,9 @@ GET     /message                    controllers.AsyncController.message
 POST     /                           controllers.Explanations.explain
 
 
+GET     /eval                           controllers.Evaluation.index
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file)
 

@@ -51,6 +51,7 @@ public class MainCLI {
     private Option maxRulesNestingOp;
     private BufferedWriter outputConfigurationFile;
     private BufferedWriter outputJSONFile;
+    private BufferedWriter readableOutputFile;
 
 
     public MainCLI() {
@@ -131,6 +132,7 @@ public class MainCLI {
         String outputFilePath = cmd.getOptionValue(outFileOp.getOpt(), null);
         if(outputFilePath!=null){
             outputFile=FileUtils.getBufferedUTF8Writer(outputFilePath);
+            readableOutputFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".txt");
             outputJSONFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".json");
             outputStatsFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats");
             outputStatsSummaryFile=FileUtils.getBufferedUTF8Writer(outputFilePath+".stats.summary");
@@ -252,23 +254,24 @@ public class MainCLI {
     }
 
     private void outputExplanations(List<IQueryExplanations> explanations) throws IOException {
+        Gson gson=new CustomGson().getGson();
         for (IQueryExplanations explanation:explanations) {
             String result="\nQuery:\t"+explanation.getQuery()+"\n"+explanation+"\n";
             System.out.println(result);
 
             if(this.outputFile!=null) {
                 this.outputFile.write(result);
+                this.outputJSONFile.write(gson.toJson(explanation)+"\n");
+                this.readableOutputFile.write(explanation.getReadableString()+"\n");
             }
 
         }
-        Gson gson=new CustomGson().getGson();
-        if(this.outputFile!=null) {
 
-            this.outputJSONFile.write(gson.toJson(explanations));
-        }
+
         if(this.outputFile!=null) {
             this.outputFile.close();
             this.outputJSONFile.close();
+            this.readableOutputFile.close();
         }
 
 

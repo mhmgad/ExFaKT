@@ -25,7 +25,7 @@ public class Explanations extends Controller {
 
 
     @Inject
-    public Explanations(final FormFactory formFactory) {
+    public Explanations(final FormFactory formFactory ) {
         this.formFactory = formFactory;
 
 

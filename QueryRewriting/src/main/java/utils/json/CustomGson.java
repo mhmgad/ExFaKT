@@ -15,6 +15,7 @@ import utils.Enums;
 import utils.json.adapters.*;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 public class CustomGson {
 
@@ -26,6 +27,9 @@ public class CustomGson {
 
     public CustomGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
+
+        Type typeOfHashMap = new TypeToken<Map<IVariable, ITerm>>() { }.getType();
+        System.out.println("type "+typeOfHashMap);
 //        Type typeOfObject = new TypeToken<Enums.ActionType>() { }.getType();
 //        this.gson=gsonBuilder.registerTypeAdapter(ILiteral.class, new ILiteralAdapter()).registerTypeAdapter(ISpottedEvidence.class,new ISpottedEvidence.JsonSpottedEvidenceAdapter()).create();
         this.gson=gsonBuilder

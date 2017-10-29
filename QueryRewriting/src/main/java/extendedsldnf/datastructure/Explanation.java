@@ -1,8 +1,11 @@
 package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
+import com.google.gson.annotations.JsonAdapter;
 import extendedsldnf.CostAccumulator;
 import org.deri.iris.api.basics.IQuery;
+import utils.StringUtils;
+import utils.json.adapters.IQueryAdapter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +24,9 @@ public class Explanation implements Comparable<Explanation> {
     private final String id;
     List<EvidenceNode> evidenceNodes=new LinkedList<>();
     private CostAccumulator cost;
+    @JsonAdapter(IQueryAdapter.class)
     private IQuery query;
+
 
 
     public Explanation(IQuery query,String method,int genOrder) {
@@ -184,5 +189,24 @@ public class Explanation implements Comparable<Explanation> {
 
     public IQuery getQuery() {
         return query;
+    }
+
+    public String getReadableString() {
+        StringBuilder readable=new StringBuilder("\nExplan "+genOrder+" -------");
+        readable.append("\nFacts");
+
+        readable.append(StringUtils.indent("\n-"+Joiner.on("\n-").join(getVerificationEvidences().stream().map(evid-> evid.getReadableString()).collect(Collectors.toList()))));
+
+        if(usedRulesCount()>0) {
+            readable.append("\nRules");
+            readable.append(StringUtils.indent("\n-"+Joiner.on("\n-").join(getRulesEvidences().stream().map(evid-> evid.getReadableString()).collect(Collectors.toList()))));
+        }
+
+        readable.append("\n-------");
+        readable.append("\nRelevance Score?\t");
+        readable.append("\nFailure Reason?\t");
+        readable.append("\n-------\n");
+
+        return readable.toString();
     }
 }
