@@ -21,7 +21,7 @@ public class JSON2Readable{
 
     public static void main(String[] args) {
 
-    String inputFile=args[1];
+    String inputFile=args[0];
     String outputFile=inputFile.replaceAll(".json",".txt");
 
 //        Configuration.setConfigurationFile("/home/gadelrab/ideaProjects/RuleBasedFactChecking/QueryRewriting/src/main/resources/simple.properties");
