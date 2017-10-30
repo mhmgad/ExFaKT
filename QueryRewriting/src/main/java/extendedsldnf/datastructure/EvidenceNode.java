@@ -34,6 +34,7 @@ public class EvidenceNode{
     Enums.ActionType sourceActionType = Enums.ActionType.ORG;
     private int treeDepth;
     private int rulesDepth;
+    private double quality;
 
     public IRule getRule() {
         return rule;
@@ -191,6 +192,10 @@ public class EvidenceNode{
         }
         return "";
 
+    }
+
+    public void setQuality() {
+        this.quality=nodeQuality();
     }
 
 

@@ -26,7 +26,7 @@ public class Explanation implements Comparable<Explanation> {
     private CostAccumulator cost;
     @JsonAdapter(IQueryAdapter.class)
     private IQuery query;
-
+    private double quality;
 
 
     public Explanation(IQuery query,String method,int genOrder) {
@@ -208,5 +208,10 @@ public class Explanation implements Comparable<Explanation> {
         readable.append("\n-------\n");
 
         return readable.toString();
+    }
+
+    public void setQuality() {
+         this.quality = getQualityScore();
+         this.getEvidenceNodes().forEach(ev->ev.setQuality());
     }
 }

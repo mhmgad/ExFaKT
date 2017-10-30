@@ -41,6 +41,7 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
         this.query=query;
         this.costAccumulator=cost;
         explanations.forEach(expl->expl.getCost().setQueryFullCost(costAccumulator));
+        explanations.forEach(expl->expl.setQuality());
     }
 
     @Override
