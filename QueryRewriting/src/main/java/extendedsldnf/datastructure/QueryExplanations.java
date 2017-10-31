@@ -19,6 +19,7 @@ import java.util.*;
 //TODO get red off the IRelation interface, It is useless but it is easier than implementing the whole thing form scratch
 public class QueryExplanations implements IRelation, IQueryExplanations {
 
+    private final double quality;
     private CostAccumulator costAccumulator;
     /**
      * successful rewriting paths
@@ -42,6 +43,8 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
         this.costAccumulator=cost;
         explanations.forEach(expl->expl.getCost().setQueryFullCost(costAccumulator));
         explanations.forEach(expl->expl.setQuality());
+        this.quality=getAvgQuality();
+
     }
 
     @Override

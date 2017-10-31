@@ -206,6 +206,7 @@ public class ResultsEvaluator {
         sb.append("\tAvg.rules\tMax.rules\tMin.rules");
         sb.append("\tAvg.relCost\tMax.relCost\tMin.relCost");
         sb.append("\tAvg.relTime\tMax.relTime\tMin.relTime");
+        sb.append("\tAvg.quality\tMax.quality\tMin.quality");
 
         sb.append('\n');
 
@@ -223,6 +224,7 @@ public class ResultsEvaluator {
             IntSummaryStatistics explanRules= levelExplanation.stream().mapToInt(Explanation::getTextEvidencesCount).summaryStatistics();
             DoubleSummaryStatistics relativeCost = levelCosts.stream().mapToDouble(CostAccumulator::getRelativeCost).summaryStatistics();
             DoubleSummaryStatistics relativeTime = levelCosts.stream().mapToDouble(CostAccumulator::getRelativeElapsedTime).summaryStatistics();
+            DoubleSummaryStatistics quality = levelExplanation.stream().mapToDouble(Explanation::getQualityScore).summaryStatistics();
 
 
             sb.append(i);
@@ -233,7 +235,7 @@ public class ResultsEvaluator {
             sb.append("\t"+dcf.format(explanRules.getAverage())+"\t"+explanRules.getMax()+"\t"+explanRules.getMin());
             sb.append("\t"+dcf.format(relativeCost.getAverage())+"\t"+dcf.format(relativeCost.getMax())+"\t"+dcf.format(relativeCost.getMin()));
             sb.append("\t"+dcf.format(relativeTime.getAverage())+"\t"+dcf.format(relativeTime.getMax())+"\t"+dcf.format(relativeTime.getMin()));
-
+            sb.append("\t"+dcf.format(quality.getAverage())+"\t"+dcf.format(quality.getMax())+"\t"+dcf.format(quality.getMin()));
 
             sb.append('\n');
         }
