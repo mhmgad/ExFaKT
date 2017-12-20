@@ -64,9 +64,9 @@ public class Explanations extends Controller {
         System.out.println(explanations);
         Gson gson=CustomGson.getInstance().getGson();
 
-        return ok(gson.toJson(explanations));
+        //return ok(gson.toJson(explanations));
 
-        //return ok(index.render(q,explanations));
+        return ok(index.render(q,explanations));
     }
 
 }
