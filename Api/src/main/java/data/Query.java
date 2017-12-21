@@ -1,8 +1,6 @@
-package models;
+package data;
 
 import checker.ExplanationsExtractor;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
 import de.mpii.datastructures.BinaryFact;
 import extendedsldnf.datastructure.IQueryExplanations;
 import extendedsldnf.datastructure.QueryExplanations;
@@ -10,8 +8,7 @@ import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
-import org.jongo.Jongo;
-import play.api.Play;
+
 
 import java.util.List;
 

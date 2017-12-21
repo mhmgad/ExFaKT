@@ -2,8 +2,8 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+import data.Query;
 import extendedsldnf.datastructure.IQueryExplanations;
-import models.Query;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -55,8 +55,8 @@ public class Explanations extends Controller {
 
     public Result explain(){
 
-    Form<Query> qf=formFactory.form(Query.class).bindFromRequest();
-    Query q=qf.get();
+        Form<Query> qf=formFactory.form(Query.class).bindFromRequest();
+        Query q=qf.get();
         System.out.println("explain "+q);
 //        System.out.println(new Query(qf.field("subject").getValue().get().toString(),qf.field("predicate").getValue().get().toString(),qf.field("object").getValue().get().toString(),qf.field("rules").getValue().get().toString()));
 

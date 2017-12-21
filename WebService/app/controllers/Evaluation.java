@@ -4,7 +4,7 @@
 //import extendedsldnf.datastructure.QueryExplanations;
 //import io.ebean.Ebean;
 //import io.ebean.EbeanServer;
-//import models.Query;
+//import data.Query;
 //import org.jongo.Jongo;
 //import org.jongo.MongoCollection;
 //import play.api.Play;

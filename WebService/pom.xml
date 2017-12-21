@@ -360,7 +360,11 @@ under the License.
         <!--</dependency>-->
 
 
-
+        <dependency>
+            <groupId>factchecking</groupId>
+            <artifactId>api</artifactId>
+            <version>1.0</version>
+        </dependency>
 
 
     </dependencies>
