@@ -5,10 +5,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
-import org.json.simple.JSONObject;
+
+import com.google.inject.Singleton;
 import web.data.Query;
 
-import javax.inject.Singleton;
+
 import java.io.IOException;
 
 @Singleton
@@ -27,9 +28,10 @@ public class ExplanationExtractorClient {
 
     }
 
-    public void getExplanantions(Query query) throws IOException {
+    public void getExplanations(Query query) throws IOException {
         Gson gson=new Gson();
         String queryJson=gson.toJson(query);
+        System.out.println("***********The Query:\n"+queryJson);
         HttpContent content=new JsonHttpContent(new GsonFactory(), queryJson);
 
         HttpRequest request = HTTP_TRANSPORT.createRequestFactory().buildPostRequest(new GenericUrl(URL), content);

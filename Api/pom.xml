@@ -13,11 +13,11 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>factchecking</groupId>
-            <artifactId>query-rewriting</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>factchecking</groupId>-->
+            <!--<artifactId>query-rewriting</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
 
         <!--<dependency>-->
             <!--<groupId>factchecking</groupId>-->

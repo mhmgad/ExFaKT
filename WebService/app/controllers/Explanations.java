@@ -1,7 +1,12 @@
 package controllers;
 
+import checker.ExplanationsExtractor;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+import de.mpii.datastructures.BinaryFact;
+import org.deri.iris.api.basics.IRule;
+import org.deri.iris.compiler.Parser;
+import org.deri.iris.compiler.ParserException;
 import web.data.Query;
 import extendedsldnf.datastructure.IQueryExplanations;
 import play.data.Form;
@@ -11,6 +16,8 @@ import play.mvc.Result;
 import utils.json.CustomGson;
 import views.html.*;
 
+import java.util.List;
+
 /**
  * This controller contains an action to handle HTTP requests
  * to the application's home page.
@@ -19,7 +26,7 @@ public class Explanations extends Controller {
 
 
 
-//    ExplanationsExtractor explanationsExtractor=ExplanationsExtractor.getInstance();
+    private final ExplanationsExtractor explanationsExtractor;
 
     private final FormFactory formFactory;
 
@@ -27,9 +34,9 @@ public class Explanations extends Controller {
 
 
     @Inject
-    public Explanations(final FormFactory formFactory ) {
+    public Explanations(final FormFactory formFactory,ExplanationsExtractor explanationsExtractor ) {
         this.formFactory = formFactory;
-
+        this.explanationsExtractor=explanationsExtractor;
 
     }
 
@@ -60,7 +67,21 @@ public class Explanations extends Controller {
         System.out.println("explain "+q);
 //        System.out.println(new Query(qf.field("subject").getValue().get().toString(),qf.field("predicate").getValue().get().toString(),qf.field("object").getValue().get().toString(),qf.field("rules").getValue().get().toString()));
 
-        IQueryExplanations explanations = q.explain();
+        // parseRulesAs
+
+        Parser parser=new Parser();
+
+        List<IRule> ruleList=null;
+        try {
+
+            parser.parse(q.getRules());
+            ruleList=parser.getRules();
+        } catch (ParserException e) {
+            e.printStackTrace();
+        }
+
+
+        IQueryExplanations explanations = explanationsExtractor.check(new BinaryFact(q.getSubject(),q.getPredicate(),q.getObject()),ruleList);
         System.out.println(explanations);
         Gson gson=CustomGson.getInstance().getGson();
 

@@ -1,22 +1,12 @@
 package web.data;
 
-import checker.ExplanationsExtractor;
-import de.mpii.datastructures.BinaryFact;
-import extendedsldnf.datastructure.IQueryExplanations;
-import extendedsldnf.datastructure.QueryExplanations;
-import org.deri.iris.api.basics.IQuery;
-import org.deri.iris.api.basics.IRule;
-import org.deri.iris.compiler.Parser;
-import org.deri.iris.compiler.ParserException;
 
-
-import java.util.List;
 
 public class Query /*extends QueryExplanations*/{
 
     String id;
 
-    ExplanationsExtractor explanationsExtractor=ExplanationsExtractor.getInstance();
+//    ExplanationsExtractor explanationsExtractor=ExplanationsExtractor.getInstance();
 
 
 
@@ -92,25 +82,25 @@ public class Query /*extends QueryExplanations*/{
         this.rules = rules;
     }
 
-    public List<IRule> getRulesAsIRIS(){
-        Parser parser=new Parser();
+//    public List<IRule> getRulesAsIRIS(){
+//        Parser parser=new Parser();
+//
+//        try {
+//            parser.parse(rules);
+//        } catch (ParserException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return parser.getRules();
+//    }
 
-        try {
-            parser.parse(rules);
-        } catch (ParserException e) {
-            e.printStackTrace();
-        }
+//    public BinaryFact getAsFact(){
+//        return new BinaryFact(subject,predicate,object);
+//    }
 
-        return parser.getRules();
-    }
-
-    public BinaryFact getAsFact(){
-        return new BinaryFact(subject,predicate,object);
-    }
-
-    public IQueryExplanations explain(){
-        return explanationsExtractor.check(getAsFact(),getRulesAsIRIS());
-    }
+//    public IQueryExplanations explain(){
+//        return explanationsExtractor.check(getAsFact(),getRulesAsIRIS());
+//    }
 
 }
 
