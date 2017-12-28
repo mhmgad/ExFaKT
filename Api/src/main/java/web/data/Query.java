@@ -1,4 +1,4 @@
-package data;
+package web.data;
 
 import checker.ExplanationsExtractor;
 import de.mpii.datastructures.BinaryFact;
