@@ -12,7 +12,7 @@ import org.deri.iris.compiler.ParserException;
 
 import java.util.List;
 
-public class Query extends QueryExplanations{
+public class Query /*extends QueryExplanations*/{
 
     String id;
 
@@ -27,14 +27,17 @@ public class Query extends QueryExplanations{
 
 
 
-    @Override
-    public IQuery getQuery() {
-        return super.getQuery();
-    }
+//    @Override
+//    public String getQuery() {
+////        return super.getQuery();
+//        BinaryFact f=new BinaryFact(subject,predicate,object);
+//        return f.getIRISQueryRepresenation();
+//
+//    }
 
-    public IQueryExplanations getQueryExplanations() {
-        return this;
-    }
+//    public IQueryExplanations getQueryExplanations() {
+//        return this;
+//    }
 
     public Query(String subject, String predicate, String object, String rules) {
         this.subject = subject;

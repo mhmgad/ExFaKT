@@ -2,7 +2,7 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.inject.Inject;
-import data.Query;
+import web.data.Query;
 import extendedsldnf.datastructure.IQueryExplanations;
 import play.data.Form;
 import play.data.FormFactory;
@@ -64,9 +64,9 @@ public class Explanations extends Controller {
         System.out.println(explanations);
         Gson gson=CustomGson.getInstance().getGson();
 
-        //return ok(gson.toJson(explanations));
+        return ok(gson.toJson(explanations));
 
-        return ok(index.render(q,explanations));
+//        return ok(index.render(q,explanations));
     }
 
 }

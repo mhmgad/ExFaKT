@@ -10,6 +10,7 @@
     <version>1.0</version>
     <modules>
         <module>Api</module>
+        <module>Client</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
