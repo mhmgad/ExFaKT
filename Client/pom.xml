@@ -12,11 +12,11 @@
     <artifactId>client</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.google.http-client</groupId>
-            <artifactId>google-http-client-gson</artifactId>
-            <version>1.23.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.google.http-client</groupId>-->
+            <!--<artifactId>google-http-client-gson</artifactId>-->
+            <!--<version>1.23.0</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>factchecking</groupId>
@@ -28,6 +28,19 @@
             <artifactId>guice</artifactId>
             <version>4.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
 
 
     </dependencies>
