@@ -94,6 +94,10 @@ public class Explanation implements Comparable<Explanation> {
         return  evidenceNodes.stream().filter(EvidenceNode::isRuleExpansion).collect(Collectors.toList());
     }
 
+    public int getRulesEvidencesCount(){
+        return  getRulesEvidences().size();
+    }
+
     public Stream<EvidenceNode> getVerificationEvidenceNodesStream() {
         return evidenceNodes.stream().filter(EvidenceNode::isVerification);
     }
@@ -213,5 +217,9 @@ public class Explanation implements Comparable<Explanation> {
     public void setQuality() {
          this.quality = getQualityScore();
          this.getEvidenceNodes().forEach(ev->ev.setQuality());
+    }
+
+    public double getQuality() {
+        return quality;
     }
 }

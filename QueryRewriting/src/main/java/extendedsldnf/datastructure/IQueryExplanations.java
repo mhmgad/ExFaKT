@@ -10,6 +10,7 @@ import java.util.Collection;
  */
 public interface IQueryExplanations {
 
+    enum Sorting{Quality, Generation, Length, Depth, Cost};
 
     boolean isEmpty();
 
@@ -36,4 +37,12 @@ public interface IQueryExplanations {
     public int documentLevelCount();
 
     public String getReadableString();
+
+    void sortExplanations(Sorting method);
+
+    Sorting getSortingMethod();
+
+    String toJsonString();
+
+
 }

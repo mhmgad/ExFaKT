@@ -1,6 +1,7 @@
 package web.data;
 
 
+import com.google.gson.Gson;
 
 public class Query /*extends QueryExplanations*/{
 
@@ -80,6 +81,10 @@ public class Query /*extends QueryExplanations*/{
 
     public void setRules(String rules) {
         this.rules = rules;
+    }
+
+    public String toJsonString(){
+        return new Gson().toJson(this);
     }
 
 //    public List<IRule> getRulesAsIRIS(){

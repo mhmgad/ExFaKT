@@ -1,14 +1,17 @@
 package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
+import com.google.gson.Gson;
 import com.google.gson.annotations.JsonAdapter;
 import de.mpii.datastructures.Fact;
 import extendedsldnf.CostAccumulator;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
+import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 import utils.Converter;
 import utils.StringUtils;
+import utils.json.CustomGson;
 import utils.json.adapters.IQueryAdapter;
 
 import java.util.*;
@@ -21,6 +24,8 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
 
     private final double quality;
     private CostAccumulator costAccumulator;
+
+
     /**
      * successful rewriting paths
      */
@@ -29,6 +34,8 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
 
     @JsonAdapter(IQueryAdapter.class)
     private IQuery query;
+
+    IQueryExplanations.Sorting sortingMethod=Sorting.Generation;
 
 
     public QueryExplanations() {
@@ -184,5 +191,45 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
         readable.append("\n**********************************************\n");
 
         return readable.toString();
+    }
+
+    @Override
+    public void sortExplanations(Sorting method) {
+        setSortingMethod(method);
+        Collection<Explanation> tempExplanations = getExplanations();
+        switch (method){
+            case Quality:
+                explanations=new TreeSortedSet<>(Comparator.comparing(Explanation::getQuality));
+                break;
+            case Cost:
+                explanations=new TreeSortedSet<>(Comparator.comparing(Explanation::getCost));
+                break;
+            case Generation:
+                explanations=new TreeSortedSet<>(Comparator.comparing(Explanation::getGenOrder));
+                break;
+            case Length:
+                explanations=new TreeSortedSet<>(Comparator.comparing(Explanation::size));
+                break;
+            case Depth:
+                explanations=new TreeSortedSet<>(Comparator.comparing(Explanation::getRulesEvidencesCount));
+                break;
+        }
+        explanations.addAll(tempExplanations);
+
+    }
+
+    @Override
+    public Sorting getSortingMethod() {
+        return sortingMethod;
+    }
+
+    @Override
+    public String toJsonString() {
+        Gson gson= CustomGson.getInstance().getGson();
+        return gson.toJson(this);
+    }
+
+    public void setSortingMethod(Sorting sortingMethod) {
+        this.sortingMethod = sortingMethod;
     }
 }
