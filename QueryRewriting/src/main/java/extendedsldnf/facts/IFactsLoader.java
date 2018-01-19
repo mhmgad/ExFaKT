@@ -17,10 +17,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gadelrab on 4/11/17.
@@ -72,7 +69,7 @@ public abstract class IFactsLoader {
 
          ExtendedFacts all=new ExtendedFacts(relationFactory);
 
-        for (String filePath:filePaths) {
+        for (String filePath:new HashSet<>(filePaths)) {
             IExtendedFacts  facts=loadFacts(filePath);
             all.addAll(facts);
         }

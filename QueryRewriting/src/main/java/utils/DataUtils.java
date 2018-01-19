@@ -47,7 +47,7 @@ public class DataUtils {
 
         List<IRule> rules=new ArrayList<>();
 
-        for (String filename:rulesFilenames) {
+        for (String filename:new HashSet<>(rulesFilenames)) {
             System.out.print("Loading rules from: "+filename);
             try {
                 Parser parser=new Parser();
