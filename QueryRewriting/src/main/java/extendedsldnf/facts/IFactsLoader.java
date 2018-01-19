@@ -70,8 +70,10 @@ public abstract class IFactsLoader {
          ExtendedFacts all=new ExtendedFacts(relationFactory);
 
         for (String filePath:new HashSet<>(filePaths)) {
+            System.out.print("Loading rules from: "+filePath);
             IExtendedFacts  facts=loadFacts(filePath);
             all.addAll(facts);
+            System.out.print("... Done!");
         }
 
 //        logger.debug("all fact"+ all.toString());
