@@ -44,16 +44,20 @@ public class DataUtils {
 
 
     public static List<IRule> loadRules(List<String> rulesFilenames) {
+
         List<IRule> rules=new ArrayList<>();
 
         for (String filename:rulesFilenames) {
+            System.out.print("Loading rules from: "+filename);
             try {
                 Parser parser=new Parser();
                 BufferedReader fr = FileUtils.getBufferedUTF8Reader(filename);
                 parser.parse(fr);
                 rules.addAll(parser.getRules());
+                System.out.println(" .... Done!");
             } catch (Exception e) {
                 e.printStackTrace();
+                System.out.println(" .... Error loading rules!");
             }
 
         }
