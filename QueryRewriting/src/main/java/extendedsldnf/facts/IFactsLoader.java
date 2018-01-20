@@ -73,7 +73,7 @@ public abstract class IFactsLoader {
             System.out.print("Loading facts from: "+filePath);
             IExtendedFacts  facts=loadFacts(filePath);
             all.addAll(facts);
-            System.out.print("... Done!");
+            System.out.println("... Done!");
         }
 
 //        logger.debug("all fact"+ all.toString());

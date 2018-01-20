@@ -114,9 +114,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 //                    .createEvaluator(facts, defaultRules, config);
 
 
-
-
-
+        System.out.println("Extractor initialized!");
 
     }
 
@@ -144,7 +142,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
     @Override
     public IQueryExplanations check(IQuery query,Collection<IRule> specificRules) {
         try {
-
+            System.out.println("Query : "+query.toString());
             // return (IExplaination) evaluationStrategy.evaluateQuery(query,null);
             List<IRule> rules=new LinkedList<>(defaultRules);
             rules.addAll(specificRules);

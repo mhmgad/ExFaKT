@@ -117,7 +117,7 @@ public class Configuration extends org.deri.iris.Configuration {
     /**
      * Files containing queries
      */
-    private List<String> queiesFiles;
+    private List<String> queriesFiles;
 
     /**
      * The format of the input fact, either RDF triples or IRIS facts
@@ -169,7 +169,7 @@ public class Configuration extends org.deri.iris.Configuration {
             conf.setSpottingMethod(FactSpotterFactory.SpottingMethod.valueOf(prop.getProperty(SPOTTING_METHOD, "NONE")));
             conf.setRulesFiles(asList(prop.getProperty(RULES_FILES, "")));
             conf.setFactsFiles(asList(prop.getProperty(FACTS_FILES, "")));
-            conf.setQueiesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
+            conf.setQueriesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
             conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
             conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE, "NONE")));
             conf.setSuspectsFromKG(Boolean.parseBoolean(prop.getProperty(SUSPECTS_FROM_KG, "false")));
@@ -248,8 +248,8 @@ public class Configuration extends org.deri.iris.Configuration {
         this.factsFiles = factsFiles;
     }
 
-    public void setQueiesFiles(List<String> queiesFiles) {
-        this.queiesFiles = queiesFiles;
+    public void setQueriesFiles(List<String> queriesFiles) {
+        this.queriesFiles = queriesFiles;
     }
 
     public void setFactsFormat(FactsFormat factsFormat) {
@@ -264,8 +264,8 @@ public class Configuration extends org.deri.iris.Configuration {
         return spottingMethod;
     }
 
-    public List<String> getQueiesFiles() {
-        return queiesFiles;
+    public List<String> getQueriesFiles() {
+        return queriesFiles;
     }
 
     public void setPartialBindingType(PartialBindingType partialBindingType) {
@@ -300,7 +300,7 @@ public class Configuration extends org.deri.iris.Configuration {
                 ", spottingMethod=" + spottingMethod +'\n'+
                 ", rulesFiles=" + rulesFiles +'\n'+
                 ", factsFiles=" + factsFiles +'\n'+
-                ", queiesFiles=" + queiesFiles +'\n'+
+                ", queriesFiles=" + queriesFiles +'\n'+
                 ", factsFormat=" + factsFormat +'\n'+
                 ", partialBindingType=" + partialBindingType +'\n'+
                 ", suspectsFromKG=" + suspectsFromKG +'\n'+

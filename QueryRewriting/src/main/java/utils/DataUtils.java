@@ -8,10 +8,8 @@ import mpi.tools.javatools.util.FileUtils;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.compiler.Parser;
-import org.deri.iris.compiler.ParserException;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -73,7 +71,7 @@ public class DataUtils {
 
     public static LinkedHashMap<IQuery, Integer> loadQueries(Configuration conf) {
         // we need to match the queries to facts type
-        return loadQueries(conf,conf.getQueiesFiles());
+        return loadQueries(conf,conf.getQueriesFiles());
     }
 
     public static void main(String[] args) {

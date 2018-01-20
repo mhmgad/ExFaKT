@@ -152,7 +152,7 @@ public class MainCLI {
         }
 
         if(cmd.hasOption(queriesFilesOp.getOpt())) {
-            configuration.setQueiesFiles(asList(cmd.getOptionValue(queriesFilesOp.getOpt(),null)));
+            configuration.setQueriesFiles(asList(cmd.getOptionValue(queriesFilesOp.getOpt(),null)));
 
         }
 
