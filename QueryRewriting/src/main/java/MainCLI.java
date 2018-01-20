@@ -240,9 +240,11 @@ public class MainCLI {
     }
 
     private List<IQueryExplanations> extractExplanations(Configuration configuration) throws EvaluationException, IOException {
-        ExplanationsExtractor rfc=new ExplanationsExtractor();
+        System.out.println(getClass().getName()+": Init ExplanationsExtractor");
+        ExplanationsExtractor rfc=ExplanationsExtractor.getInstance();
+        System.out.println(getClass().getName()+": load Queries");
         LinkedHashMap<IQuery, Integer> queries = DataUtils.loadQueries(configuration);
-
+        System.out.println(getClass().getName()+": Compute checks");
         List<IQueryExplanations> explanations=queries.keySet().parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
 
 //        Iterator<IExplanation> explansItr=explainations.iterator();

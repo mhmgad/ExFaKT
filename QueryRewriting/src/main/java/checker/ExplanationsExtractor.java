@@ -70,7 +70,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
 
 
-    public ExplanationsExtractor() {
+    private ExplanationsExtractor() {
         // load Config
         config= Configuration.getInstance();
         // Store the configuration object against the current thread.
