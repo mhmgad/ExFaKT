@@ -85,8 +85,8 @@
                 </program>
 
                 <program>
-                    <mainClass>check_rules</mainClass>
-                    <id>utils.RulesSyntaxChecker</id>
+                    <mainClass>utils.RulesSyntaxChecker</mainClass>
+                    <id>check_rules</id>
                 </program>
 
             </programs>
