@@ -84,6 +84,11 @@
                     <id>json2readable</id>
                 </program>
 
+                <program>
+                    <mainClass>check_rules</mainClass>
+                    <id>utils.RulesSyntaxChecker</id>
+                </program>
+
             </programs>
 
 
