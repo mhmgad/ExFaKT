@@ -22,7 +22,7 @@ public class FactChecker {
 
     @Inject
     public FactChecker()  {
-            this.extractor = new ExplanationsExtractor();
+            this.extractor = ExplanationsExtractor.getInstance();
     }
 
 
