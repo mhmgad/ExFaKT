@@ -89,6 +89,12 @@
                     <id>check_rules</id>
                 </program>
 
+                <program>
+                    <mainClass>utils.RelativeRulesCollector</mainClass>
+                    <id>get_rules</id>
+                </program>
+
+
             </programs>
 
 
@@ -100,11 +106,13 @@
 
     <dependencies>
 
-        <!--<dependency>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--<artifactId>commons-lang3</artifactId>-->
-            <!--<version>3.6</version>-->
-        <!--</dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.1</version>
+        </dependency>
+
 
         <dependency>
             <groupId>factchecking</groupId>
