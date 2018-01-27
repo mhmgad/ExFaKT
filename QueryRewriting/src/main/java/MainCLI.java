@@ -245,7 +245,7 @@ public class MainCLI {
         ExplanationsExtractor rfc=ExplanationsExtractor.getInstance();
         System.out.println(getClass().getName()+": load Queries");
         LinkedHashMap<InputQuery, Integer> queries = DataUtils.loadQueries(configuration);
-        System.out.println(getClass().getName()+": Compute checks");
+        System.out.println(getClass().getName()+": Compute explanations");
         List<IQueryExplanations> explanations=queries.keySet().parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
 
 //        Iterator<IExplanation> explansItr=explainations.iterator();

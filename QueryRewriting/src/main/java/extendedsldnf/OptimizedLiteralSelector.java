@@ -55,7 +55,8 @@ public class OptimizedLiteralSelector implements ILiteralSelector {
             };
 
 
-            list.sort(variablesSizeComparator.thenComparing(dataSizeComparator));
+            List<ILiteral> sortingList=new ArrayList<>(list);
+            sortingList.sort(variablesSizeComparator.thenComparing(dataSizeComparator));
 
 
             System.out.println( Joiner.on(", ").join(list)+"\t"+Joiner.on(", ").join(list.stream().map(k->upperboundInstances.get(k)).collect(Collectors.toList())));
