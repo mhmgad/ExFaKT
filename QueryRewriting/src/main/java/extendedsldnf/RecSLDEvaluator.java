@@ -33,6 +33,7 @@ import org.deri.iris.builtins.EqualBuiltin;
 import org.deri.iris.builtins.ExactEqualBuiltin;
 import org.deri.iris.evaluation.topdown.*;
 import org.deri.iris.factory.Factory;
+import org.deri.iris.facts.IFacts;
 import org.deri.iris.rules.RuleManipulator;
 import org.deri.iris.rules.optimisation.ReOrderLiteralsOptimiser;
 import org.deri.iris.rules.ordering.SimpleReOrdering;
@@ -404,7 +405,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
         logger.debug(queryLiteral+" Hypothetical Bindings "+factRelation.size());
 
         List<Map<IVariable, ITerm>> variableMapList=new LinkedList<>();
-        fillVariableMaps(queryLiteral,factRelation,variableMapList);
+        FactsUtils.fillVariableMaps(queryLiteral,factRelation,variableMapList);
 
 //        EvidenceNode evidenceNode=new EvidenceNode(queryLiteral, EvidenceNode.Type.VAR_BIND);
         EvidenceNode evidenceNode=new EvidenceNode(queryLiteral, Enums.ActionType.GREEDY_BIND);
@@ -495,7 +496,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
 
 
         List<Map<IVariable, ITerm>> variableMapList = new LinkedList<Map<IVariable,ITerm>>();
-        if ( getMatchingFacts( queryLiteral, variableMapList  ) ) {
+        if ( FactsUtils.getMatchingFacts( queryLiteral, variableMapList,mFacts  ) ) {
             boolean removePredicate=true;
 //            EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, EvidenceNode.Type.KG_VALID):new EvidenceNode(queryLiteral, EvidenceNode.Type.VAR_BIND);
             EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, Enums.ActionType.KG_VALID):new EvidenceNode(queryLiteral, Enums.ActionType.KG_BIND);
@@ -663,48 +664,48 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
         return newQueryList;
     }
 
-    /**
-     * Tries to find a fact that matches the given query.
-     * The variableMap will be populated if a matching fact was found.
-     * @param queryLiteral the given query
-     *
-     * @return true if a matching fact is found, false otherwise
-     */
-    public boolean getMatchingFacts(ILiteral queryLiteral, List<Map<IVariable, ITerm>> variableMapList) {
-
-        // Check all the facts
-        for ( IPredicate factPredicate : mFacts.getPredicates() ) {
-            // Check if the predicate and the arity matches
-            if ( TopDownHelper.match(queryLiteral, factPredicate) ) {
-                // We've found a match (predicates and arity match)
-                // Is the QueryTuple unifiable with one of the FactTuples?
-
-                IRelation factRelation = mFacts.get(factPredicate);
-                fillVariableMaps(queryLiteral, factRelation, variableMapList);
-
-
-            }
-        }
-        if (variableMapList.isEmpty())
-            return false; // No fact found
-
-        return true;
-    }
-
-    public void fillVariableMaps(ILiteral queryLiteral, IRelation factRelation, List<Map<IVariable, ITerm>> variableMapList) {
-        // Substitute variables into the query
-        for ( int i = 0; i < factRelation.size(); i++ ) {
-            ITuple queryTuple = queryLiteral.getAtom().getTuple();
-            boolean tupleUnifyable = false;
-            ITuple factTuple = factRelation.get(i);
-            Map<IVariable, ITerm> variableMap = new HashMap<IVariable, ITerm>();
-            tupleUnifyable = TermMatchingAndSubstitution.unify(queryTuple, factTuple, variableMap);
-            if (tupleUnifyable) {
-                queryTuple = TermMatchingAndSubstitution.substituteVariablesInToTuple(queryTuple, variableMap);
-                variableMapList.add(variableMap);
-            }
-        }
-    }
+//    /**
+//     * Tries to find a fact that matches the given query.
+//     * The variableMap will be populated if a matching fact was found.
+//     * @param queryLiteral the given query
+//     *
+//     * @return true if a matching fact is found, false otherwise
+//     */
+//    public static boolean getMatchingFacts(ILiteral queryLiteral, List<Map<IVariable, ITerm>> variableMapList, IFacts factsSource) {
+//
+//        // Check all the facts
+//        for ( IPredicate factPredicate : factsSource.getPredicates() ) {
+//            // Check if the predicate and the arity matches
+//            if ( TopDownHelper.match(queryLiteral, factPredicate) ) {
+//                // We've found a match (predicates and arity match)
+//                // Is the QueryTuple unifiable with one of the FactTuples?
+//
+//                IRelation factRelation = factsSource.get(factPredicate);
+//                fillVariableMaps(queryLiteral, factRelation, variableMapList);
+//
+//
+//            }
+//        }
+//        if (variableMapList.isEmpty())
+//            return false; // No fact found
+//
+//        return true;
+//    }
+//
+//    public static void fillVariableMaps(ILiteral queryLiteral, IRelation factRelation, List<Map<IVariable, ITerm>> variableMapList) {
+//        // Substitute variables into the query
+//        for ( int i = 0; i < factRelation.size(); i++ ) {
+//            ITuple queryTuple = queryLiteral.getAtom().getTuple();
+//            boolean tupleUnifyable = false;
+//            ITuple factTuple = factRelation.get(i);
+//            Map<IVariable, ITerm> variableMap = new HashMap<IVariable, ITerm>();
+//            tupleUnifyable = TermMatchingAndSubstitution.unify(queryTuple, factTuple, variableMap);
+//            if (tupleUnifyable) {
+//                queryTuple = TermMatchingAndSubstitution.substituteVariablesInToTuple(queryTuple, variableMap);
+//                variableMapList.add(variableMap);
+//            }
+//        }
+//    }
 
 
     /**
@@ -756,5 +757,9 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
 
     public void setMaxRuleDepth(int maxRuleDepth) {
         this.maxRuleDepth = maxRuleDepth;
+    }
+
+    public IFacts getFacts() {
+        return mFacts;
     }
 }

@@ -75,6 +75,10 @@ public class ItrSLDEvaluator extends RecSLDEvaluator {
         List<Explanation> explanations = new LinkedList<>();
 
         ILiteralSelector literalSelector = new StandardLiteralSelector();
+        if(compareMethod.equals(AbstractQueriesPool.ComparisionMethod.HEURISTIC)){
+            literalSelector=new OptimizedLiteralSelector(super.getFacts());
+        }
+
 
         while (!pool.isEmpty()) {
 

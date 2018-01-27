@@ -1,12 +1,8 @@
 package extendedsldnf.datastructure;
 
 import de.mpii.datastructures.BinaryFact;
-import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IQuery;
-import org.deri.iris.api.terms.IVariable;
 import utils.Converter;
-
-import java.util.List;
 
 public class InputQuery {
 
