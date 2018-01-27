@@ -5,6 +5,7 @@ import de.mpii.datastructures.BinaryFact;
 import de.mpii.datastructures.Fact;
 import extendedsldnf.datastructure.IExtendedFacts;
 
+import extendedsldnf.datastructure.InputQuery;
 import mpi.tools.javatools.util.FileUtils;
 import org.apache.log4j.Logger;
 import org.deri.iris.EvaluationException;
@@ -38,7 +39,7 @@ public class DatalogProgramExecuter {
 
     private  Configuration config;
     StratifiedBottomUpEvaluationStrategyFactory evaluationStrategyFactory;
-    Collection<IQuery> queries;
+    Collection<InputQuery> queries;
     List<IRule> rules;
     IExtendedFacts facts;
 
@@ -65,8 +66,8 @@ public class DatalogProgramExecuter {
         try {
             IEvaluationStrategy str=evaluationStrategyFactory.createEvaluator(facts,rules,config);
             BufferedWriter bw= FileUtils.getBufferedUTF8Writer(outputfile);
-            for (IQuery q: queries) {
-
+            for (InputQuery queryIn: queries) {
+                IQuery q = queryIn.getIQuery();
                 logger.debug(q.toString());
                 List<IVariable> variableBindings = new ArrayList<IVariable>();
                 IRelation relation =  str.evaluateQuery(q,variableBindings);

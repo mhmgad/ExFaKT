@@ -6,7 +6,7 @@ import java.util.Comparator;
  * Created by gadelrab on 4/27/17.
  */
 public class Enums {
-    public static enum ActionType {BUILT_IN(0), ORG(0) , KG_VALID(10), TEXT_VALID(15),  KG_BIND(20), TEXT_BIND(25), GREEDY_BIND(27), RULE_EXPAND(30), UNCLASSIFEIED(100);
+    public static enum ActionType {BUILT_IN(0), ORG(0) , KG_VALID(10), TEXT_VALID(15),  KG_BIND(20), TEXT_BIND(25), GREEDY_BIND(27), RULE_EXPAND(30), UNCLASSIFIED(100);
 
         private int priority;
 

@@ -27,7 +27,7 @@ public class CostAccumulator implements Comparable<CostAccumulator>{
         costMap.put(Enums.ActionType.GREEDY_BIND,2);
         costMap.put(Enums.ActionType.TEXT_VALID,2);
         costMap.put(Enums.ActionType.TEXT_BIND,2);
-        costMap.put(Enums.ActionType.UNCLASSIFEIED,0);
+        costMap.put(Enums.ActionType.UNCLASSIFIED,0);
     }
 
     private CostAccumulator fullCost;

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import config.Configuration;
 import datastructure.CorrectnessInfo;
 import extendedsldnf.datastructure.IQueryExplanations;
+import extendedsldnf.datastructure.InputQuery;
 import mpi.tools.javatools.util.FileUtils;
 import org.apache.commons.cli.*;
 import org.deri.iris.EvaluationException;
@@ -203,7 +204,7 @@ public class MainCLI {
 
 //        Fact f=new Fact("diedIn", Arrays.asList("John F. Kennedy","Dallas"));
 
-        LinkedHashMap<IQuery, Integer> queries = DataUtils.loadQueries(configuration);
+        LinkedHashMap<InputQuery, Integer> queries = DataUtils.loadQueries(configuration);
         FactChecker fc=new FactChecker();
 
         List<CorrectnessInfo> correctnessInfos=queries.keySet().parallelStream().map(q->fc.checkCorrectness(q,queries.get(q))).collect(Collectors.toList());
@@ -243,7 +244,7 @@ public class MainCLI {
         System.out.println(getClass().getName()+": Init ExplanationsExtractor");
         ExplanationsExtractor rfc=ExplanationsExtractor.getInstance();
         System.out.println(getClass().getName()+": load Queries");
-        LinkedHashMap<IQuery, Integer> queries = DataUtils.loadQueries(configuration);
+        LinkedHashMap<InputQuery, Integer> queries = DataUtils.loadQueries(configuration);
         System.out.println(getClass().getName()+": Compute checks");
         List<IQueryExplanations> explanations=queries.keySet().parallelStream().map(q->rfc.check(q)).collect(Collectors.toList());
 
@@ -282,7 +283,7 @@ public class MainCLI {
         System.out.println("Recall: "+explanations.stream().filter(exp-> !exp.isEmpty()).count()+"/"+(explanations.size()));
     }
 
-    private void evaluateResults(List<IQueryExplanations> explanations,List<CorrectnessInfo> correctnessInfo,LinkedHashMap<IQuery, Integer> groundTruth) {
+    private void evaluateResults(List<IQueryExplanations> explanations,List<CorrectnessInfo> correctnessInfo,LinkedHashMap<InputQuery, Integer> groundTruth) {
 
 
         ResultsEvaluator evals=new ResultsEvaluator(explanations,correctnessInfo);

@@ -2,6 +2,7 @@ package utils;
 
 import config.Configuration;
 import extendedsldnf.datastructure.IExtendedFacts;
+import extendedsldnf.datastructure.InputQuery;
 import extendedsldnf.facts.FactsLoaderFactory;
 import extendedsldnf.facts.IFactsLoader;
 import mpi.tools.javatools.util.FileUtils;
@@ -63,13 +64,13 @@ public class DataUtils {
 
     }
 
-    public static LinkedHashMap<IQuery, Integer> loadQueries(Configuration conf, List<String> queriesFiles) {
+    public static LinkedHashMap<InputQuery, Integer> loadQueries(Configuration conf, List<String> queriesFiles) {
         // we need to match the queries to facts type
         IFactsLoader factsLoader= FactsLoaderFactory.getLoader(conf);
         return factsLoader.parseQueries(queriesFiles);
     }
 
-    public static LinkedHashMap<IQuery, Integer> loadQueries(Configuration conf) {
+    public static LinkedHashMap<InputQuery, Integer> loadQueries(Configuration conf) {
         // we need to match the queries to facts type
         return loadQueries(conf,conf.getQueriesFiles());
     }

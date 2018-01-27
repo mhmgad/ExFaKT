@@ -1,7 +1,12 @@
 package extendedsldnf.facts;
 
 import config.Configuration;
-import org.deri.iris.api.basics.*;
+import de.mpii.utils.FactUtils;
+import extendedsldnf.datastructure.InputQuery;
+import org.deri.iris.api.basics.IAtom;
+import org.deri.iris.api.basics.ILiteral;
+import org.deri.iris.api.basics.IPredicate;
+import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.api.factory.IBasicFactory;
 import org.deri.iris.api.factory.ITermFactory;
 import org.deri.iris.api.terms.ITerm;
@@ -9,11 +14,12 @@ import org.deri.iris.basics.BasicFactory;
 import org.deri.iris.storage.IRelation;
 import org.deri.iris.storage.IRelationFactory;
 import org.deri.iris.terms.TermFactory;
-import de.mpii.utils.FactUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by gadelrab on 4/12/17.
@@ -76,10 +82,10 @@ public class RDFFactsLoader extends IFactsLoader{
 
 
     @Override
-    public LinkedHashMap<IQuery, Integer> parseQueries(BufferedReader fileReader) {
+    public LinkedHashMap<InputQuery, Integer> parseQueries(BufferedReader fileReader) {
         //TODO parse the file check if it is implemented in RDF-IRIS-reasoner
 
-        LinkedHashMap<IQuery, Integer> queries=new LinkedHashMap<>();
+        LinkedHashMap<InputQuery, Integer> queries=new LinkedHashMap<>();
 
         try {
             IBasicFactory basicFactory = BasicFactory.getInstance();
@@ -87,11 +93,13 @@ public class RDFFactsLoader extends IFactsLoader{
             IRelationFactory relationFactory=getRelationFactory();
             IRelation relation=null;
 
+            int i=0;
             for(String line=fileReader.readLine();line!=null;line=fileReader.readLine()){
 
                 if(line==null || line.isEmpty())
                     continue;
 
+                i++;
                 String[] parts=line.split("\t");
 
                 // Create the predicate
@@ -111,7 +119,7 @@ public class RDFFactsLoader extends IFactsLoader{
                 Integer label= (parts.length>3)? Integer.valueOf(parts[3]) :1;
 
 
-                queries.put(basicFactory.createQuery(literal),label);
+                queries.put(new InputQuery(basicFactory.createQuery(literal),i,label),label);
 
             }
         } catch (IOException e) {

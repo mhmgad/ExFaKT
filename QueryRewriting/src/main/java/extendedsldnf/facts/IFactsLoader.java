@@ -2,6 +2,7 @@ package extendedsldnf.facts;
 
 import extendedsldnf.datastructure.ExtendedFacts;
 import extendedsldnf.datastructure.IExtendedFacts;
+import extendedsldnf.datastructure.InputQuery;
 import mpi.tools.javatools.util.FileUtils;
 import org.deri.iris.api.basics.IPredicate;
 import org.deri.iris.api.basics.IQuery;
@@ -82,8 +83,8 @@ public abstract class IFactsLoader {
 
     }
 
-    public LinkedHashMap<IQuery, Integer> parseQueries(List<String> filePaths) {
-        LinkedHashMap<IQuery, Integer> queries=new LinkedHashMap<>();
+    public LinkedHashMap<InputQuery, Integer> parseQueries(List<String> filePaths) {
+        LinkedHashMap<InputQuery, Integer> queries=new LinkedHashMap<>();
 
         for (String filePath:filePaths) {
 //            queries.addAll( parseQueries(filePath));
@@ -92,7 +93,7 @@ public abstract class IFactsLoader {
         return queries;
     }
 
-    public LinkedHashMap<IQuery, Integer> parseQueries(String file) {
+    public LinkedHashMap<InputQuery, Integer> parseQueries(String file) {
         try {
             return  parseQueries(FileUtils.getBufferedUTF8Reader(file));
         } catch (FileNotFoundException e) {
@@ -102,11 +103,11 @@ public abstract class IFactsLoader {
     }
 
 
-    public abstract LinkedHashMap<IQuery, Integer> parseQueries(BufferedReader fileReader);
+    public abstract LinkedHashMap<InputQuery, Integer> parseQueries(BufferedReader fileReader);
 
     public abstract Map<IPredicate, IRelation> parseFacts(BufferedReader fileReader);
 
-    public LinkedHashMap<IQuery, Integer> parseQueries(FileInputStream file) {
+    public LinkedHashMap<InputQuery, Integer> parseQueries(FileInputStream file) {
         return parseQueries(FileUtils.getBufferedUTF8Reader(file));
     }
 

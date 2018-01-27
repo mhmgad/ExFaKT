@@ -47,7 +47,7 @@ public class ItrSLDEvaluator extends RecSLDEvaluator {
     @Override
     public IRelation evaluate(IQuery query) throws EvaluationException {
 
-        System.out.println("Query: "+query+"\tMaxDepth: "+this.getMaxRuleDepth()+"\tMaxExplans: "+getMaxExplanations());
+//        System.out.println("Query: "+query+"\tMaxDepth: "+this.getMaxRuleDepth()+"\tMaxExplans: "+getMaxExplanations());
         ExtQuerySubs extendedQueryWithSubstitution = new ExtQuerySubs(query, new HashMap<>(), null, 0, 0);
         extendedQueryWithSubstitution.setEvidenceNode(new EvidenceNode(null, ORG));
 

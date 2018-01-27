@@ -1,6 +1,7 @@
 package extendedsldnf.facts;
 
 import config.Configuration;
+import extendedsldnf.datastructure.InputQuery;
 import mpi.tools.javatools.util.FileUtils;
 import org.apache.xpath.operations.Bool;
 import org.deri.iris.api.basics.IPredicate;
@@ -37,19 +38,24 @@ public class IRISFactsLoader extends IFactsLoader{
     }
 
     @Override
-    public LinkedHashMap<IQuery, Integer> parseQueries(BufferedReader fileReader) {
-        LinkedHashMap<IQuery, Integer> queries=new LinkedHashMap<>();
+    public LinkedHashMap<InputQuery, Integer> parseQueries(BufferedReader fileReader) {
+        LinkedHashMap<InputQuery, Integer> queries=new LinkedHashMap<>();
 
 
         try {
+            int i=0;
             for (String line=fileReader.readLine();line!=null;line=fileReader.readLine()) {
+
                 if(line.isEmpty())
                     continue;
+                i++;
                 String[] queryAndLabel=line.trim().split("\t");
                 Parser pr=new Parser();
                 pr.parse(queryAndLabel[0]);
                 Integer label= (queryAndLabel.length>1)? Integer.valueOf(queryAndLabel[1]) :1;
-                pr.getQueries().forEach(q-> queries.put(q,label));
+//                pr.getQueries().forEach(q-> queries.put(new InputQuery(q,i,label),label));
+                queries.put(new InputQuery(pr.getQueries().get(0),i,label),label);
+
             }
 
         } catch (Exception e) {

@@ -6,6 +6,7 @@ import extendedsldnf.EvaluatorFactory;
 import extendedsldnf.RecSLDEvaluator;
 import extendedsldnf.datastructure.IExtendedFacts;
 import extendedsldnf.datastructure.IQueryExplanations;
+import extendedsldnf.datastructure.InputQuery;
 import org.deri.iris.ConfigurationThreadLocalStorage;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
@@ -23,7 +24,7 @@ import java.util.*;
  * Created by gadelrab on 3/22/17.
  */
 @Singleton
-public class ExplanationsExtractor implements IDeepChecker<IQuery> {
+public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 
 
     private static final ExplanationsExtractor explanationsExtractor=new ExplanationsExtractor();
@@ -122,7 +123,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
 
 
     @Override
-    public IQueryExplanations check(IQuery query) {
+    public IQueryExplanations check(InputQuery query) {
 //        try {
 //
 //           // return (IExplaination) evaluationStrategy.evaluateQuery(query,null);
@@ -140,7 +141,7 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
     }
 
     @Override
-    public IQueryExplanations check(IQuery query,Collection<IRule> specificRules) {
+    public IQueryExplanations check(InputQuery query,Collection<IRule> specificRules) {
         try {
             System.out.println("Query : "+query.toString());
             // return (IExplaination) evaluationStrategy.evaluateQuery(query,null);
@@ -151,35 +152,35 @@ public class ExplanationsExtractor implements IDeepChecker<IQuery> {
             RecSLDEvaluator evaluator ;
             EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
             evaluator = evaluatorFactory.getEvaluator(facts, rules);
-            IQueryExplanations relation = evaluator.getExplanation(query);
+            IQueryExplanations relation = evaluator.getExplanation(query.getIQuery());
             return  relation;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+//
+//    @Override
+//    public IQueryExplanations check(Fact fact, Collection<IRule> ruleSet) {
+//
+//        Parser parser = new Parser();
+//        try {
+//            parser.parse(fact.getIRISQueryRepresenation());
+//            IQuery query = parser.getQueries().get(0);
+//            return check(query,ruleSet);
+//
+//        } catch (ParserException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
-    @Override
-    public IQueryExplanations check(Fact fact, Collection<IRule> ruleSet) {
 
-        Parser parser = new Parser();
-        try {
-            parser.parse(fact.getIRISQueryRepresenation());
-            IQuery query = parser.getQueries().get(0);
-            return check(query,ruleSet);
-
-        } catch (ParserException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    @Override
-    public IQueryExplanations check(Fact fact) {
-        return check(fact,new HashSet<>());
-
-    }
+//    @Override
+//    public IQueryExplanations check(Fact fact) {
+//        return check(fact,new HashSet<>());
+//
+//    }
 
 
     public static synchronized ExplanationsExtractor getInstance(){

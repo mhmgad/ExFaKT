@@ -1,17 +1,14 @@
 package checker;
 
 import datastructure.CorrectnessInfo;
-import de.mpii.datastructures.Fact;
+import extendedsldnf.datastructure.InputQuery;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.*;
 import org.deri.iris.api.factory.IBasicFactory;
 import org.deri.iris.basics.BasicFactory;
-import org.deri.iris.compiler.Parser;
-import org.deri.iris.compiler.ParserException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Arrays;
 
 @Singleton
 public class FactChecker {
@@ -27,47 +24,47 @@ public class FactChecker {
 
 
 
-    public CorrectnessInfo checkCorrectness(IQuery query, int groundTruthLabel){
-        IQuery negQuery=negativeQuery(query);
+    public CorrectnessInfo checkCorrectness(InputQuery query, int groundTruthLabel){
+        InputQuery negQuery=negativeQuery(query);
 
 
 
-        return new CorrectnessInfo(query,negQuery,extractor.check(query),extractor.check(negQuery),groundTruthLabel);
+        return new CorrectnessInfo(query.getIQuery(),negQuery.getIQuery(),extractor.check(query),extractor.check(negQuery),groundTruthLabel);
 
     }
 
 
 
-    private IQuery negativeQuery(IQuery query) {
+    private InputQuery negativeQuery(InputQuery query) {
         IBasicFactory factory = BasicFactory.getInstance();
 
-        String negPredicateName = "not_" + query.getLiterals().get(0).getAtom().getPredicate();
-        ITuple tuple = query.getLiterals().get(0).getAtom().getTuple();
+        String negPredicateName = "not_" + query.getIQuery().getLiterals().get(0).getAtom().getPredicate();
+        ITuple tuple = query.getIQuery().getLiterals().get(0).getAtom().getTuple();
 
-        int arity=query.getLiterals().get(0).getAtom().getPredicate().getArity();
+        int arity=query.getIQuery().getLiterals().get(0).getAtom().getPredicate().getArity();
         IPredicate negPredicate = factory.createPredicate(negPredicateName, arity);
         IAtom negAtom=factory.createAtom(negPredicate,tuple);
         ILiteral negLiteral=factory.createLiteral(true,negAtom);
         IQuery negQuery= factory.createQuery(negLiteral);
-        return negQuery;
+        return new InputQuery(negQuery,query.getOrder(),query.getLabel());
     }
 
 
 
-    public CorrectnessInfo checkCorrectness(Fact fact,int groundTruthLabel) {
-
-        Parser parser = new Parser();
-        try {
-            parser.parse(fact.getIRISQueryRepresenation());
-            IQuery query = parser.getQueries().get(0);
-            return checkCorrectness(query, groundTruthLabel);
-
-        } catch (ParserException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
+//    public CorrectnessInfo checkCorrectness(Fact fact,int groundTruthLabel) {
+//
+//        Parser parser = new Parser();
+//        try {
+//            parser.parse(fact.getIRISQueryRepresenation());
+//            IQuery query = parser.getQueries().get(0);
+//            return checkCorrectness(query, groundTruthLabel);
+//
+//        } catch (ParserException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//
+//    }
 
 
     public synchronized static FactChecker getInstance(){
