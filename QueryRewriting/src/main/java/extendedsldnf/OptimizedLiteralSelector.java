@@ -1,6 +1,5 @@
 package extendedsldnf;
 
-import com.google.common.base.Joiner;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.terms.ITerm;
 import org.deri.iris.api.terms.IVariable;
@@ -8,7 +7,6 @@ import org.deri.iris.evaluation.topdown.ILiteralSelector;
 import org.deri.iris.facts.IFacts;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class OptimizedLiteralSelector implements ILiteralSelector {
 
@@ -42,6 +40,9 @@ public class OptimizedLiteralSelector implements ILiteralSelector {
             for (ILiteral l : list) {
                 List<Map<IVariable, ITerm>> varsMapList=new LinkedList<>();
                 FactsUtils.getMatchingFacts(l,varsMapList,factsSource);
+                // for debugging
+                if(varsMapList.size()>100)
+                    System.out.println("["+getClass().getName()+"] "+l.toString()+"\t"+varsMapList.size());
                 upperboundInstances.put(l,varsMapList.size());
 
 
