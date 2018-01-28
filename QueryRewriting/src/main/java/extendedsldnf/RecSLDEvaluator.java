@@ -302,7 +302,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
             subQueryList.addAll(subQueries);
 
             // Rules are always fired to grant reaching the whole search space
-            if(mRules.size()>0){
+            if(mRules.size()>0 && query.getRulesDepth()<maxRuleDepth){
                 subQueries = processQueryAgainstRules(query, selectedLiteral, costAccumulator);
                 subQueryList.addAll( subQueries );
             }
@@ -439,6 +439,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
 
         IQuery orgQuery=query.getQuery();
         //SimpleSelector
+
 
         //Add the cost only count rules access once
         costAccumulator.addCost(RULE_EXPAND);

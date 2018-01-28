@@ -102,7 +102,7 @@ public class ItrSLDEvaluator extends RecSLDEvaluator {
             }
 
             //stop when maximum nesting reached
-            if (chosenQuery.getRulesDepth() >= getMaxRuleDepth())
+            if (chosenQuery.getRulesDepth() > getMaxRuleDepth())
                 continue;
 
             // Local literal selection
