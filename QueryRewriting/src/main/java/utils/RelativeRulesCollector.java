@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import edu.stanford.nlp.util.Sets;
 import org.deri.iris.api.basics.IAtom;
 import org.deri.iris.api.basics.ILiteral;
+import org.deri.iris.api.basics.IPredicate;
 import org.deri.iris.api.basics.IRule;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
 
@@ -14,6 +15,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RelativeRulesCollector {
+    /*
+    * Excludes
+    * 1. Transitive 'like' rules (i.e. does not consider variables order)
+    * 2. rules where head is exactly in the body
+    * */
 
     public static void main(String[] args) throws IOException {
 
@@ -36,7 +42,7 @@ public class RelativeRulesCollector {
         List<IRule> selectedRules=getDependentRules(targetPredicate,maxLevel,rulesMaps);
         System.out.println("Total Rules: "+selectedRules.size());
 
-        BufferedWriter bw=new BufferedWriter(new FileWriter(new File(targetPredicate+"_rules.iris")));
+        BufferedWriter bw=new BufferedWriter(new FileWriter(new File(targetPredicate+"_"+maxLevel+"_rules.iris")));
         for (IRule rule:selectedRules) {
             bw.write(rule.toString());
             bw.newLine();
@@ -55,6 +61,17 @@ public class RelativeRulesCollector {
                 return true;
 
         }
+
+        // transitivity rules
+        IPredicate headPredicate=headLiteral.getAtom().getPredicate();
+        int c=0;
+        for (ILiteral bodyLiteral:rule.getBody()) {
+            if(bodyLiteral.getAtom().getPredicate().equals(headPredicate))
+                c++;
+
+        }
+        if(c==rule.getBody().size())
+            return true;
 
         return false;
     }

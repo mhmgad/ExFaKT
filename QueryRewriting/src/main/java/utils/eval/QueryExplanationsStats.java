@@ -14,7 +14,7 @@ public  class QueryExplanationsStats {
 
     private final IQueryExplanations explanation;
 
-    public static String[] outputElements= new String[]{"Query","hasExplanations","isDirect","hasDirect", "hasIndirect", "newlyCovered","AllPureKG", "onePureFromKG","count","withText","fromTextOnly","fromKGOnly"};
+    public static String[] outputElements= new String[]{"Query","hasExplanations","isDirect","hasDirect", "hasIndirect", "newlyCovered","AllPureKG", "onePureFromKG","count","withText","fromTextOnly","fromKGOnly","avgQuality"};
 
     public QueryExplanationsStats(IQueryExplanations explanation) {
         this.explanation=explanation;
@@ -86,6 +86,7 @@ public  class QueryExplanationsStats {
         stats.add(""+getExplanationsWithTextCount());
         stats.add(""+getExplanationsWithTextOnlyCount());
         stats.add(""+getExplanationsWithKGFactsOnlyCount());
+        stats.add(""+getExplanationsAvgQuality());
 
 
 
@@ -94,4 +95,7 @@ public  class QueryExplanationsStats {
     }
 
 
+    public double getExplanationsAvgQuality() {
+        return explanation.getAvgQuality();
+    }
 }
