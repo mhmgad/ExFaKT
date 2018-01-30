@@ -96,11 +96,19 @@ public  class QueryExplanationsStats {
     }
 
     private double getExplanationsMaxQuality() {
+        if(explanation.size()==0)
+            return 0;
         return explanation.getExplanations().stream().mapToDouble(Explanation::getQuality).max().getAsDouble();
     }
 
 
     public double getExplanationsAvgQuality() {
         return explanation.getAvgQuality();
+    }
+
+    public static void main(String[] args) {
+//        List<Integer> vals=new ArrayList<>();
+//
+//        System.out.println(vals.stream().mapToInt(Integer::intValue).max().getAsInt());
     }
 }
