@@ -61,7 +61,7 @@ public class OptimizedLiteralSelector implements ILiteralSelector {
 
 
 //            System.out.println( Joiner.on(", ").join(list)+"\t"+Joiner.on(", ").join(sortingList.stream().map(k->upperboundInstances.get(k)).collect(Collectors.toList())));
-            return list.get(0);
+            return sortingList.get(0);
         }
 
 

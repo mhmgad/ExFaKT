@@ -14,7 +14,7 @@ public  class QueryExplanationsStats {
 
     private final IQueryExplanations explanation;
 
-    public static String[] outputElements= new String[]{"Query","hasExplanations","isDirect","hasDirect", "hasIndirect", "newlyCovered","AllPureKG", "onePureFromKG","count","withText","fromTextOnly","fromKGOnly","avgQuality"};
+    public static String[] outputElements= new String[]{"Query","hasExplanations","isDirect","hasDirect", "hasIndirect", "newlyCovered","AllPureKG", "onePureFromKG","count","withText","fromTextOnly","fromKGOnly","avgQuality","maxQuality"};
 
     public QueryExplanationsStats(IQueryExplanations explanation) {
         this.explanation=explanation;
@@ -87,11 +87,16 @@ public  class QueryExplanationsStats {
         stats.add(""+getExplanationsWithTextOnlyCount());
         stats.add(""+getExplanationsWithKGFactsOnlyCount());
         stats.add(""+getExplanationsAvgQuality());
+        stats.add(""+getExplanationsMaxQuality());
 
 
 
 
         return Joiner.on('\t').join(stats);
+    }
+
+    private double getExplanationsMaxQuality() {
+        return explanation.getExplanations().stream().mapToDouble(Explanation::getQuality).max().getAsDouble();
     }
 
 
