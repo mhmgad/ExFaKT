@@ -4,6 +4,7 @@ import checker.ExplanationsExtractor;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import de.mpii.datastructures.BinaryFact;
+import extendedsldnf.datastructure.InputQuery;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.compiler.Parser;
 import org.deri.iris.compiler.ParserException;
@@ -81,7 +82,7 @@ public class Explanations extends Controller {
         }
 
 
-        IQueryExplanations explanations = explanationsExtractor.check(new BinaryFact(q.getSubject(),q.getPredicate(),q.getObject()),ruleList);
+        IQueryExplanations explanations = explanationsExtractor.check( new InputQuery(new BinaryFact(q.getSubject(),q.getPredicate(),q.getObject()),0,0),ruleList);
         System.out.println(explanations);
         Gson gson=CustomGson.getInstance().getGson();
 
