@@ -11,6 +11,7 @@ import org.deri.iris.storage.IRelation;
 import org.deri.iris.utils.TermMatchingAndSubstitution;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,5 +58,11 @@ public class FactsUtils {
                 variableMapList.add(variableMap);
             }
         }
+    }
+
+    public static int getMatchingFactCount(ILiteral literal,IFacts factsSource) {
+        List<Map<IVariable, ITerm>> varsMapList=new LinkedList<>();
+        FactsUtils.getMatchingFacts(literal,varsMapList,factsSource);
+        return varsMapList.size();
     }
 }
