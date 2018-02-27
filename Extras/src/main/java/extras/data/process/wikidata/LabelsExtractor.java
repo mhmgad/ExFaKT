@@ -96,6 +96,7 @@ public class LabelsExtractor implements EntityDocumentProcessor {
 //            this.jsonSerializer.processItemDocument(this.datamodelConverter
 //                    .copy(itemDocument));
 //        }
+        System.out.println(itemDocument.getItemId());
         this.jsonSerializer.processItemDocument(this.datamodelConverter
                     .copy(itemDocument));
     }
