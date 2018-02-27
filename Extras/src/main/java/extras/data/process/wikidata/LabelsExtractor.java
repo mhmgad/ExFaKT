@@ -96,6 +96,7 @@ public class LabelsExtractor implements EntityDocumentProcessor {
 //            this.jsonSerializer.processItemDocument(this.datamodelConverter
 //                    .copy(itemDocument));
 //        }
+
     }
 
 //    private boolean includeDocument(ItemDocument itemDocument) {
@@ -105,6 +106,7 @@ public class LabelsExtractor implements EntityDocumentProcessor {
 
     @Override
     public void processPropertyDocument(PropertyDocument propertyDocument) {
+        System.out.println(propertyDocument.getPropertyId());
         this.jsonSerializer.processPropertyDocument(this.datamodelConverter
                 .copy(propertyDocument));
     }
