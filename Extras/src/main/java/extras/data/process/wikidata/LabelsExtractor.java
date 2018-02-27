@@ -48,9 +48,10 @@ public class LabelsExtractor implements EntityDocumentProcessor {
             .singleton("en"));
     // Only copy statements of some properties:
     Set<PropertyIdValue> propertyFilter = new HashSet<>();
-    propertyFilter.add(Datamodel.makeWikidataPropertyIdValue("altLabel")); // image
-    propertyFilter.add(Datamodel.makeWikidataPropertyIdValue("label")); // occupation
-    propertyFilter.add(Datamodel.makeWikidataPropertyIdValue("prefLabel")); // birthdate
+//    propertyFilter.add(Datamodel.makeMonolingualTextValue("altLabel").makeWikidataPropertyIdValue("altLabel")); // image
+//    propertyFilter.add(Datamodel.makeWikidataPropertyIdValue("label")); // occupation
+//    propertyFilter.add(Datamodel.makeWikidataPropertyIdValue("prefLabel")); // birthdate
+
     this.datamodelConverter.setOptionPropertyFilter(propertyFilter);
     // Do not copy any sitelinks:
     this.datamodelConverter.setOptionSiteLinkFilter(Collections
