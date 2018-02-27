@@ -272,11 +272,11 @@ public class Helper {
         MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(dumpFileName);
 //        dumpProcessingController.processDump(mwDumpFile);
 
-        try {
-            System.out.println(mwDumpFile.getDumpFileReader().readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            System.out.println(mwDumpFile.getDumpFileReader().readLine());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         System.out.println(mwDumpFile.getDumpContentType()+" "+mwDumpFile.getPath()+" "+mwDumpFile.getDateStamp());
 
