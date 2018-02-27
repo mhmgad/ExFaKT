@@ -265,7 +265,9 @@ public class Helper {
         EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
         dumpProcessingController.registerEntityDocumentProcessor(
                 entityTimerProcessor, null, true);
-
+        dumpProcessingController.registerEntityDocumentProcessor(
+                entityDocumentProcessor, null, true);
+        dumpProcessingController.setOfflineMode(true);
         // Select local file (meta-data will be guessed):
         System.out.println();
         System.out
@@ -273,7 +275,10 @@ public class Helper {
         System.out
                 .println("(meta-data like the date is guessed from the file name):");
         MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(dumpFileName);
-        dumpProcessingController.processDump(mwDumpFile);
+//        dumpProcessingController.processDump(mwDumpFile);
+
+        dumpProcessingController.registerEntityDocumentProcessor(
+                entityDocumentProcessor, null, true);
 
         // Select local file and set meta-data:
         System.out.println();
