@@ -262,16 +262,16 @@ public class Helper {
         // Note that the project name "wikidatawiki" is only for online access;
         // not relevant here.
 
-        EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
-        dumpProcessingController.registerEntityDocumentProcessor(
-                entityTimerProcessor, null, true);
+//        EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
+//        dumpProcessingController.registerEntityDocumentProcessor(
+//                entityTimerProcessor, null, true);
         dumpProcessingController.registerEntityDocumentProcessor(
                 entityDocumentProcessor, null, true);
         dumpProcessingController.setOfflineMode(true);
         // Select local file (meta-data will be guessed):
         System.out.println();
         System.out
-                .println("Processing a local dump file giving only its location");
+                .println("Processing a local dump file");
         System.out
                 .println("(meta-data like the date is guessed from the file name):");
         MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(dumpFileName);
@@ -282,13 +282,12 @@ public class Helper {
 
         // Select local file and set meta-data:
         System.out.println();
-        System.out
-                .println("Processing a local dump file with all meta-data set:");
-        mwDumpFile = new MwLocalDumpFile(dumpFileName, DumpContentType.JSON,
-                mwDumpFile.getDateStamp(), mwDumpFile.getProjectName());
+
+//        mwDumpFile = new MwLocalDumpFile(dumpFileName, DumpContentType.JSON,
+//                mwDumpFile.getDateStamp(), mwDumpFile.getProjectName());
         dumpProcessingController.processDump(mwDumpFile);
 
-        entityTimerProcessor.close();
+//        entityTimerProcessor.close();
 
     }
 
