@@ -259,12 +259,7 @@ public class Helper {
 
         DumpProcessingController dumpProcessingController = new DumpProcessingController(
                 "wikidatawiki");
-        // Note that the project name "wikidatawiki" is only for online access;
-        // not relevant here.
 
-//        EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
-//        dumpProcessingController.registerEntityDocumentProcessor(
-//                entityTimerProcessor, null, true);
         dumpProcessingController.registerEntityDocumentProcessor(
                 entityDocumentProcessor, null, true);
         dumpProcessingController.setOfflineMode(true);
@@ -277,17 +272,13 @@ public class Helper {
         MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(dumpFileName);
 //        dumpProcessingController.processDump(mwDumpFile);
 
-        dumpProcessingController.registerEntityDocumentProcessor(
-                entityDocumentProcessor, null, true);
 
-        // Select local file and set meta-data:
-        System.out.println();
 
-//        mwDumpFile = new MwLocalDumpFile(dumpFileName, DumpContentType.JSON,
-//                mwDumpFile.getDateStamp(), mwDumpFile.getProjectName());
+        System.out.println(mwDumpFile.getDumpContentType()+" "+mwDumpFile.getPath()+" "+mwDumpFile.getDateStamp());
+
+
         dumpProcessingController.processDump(mwDumpFile);
 
-//        entityTimerProcessor.close();
 
     }
 
