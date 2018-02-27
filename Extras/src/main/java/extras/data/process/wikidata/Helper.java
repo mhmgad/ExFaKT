@@ -115,87 +115,87 @@ public class Helper {
      * @param entityDocumentProcessor
      *            the object to use for processing entities in this dump
      */
-    public static void processEntitiesFromWikidataDump(
-            EntityDocumentProcessor entityDocumentProcessor) throws IOException {
-
-        // Controller object for processing dumps:
-        DumpProcessingController dumpProcessingController = new DumpProcessingController(
-                "wikidatawiki");
-        dumpProcessingController.setOfflineMode(OFFLINE_MODE);
-
-        // // Optional: Use another download directory:
-         dumpProcessingController.setDownloadDirectory("/GW/D5data-7/gadelrab/wikidata");
-
-        // Should we process historic revisions or only current ones?
-        boolean onlyCurrentRevisions;
-        switch (DUMP_FILE_MODE) {
-            case ALL_REVS:
-            case ALL_REVS_WITH_DAILIES:
-                onlyCurrentRevisions = false;
-                break;
-            case CURRENT_REVS:
-            case CURRENT_REVS_WITH_DAILIES:
-            case JSON:
-            case JUST_ONE_DAILY_FOR_TEST:
-            default:
-                onlyCurrentRevisions = true;
-        }
-
-        // Subscribe to the most recent entity documents of type wikibase item:
-        dumpProcessingController.registerEntityDocumentProcessor(
-                entityDocumentProcessor, null, onlyCurrentRevisions);
-
-        // Also add a timer that reports some basic progress information:
-        EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
-                TIMEOUT_SEC);
-        dumpProcessingController.registerEntityDocumentProcessor(
-                entityTimerProcessor, null, onlyCurrentRevisions);
-
-        MwDumpFile dumpFile = null;
-        try {
-            // Start processing (may trigger downloads where needed):
-            switch (DUMP_FILE_MODE) {
-                case ALL_REVS:
-                case CURRENT_REVS:
-                    dumpFile = dumpProcessingController
-                            .getMostRecentDump(DumpContentType.FULL);
-                    break;
-                case ALL_REVS_WITH_DAILIES:
-                case CURRENT_REVS_WITH_DAILIES:
-                    MwDumpFile fullDumpFile = dumpProcessingController
-                            .getMostRecentDump(DumpContentType.FULL);
-                    MwDumpFile incrDumpFile = dumpProcessingController
-                            .getMostRecentDump(DumpContentType.DAILY);
-                    lastDumpFileName = fullDumpFile.getProjectName() + "-"
-                            + incrDumpFile.getDateStamp() + "."
-                            + fullDumpFile.getDateStamp();
-                    dumpProcessingController.processAllRecentRevisionDumps();
-                    break;
-                case JSON:
-                    dumpFile = dumpProcessingController
-                            .getMostRecentDump(DumpContentType.JSON);
-                    break;
-                case JUST_ONE_DAILY_FOR_TEST:
-                    dumpFile = dumpProcessingController
-                            .getMostRecentDump(DumpContentType.DAILY);
-                    break;
-                default:
-                    throw new RuntimeException("Unsupported dump processing type "
-                            + DUMP_FILE_MODE);
-            }
-
-            if (dumpFile != null) {
-                lastDumpFileName = dumpFile.getProjectName() + "-"
-                        + dumpFile.getDateStamp();
-                dumpProcessingController.processDump(dumpFile);
-            }
-        } catch (TimeoutException e) {
-            // The timer caused a time out. Continue and finish normally.
-        }
-
-        // Print final timer results:
-        entityTimerProcessor.close();
-    }
+//    public static void processEntitiesFromWikidataDump(
+//            EntityDocumentProcessor entityDocumentProcessor) throws IOException {
+//
+//        // Controller object for processing dumps:
+//        DumpProcessingController dumpProcessingController = new DumpProcessingController(
+//                "wikidatawiki");
+//        dumpProcessingController.setOfflineMode(OFFLINE_MODE);
+//
+//        // // Optional: Use another download directory:
+//         dumpProcessingController.setDownloadDirectory("/GW/D5data-7/gadelrab/wikidata");
+//
+//        // Should we process historic revisions or only current ones?
+//        boolean onlyCurrentRevisions;
+//        switch (DUMP_FILE_MODE) {
+//            case ALL_REVS:
+//            case ALL_REVS_WITH_DAILIES:
+//                onlyCurrentRevisions = false;
+//                break;
+//            case CURRENT_REVS:
+//            case CURRENT_REVS_WITH_DAILIES:
+//            case JSON:
+//            case JUST_ONE_DAILY_FOR_TEST:
+//            default:
+//                onlyCurrentRevisions = true;
+//        }
+//
+//        // Subscribe to the most recent entity documents of type wikibase item:
+//        dumpProcessingController.registerEntityDocumentProcessor(
+//                entityDocumentProcessor, null, onlyCurrentRevisions);
+//
+//        // Also add a timer that reports some basic progress information:
+//        EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(
+//                TIMEOUT_SEC);
+//        dumpProcessingController.registerEntityDocumentProcessor(
+//                entityTimerProcessor, null, onlyCurrentRevisions);
+//
+//        MwDumpFile dumpFile = null;
+//        try {
+//            // Start processing (may trigger downloads where needed):
+//            switch (DUMP_FILE_MODE) {
+//                case ALL_REVS:
+//                case CURRENT_REVS:
+//                    dumpFile = dumpProcessingController
+//                            .getMostRecentDump(DumpContentType.FULL);
+//                    break;
+//                case ALL_REVS_WITH_DAILIES:
+//                case CURRENT_REVS_WITH_DAILIES:
+//                    MwDumpFile fullDumpFile = dumpProcessingController
+//                            .getMostRecentDump(DumpContentType.FULL);
+//                    MwDumpFile incrDumpFile = dumpProcessingController
+//                            .getMostRecentDump(DumpContentType.DAILY);
+//                    lastDumpFileName = fullDumpFile.getProjectName() + "-"
+//                            + incrDumpFile.getDateStamp() + "."
+//                            + fullDumpFile.getDateStamp();
+//                    dumpProcessingController.processAllRecentRevisionDumps();
+//                    break;
+//                case JSON:
+//                    dumpFile = dumpProcessingController
+//                            .getMostRecentDump(DumpContentType.JSON);
+//                    break;
+//                case JUST_ONE_DAILY_FOR_TEST:
+//                    dumpFile = dumpProcessingController
+//                            .getMostRecentDump(DumpContentType.DAILY);
+//                    break;
+//                default:
+//                    throw new RuntimeException("Unsupported dump processing type "
+//                            + DUMP_FILE_MODE);
+//            }
+//
+//            if (dumpFile != null) {
+//                lastDumpFileName = dumpFile.getProjectName() + "-"
+//                        + dumpFile.getDateStamp();
+//                dumpProcessingController.processDump(dumpFile);
+//            }
+//        } catch (TimeoutException e) {
+//            // The timer caused a time out. Continue and finish normally.
+//        }
+//
+//        // Print final timer results:
+//        entityTimerProcessor.close();
+//    }
 
     /**
      * Opens a new FileOutputStream for a file of the given name in the example

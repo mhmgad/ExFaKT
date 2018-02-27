@@ -47,12 +47,12 @@ public class LabelsExtractor implements EntityDocumentProcessor {
     this.datamodelConverter.setOptionLanguageFilter(Collections
             .singleton("en"));
     // Only copy statements of some properties:
-    Set<PropertyIdValue> propertyFilter = new HashSet<>();
+//    Set<PropertyIdValue> propertyFilter = new HashSet<>();
 //    propertyFilter.add(Datamodel.makeMonolingualTextValue("altLabel").makeWikidataPropertyIdValue("altLabel")); // image
 //    propertyFilter.add(Datamodel.makeWikidataPropertyIdValue("label")); // occupation
 //    propertyFilter.add(Datamodel.makeWikidataPropertyIdValue("prefLabel")); // birthdate
 
-    this.datamodelConverter.setOptionPropertyFilter(propertyFilter);
+//    this.datamodelConverter.setOptionPropertyFilter(propertyFilter);
     // Do not copy any sitelinks:
     this.datamodelConverter.setOptionSiteLinkFilter(Collections
             .<String> emptySet());
@@ -96,7 +96,8 @@ public class LabelsExtractor implements EntityDocumentProcessor {
 //            this.jsonSerializer.processItemDocument(this.datamodelConverter
 //                    .copy(itemDocument));
 //        }
-
+        this.jsonSerializer.processItemDocument(this.datamodelConverter
+                    .copy(itemDocument));
     }
 
 //    private boolean includeDocument(ItemDocument itemDocument) {
