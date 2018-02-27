@@ -1,4 +1,4 @@
-package data.process.wikidata;
+package extras.data.process.wikidata;
 
 
 
@@ -254,38 +254,38 @@ public class Helper {
     }
 
 
-//    public static void processEntitiesFromWikidataLocalDump(
-//            EntityDocumentProcessor entityDocumentProcessor,String dumpFileName) {
-//
-//        DumpProcessingController dumpProcessingController = new DumpProcessingController(
-//                "wikidatawiki");
-//        // Note that the project name "wikidatawiki" is only for online access;
-//        // not relevant here.
-//
-//        EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
-//        dumpProcessingController.registerEntityDocumentProcessor(
-//                entityTimerProcessor, null, true);
-//
-//        // Select local file (meta-data will be guessed):
-//        System.out.println();
-//        System.out
-//                .println("Processing a local dump file giving only its location");
-//        System.out
-//                .println("(meta-data like the date is guessed from the file name):");
-//        MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(dumpFileName);
-//        dumpProcessingController.processDump(mwDumpFile);
-//
-//        // Select local file and set meta-data:
-//        System.out.println();
-//        System.out
-//                .println("Processing a local dump file with all meta-data set:");
-//        mwDumpFile = new MwLocalDumpFile(dumpFileName, DumpContentType.JSON,
-//                "20150815", "wikidatawiki");
-//        dumpProcessingController.processDump(mwDumpFile);
-//
-//        entityTimerProcessor.close();
-//
-//    }
+    public static void processEntitiesFromWikidataLocalDump(
+            EntityDocumentProcessor entityDocumentProcessor,String dumpFileName) {
+
+        DumpProcessingController dumpProcessingController = new DumpProcessingController(
+                "wikidatawiki");
+        // Note that the project name "wikidatawiki" is only for online access;
+        // not relevant here.
+
+        EntityTimerProcessor entityTimerProcessor = new EntityTimerProcessor(0);
+        dumpProcessingController.registerEntityDocumentProcessor(
+                entityTimerProcessor, null, true);
+
+        // Select local file (meta-data will be guessed):
+        System.out.println();
+        System.out
+                .println("Processing a local dump file giving only its location");
+        System.out
+                .println("(meta-data like the date is guessed from the file name):");
+        MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(dumpFileName);
+        dumpProcessingController.processDump(mwDumpFile);
+
+        // Select local file and set meta-data:
+        System.out.println();
+        System.out
+                .println("Processing a local dump file with all meta-data set:");
+        mwDumpFile = new MwLocalDumpFile(dumpFileName, DumpContentType.JSON,
+                mwDumpFile.getDateStamp(), mwDumpFile.getProjectName());
+        dumpProcessingController.processDump(mwDumpFile);
+
+        entityTimerProcessor.close();
+
+    }
 
 
 }

@@ -1,4 +1,4 @@
-package data.process.wikidata;
+package extras.data.process.wikidata;
 
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
@@ -72,18 +72,19 @@ public class LabelsExtractor implements EntityDocumentProcessor {
     public static void main(String[] args) throws IOException {
         Helper.configureLogging();
 
-        if(args.length<1)
+        if(args.length<2)
         {
             System.out.println("usage:\nsh extract_wiki_label.sh <data_file> <outputFile.gz>");
             System.exit(0);
         }
 
         String outputFile=args[1];
-
+        String inputFile=args[0];
 
         LabelsExtractor jsonSerializationProcessor = new LabelsExtractor(outputFile);
+
         Helper
-                .processEntitiesFromWikidataDump(jsonSerializationProcessor);
+                .processEntitiesFromWikidataLocalDump(jsonSerializationProcessor,inputFile);
         jsonSerializationProcessor.close();
     }
 

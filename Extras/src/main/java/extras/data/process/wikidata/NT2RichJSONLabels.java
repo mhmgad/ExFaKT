@@ -1,4 +1,4 @@
-package data.process.wikidata;
+package extras.data.process.wikidata;
 
 public class NT2RichJSONLabels {
 
