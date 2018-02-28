@@ -69,7 +69,7 @@ public class Helper {
     /**
      * The directory where to place files created by the example applications.
      */
-    public static final String EXAMPLE_OUTPUT_DIRECTORY = "results";
+//    public static final String EXAMPLE_OUTPUT_DIRECTORY = "results";
 
     /**
      * Timeout to abort processing after a short while or 0 to disable timeout.
@@ -209,21 +209,21 @@ public class Helper {
      * @throws IOException
      *             if the file or example output directory could not be created
      */
-    public static FileOutputStream openExampleFileOuputStream(String filename)
-            throws IOException {
-        Path directoryPath;
-        if ("".equals(lastDumpFileName)) {
-            directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
-        } else {
-            directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
-            createDirectory(directoryPath);
-            directoryPath = directoryPath.resolve(lastDumpFileName);
-        }
-
-        createDirectory(directoryPath);
-        Path filePath = directoryPath.resolve(filename);
-        return new FileOutputStream(filePath.toFile());
-    }
+//    public static FileOutputStream openExampleFileOuputStream(String filename)
+//            throws IOException {
+//        Path directoryPath;
+//        if ("".equals(lastDumpFileName)) {
+//            directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
+//        } else {
+//            directoryPath = Paths.get(EXAMPLE_OUTPUT_DIRECTORY);
+//            createDirectory(directoryPath);
+//            directoryPath = directoryPath.resolve(lastDumpFileName);
+//        }
+//
+//        createDirectory(directoryPath);
+//        Path filePath = directoryPath.resolve(filename);
+//        return new FileOutputStream(filePath.toFile());
+//    }
 
     /**
      * Returns the name of the dump file that was last processed. This can be
