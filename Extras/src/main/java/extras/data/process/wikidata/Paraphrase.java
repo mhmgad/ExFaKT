@@ -11,10 +11,12 @@ public class Paraphrase {
     String mention;
     String lang;
 
-    public Paraphrase(String fullId, String labelType, String mention) {
+    public Paraphrase(String id, String fullId, String readableId,String labelType, String mention) {
         this.fullId = fullId;
         this.labelType = labelType;
         this.mention = mention;
+        this.readableId=readableId;
+        this.id=id;
     }
 
     @Override
@@ -29,5 +31,9 @@ public class Paraphrase {
     @Override
     public int hashCode() {
         return Objects.hash(id, mention);
+    }
+
+    public String toJOSN() {
+        return null;
     }
 }

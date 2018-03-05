@@ -2,7 +2,6 @@ package mpi.tools.javatools.util;
 
 import gnu.trove.iterator.TObjectIntIterator;
 import gnu.trove.map.hash.TObjectIntHashMap;
-import mpi.tools.javatools.filehandlers.FileLines;
 
 import java.io.*;
 import java.net.URL;
@@ -146,57 +145,7 @@ public class FileUtils {
     writer.close();
   }
     
-  /**
-   * Verifies that a file is lexicographically order (ascending or descending)
-   * 
-   * @param check         File to check
-   * @param descending    true if ordering should be descending, false if it should be ascending
-   * @return              true if file is order, false otherwise
-   * @throws IOException
-   */
-  public static boolean verifyOrderedFile(File check, boolean descending) throws IOException {
-    if (check == null || check.isDirectory() || !check.canRead()) {
-      System.out.println("Unable to verify sort order of file, make sure it is readable and not a directory");
-    }
-    
-    boolean first = true;
-    
-    String one = "";
-    String two = "";
-    
-    long lineCount = 0;
-    
-    FileLines lines=new FileLines(check, "UTF-8", "Verifying that '" + check + "' is sorted");
-    for (String line : lines) {
-      lineCount++;
-      
-      if (first) {
-        one = line;
-        two = line;
-        first = false;
-        continue;
-      }
-      lines.close();
-      
-      one = two;
-      two = line;
-      
-      int comp = two.compareTo(one);
-      
-      if (!descending && comp < 0) {
-        System.out.println("Ascending order violated in line " + lineCount + ": '" + one + "' vs. '" + two + "'");
-        return false;
-      }
-      
-      if (descending && comp > 0) {
-        System.out.println("Descending order violated in line " + lineCount + ": '" + one + "' vs. '" + two + "'");
-        return false;
-      }
-    }
-    
-    return true;
-  }
-  
+
   /**
    * Collects all non-directory files in the given input directory 
    * (recursively).
@@ -280,6 +229,6 @@ public class FileUtils {
   }
   
   public static void main(String[] args) throws IOException {
-    verifyOrderedFile(new File(args[0]), false);
+
   }
 }

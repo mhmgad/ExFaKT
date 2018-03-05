@@ -9,11 +9,11 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <modules>
+        <module>Utils</module>
         <module>Api</module>
         <module>Client</module>
         <module>Extras</module>
-        <module>utils</module>
-        <module>Utils</module>
+
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

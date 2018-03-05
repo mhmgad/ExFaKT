@@ -3,20 +3,12 @@ package extras.data.process.wikidata;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
-import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
-import org.wikidata.wdtk.datamodel.interfaces.ItemDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyDocument;
-import org.wikidata.wdtk.datamodel.interfaces.PropertyIdValue;
+import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  * Extracts labels from wikidata dump
@@ -28,7 +20,7 @@ public class LabelsExtractor implements EntityDocumentProcessor {
      */
 
 
-    final JsonSerializer jsonSerializer;
+//    final JsonSerializer jsonSerializer;
 
     /**
      * Object used to make simplified copies of Wikidata documents for
@@ -36,6 +28,7 @@ public class LabelsExtractor implements EntityDocumentProcessor {
      */
     final DatamodelConverter datamodelConverter;
     private final String outputFile;
+    private final BufferedWriter outputWriter;
 
     public LabelsExtractor(String outputFile) throws IOException {
 
@@ -57,14 +50,14 @@ public class LabelsExtractor implements EntityDocumentProcessor {
     // Do not copy any sitelinks:
     this.datamodelConverter.setOptionSiteLinkFilter(Collections
             .<String> emptySet());
+         outputWriter=new BufferedWriter(new FileWriter(outputFile));
 
-
-    OutputStream outputStream = new GzipCompressorOutputStream(
-            new BufferedOutputStream(
-                    new FileOutputStream(outputFile)));
-    this.jsonSerializer = new JsonSerializer(outputStream);
-
-    this.jsonSerializer.open();
+//    OutputStream outputStream = new GzipCompressorOutputStream(
+//            new BufferedOutputStream(
+//                    new FileOutputStream(outputFile)));
+//    this.jsonSerializer = new JsonSerializer(outputStream);
+//
+//    this.jsonSerializer.open();
 
 }
 
@@ -109,8 +102,40 @@ public class LabelsExtractor implements EntityDocumentProcessor {
     @Override
     public void processPropertyDocument(PropertyDocument propertyDocument) {
         System.out.println(propertyDocument.getPropertyId());
-        this.jsonSerializer.processPropertyDocument(this.datamodelConverter
-                .copy(propertyDocument));
+//        this.jsonSerializer.processPropertyDocument(this.datamodelConverter
+//                .copy(propertyDocument));
+
+        Map<String, MonolingualTextValue> labels = propertyDocument.getLabels();
+        if(labels.size()>1)
+            System.out.println(propertyDocument.getPropertyId()+" "+labels);
+
+        String id=propertyDocument.getEntityId().getId();
+        String fullId=propertyDocument.getEntityId().getSiteIri();
+        String label= labels.get("en").getText();
+        String readableId=id+"_"+label;
+        Set<Paraphrase> paraphrases=new HashSet<>();
+
+        paraphrases.add(new Paraphrase(id,fullId,readableId,"label",label));
+
+        for( MonolingualTextValue alias:propertyDocument.getAliases().get("en")) {
+            paraphrases.add(new Paraphrase(id,fullId,readableId,"alias",alias.getText()));
+        }
+
+        try {
+            output(paraphrases);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void output(Set<Paraphrase> paraphrases) throws IOException {
+
+        for (Paraphrase p:paraphrases) {
+            outputWriter.write(p.toJOSN());
+            outputWriter.newLine();
+        }
 
     }
 
@@ -122,9 +147,9 @@ public class LabelsExtractor implements EntityDocumentProcessor {
      *             if there was a problem closing the output
      */
     public void close() throws IOException {
-        System.out.println("Serialized "
-                + this.jsonSerializer.getEntityDocumentCount()
-                + " item documents to JSON file " + outputFile + ".");
-        this.jsonSerializer.close();
+//        System.out.println("Serialized "
+//                + this.jsonSerializer.getEntityDocumentCount()
+//                + " item documents to JSON file " + outputFile + ".");
+//        this.jsonSerializer.close();
     }
 }
