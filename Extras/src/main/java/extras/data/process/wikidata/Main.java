@@ -87,16 +87,16 @@ public class Main {
 
             // Output formats
             if(cmd.hasOption(outTypeOp.getOpt())){
-                String types=cmd.getOptionValue(outFileOp.getOpt());
+                String types=cmd.getOptionValue(outTypeOp.getOpt());
                 formats=Arrays.stream(types.split(",")).map(t->t.trim().toUpperCase()).map(AbstractOutputChannel.OutputFormat::valueOf).collect(Collectors.toSet());
             }
             formats.forEach( format-> outputListener.registerWriter(new FileOutputWriter(baseFileName,format)));
         }
 
         if(cmd.hasOption(elasticSearchOp.getOpt())){
-            if(cmd.hasOption(outTypeOp.getOpt())){
-                outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),"paraphrases"));
-            }
+
+            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),"paraphrases"));
+
 
 
         }
