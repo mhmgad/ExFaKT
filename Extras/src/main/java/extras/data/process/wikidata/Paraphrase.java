@@ -1,9 +1,13 @@
 package extras.data.process.wikidata;
 
+import io.searchbox.annotations.JestId;
+import output.writers.SerializableData;
+
 import java.util.Objects;
 
-public class Paraphrase {
+public class Paraphrase implements SerializableData{
 
+    @JestId
     String id;
     String fullId;
     String readableId;
@@ -34,6 +38,21 @@ public class Paraphrase {
     }
 
     public String toJOSN() {
+        return null;
+    }
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
+    @Override
+    public String toTriple() {
+        return null;
+    }
+
+    @Override
+    public String toTsv() {
         return null;
     }
 }
