@@ -85,7 +85,7 @@
                     </binFileExtensions>
                     <programs>
                         <program>
-                            <mainClass>extras.data.process.wikidata.LabelsExtractor</mainClass>
+                            <mainClass>extras.data.process.wikidata.Main</mainClass>
                             <id>get_labels</id>
                         </program>
                     </programs>
