@@ -100,6 +100,7 @@ public class LabelsExtractor implements EntityDocumentProcessor {
         System.out.println(propertyDocument.getPropertyId());
 //        this.jsonSerializer.processPropertyDocument(this.datamodelConverter
 //                .copy(propertyDocument));
+        propertyDocument= this.datamodelConverter.copy(propertyDocument);
 
         Map<String, MonolingualTextValue> labels = propertyDocument.getLabels();
         if(labels.size()>1)
@@ -113,8 +114,11 @@ public class LabelsExtractor implements EntityDocumentProcessor {
 
         paraphrases.add(new Paraphrase(id,fullId,readableId,"label",label));
 
-        for( MonolingualTextValue alias:propertyDocument.getAliases().get("en")) {
-            paraphrases.add(new Paraphrase(id,fullId,readableId,"alias",alias.getText()));
+        if(propertyDocument.getAliases()!=null&& propertyDocument.getAliases().size()>0 && propertyDocument.getAliases().containsKey("en")&&propertyDocument.getAliases().get("en")!=null) {
+
+            for (MonolingualTextValue alias : propertyDocument.getAliases().get("en")) {
+                paraphrases.add(new Paraphrase(id, fullId, readableId, "alias", alias.getText()));
+            }
         }
 
         try {
