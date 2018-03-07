@@ -50,7 +50,7 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel< Serializab
             Bulk.Builder bulkIndexBuilder = new Bulk.Builder();
             for (SerializableData record : records) {
 
-                bulkIndexBuilder.addAction(new Index.Builder(record).index(indexName).build());
+                bulkIndexBuilder.addAction(new Index.Builder(record.toJSON()).index(indexName).build());
             }
             client.execute(bulkIndexBuilder.build());
 
@@ -63,7 +63,7 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel< Serializab
     @Override
     public void write(SerializableData record) {
         try {
-            client.execute(new Index.Builder(record).index(indexName).build());
+            client.execute(new Index.Builder(record.toJSON()).index(indexName).build());
         } catch (IOException e) {
             e.printStackTrace();
         }
