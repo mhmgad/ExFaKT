@@ -46,7 +46,7 @@ public class Main {
         options.addOption(outFileOp);
 
         //output file type
-        outTypeOp = Option.builder("out-types").longOpt("output formats").hasArg().desc("Output File formats coma separated, supported Types:"+ Joiner.on(',').join(Arrays.stream(AbstractOutputChannel.OutputFormat.values()).map(m->m.getFileExtension()).collect(Collectors.toList()))).argName("type").build();
+        outTypeOp = Option.builder("outTypes").longOpt("output formats").hasArg().desc("Output File formats coma separated, supported Types:"+ Joiner.on(',').join(Arrays.stream(AbstractOutputChannel.OutputFormat.values()).map(m->m.getFileExtension()).collect(Collectors.toList()))).argName("type").build();
         options.addOption(outTypeOp);
 
         //output to elastic
