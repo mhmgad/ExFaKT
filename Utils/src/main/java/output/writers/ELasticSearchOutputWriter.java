@@ -63,7 +63,7 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel< Serializab
     @Override
     public void write(SerializableData record) {
         try {
-            client.execute((new Index.Builder(record).index(indexName).build()));
+            client.execute(new Index.Builder(record).index(indexName).build());
         } catch (IOException e) {
             e.printStackTrace();
         }

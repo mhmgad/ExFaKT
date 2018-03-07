@@ -5,7 +5,7 @@ import io.searchbox.annotations.JestId;
 import output.writers.SerializableData;
 
 import java.util.Objects;
-
+@J
 public class Paraphrase implements SerializableData{
 
     @JestId

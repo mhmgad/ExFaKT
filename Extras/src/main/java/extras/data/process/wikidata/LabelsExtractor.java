@@ -42,8 +42,9 @@ public class LabelsExtractor implements EntityDocumentProcessor {
     // Do not copy references at all:
     this.datamodelConverter.setOptionDeepCopyReferences(false);
     // Only copy English labels, descriptions, and aliases:
-    this.datamodelConverter.setOptionLanguageFilter(Collections
-            .singleton("en"));
+        Set<String> languages = Collections.singleton("en*");
+
+    this.datamodelConverter.setOptionLanguageFilter(languages);
     // Only copy statements of some properties:
     Set<PropertyIdValue> propertyFilter = new HashSet<>();
 //    propertyFilter.add(Datamodel.makeMonolingualTextValue("altLabel").makeWikidataPropertyIdValue("altLabel")); // image
