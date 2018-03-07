@@ -1,5 +1,6 @@
 package extras.data.process.wikidata;
 
+import com.google.gson.Gson;
 import io.searchbox.annotations.JestId;
 import output.writers.SerializableData;
 
@@ -37,22 +38,31 @@ public class Paraphrase implements SerializableData{
         return Objects.hash(id, mention);
     }
 
-    public String toJOSN() {
-        return null;
+    @Override
+    public String toString() {
+        return "Paraphrase{" +
+                "id='" + id + '\'' +
+                ", fullId='" + fullId + '\'' +
+                ", readableId='" + readableId + '\'' +
+                ", labelType='" + labelType + '\'' +
+                ", mention='" + mention + '\'' +
+                ", lang='" + lang + '\'' +
+                '}';
     }
 
     @Override
     public String toJSON() {
-        return null;
+        Gson gson=new Gson();
+        return gson.toJson(this);
     }
 
     @Override
     public String toTriple() {
-        return null;
+        return fullId+' '+labelType+" \""+mention+"\" .";
     }
 
     @Override
     public String toTsv() {
-        return null;
+        return fullId+'\t'+labelType+'\t'+mention;
     }
 }
