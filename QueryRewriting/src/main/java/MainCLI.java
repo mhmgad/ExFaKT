@@ -8,7 +8,6 @@ import extendedsldnf.datastructure.InputQuery;
 import mpi.tools.javatools.util.FileUtils;
 import org.apache.commons.cli.*;
 import org.deri.iris.EvaluationException;
-import org.deri.iris.api.basics.IQuery;
 import utils.DataUtils;
 import utils.Enums;
 import utils.eval.ResultsEvaluator;

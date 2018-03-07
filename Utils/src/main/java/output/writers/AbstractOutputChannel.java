@@ -2,22 +2,26 @@ package output.writers;
 
 import java.util.Collection;
 
-public abstract class AbstractOutputChannel {
+public abstract class AbstractOutputChannel<T extends SerializableData> {
 
     OutputFormat mode;
-    public enum OutputFormat {JSON(".json"),TSV(".tsv"),TEXT(".txt"),TRIPLE(".nt");
-        private final String fileExtention;
+    public enum OutputFormat {JSON("json"),TSV("tsv"),TEXT("txt"),TRIPLE("nt");
+        private final String fileExtension;
 
 
 
 
         private OutputFormat(String s) {
-            fileExtention = s;
+            fileExtension = s;
+        }
+
+        public String getFileExtension() {
+            return fileExtension;
         }
     }
 
 
-    public void write(Collection<SerializableData> collection){
+    public void write(Collection<T> collection){
         collection.forEach(item->this.write(item));
     }
 
@@ -30,7 +34,7 @@ public abstract class AbstractOutputChannel {
     abstract public String getName();
 
 
-    public String formatString(SerializableData record){
+    public String formatString(T record){
 
         switch (mode){
             case TSV:

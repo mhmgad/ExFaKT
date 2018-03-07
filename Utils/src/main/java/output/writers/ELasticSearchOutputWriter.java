@@ -11,7 +11,7 @@ import io.searchbox.indices.IndicesExists;
 import java.io.IOException;
 import java.util.Collection;
 
-public class ELasticSearchOutputWriter extends AbstractOutputChannel{
+public class ELasticSearchOutputWriter extends AbstractOutputChannel< SerializableData>{
 
     JestClientFactory factory = new JestClientFactory();
 
@@ -19,9 +19,9 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel{
 
 
     String indexName;
-    String objectType;
 
-    public ELasticSearchOutputWriter(String urlWithPort,String indexName,String objectType){
+
+    public ELasticSearchOutputWriter(String urlWithPort,String indexName){
 
         factory.setHttpClientConfig(new HttpClientConfig
                 .Builder(urlWithPort)
@@ -50,7 +50,7 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel{
             Bulk.Builder bulkIndexBuilder = new Bulk.Builder();
             for (SerializableData record : records) {
 
-                bulkIndexBuilder.addAction(new Index.Builder(record).index(indexName).type(objectType).build());
+                bulkIndexBuilder.addAction(new Index.Builder(record).index(indexName).build());
             }
             client.execute(bulkIndexBuilder.build());
 
@@ -63,7 +63,7 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel{
     @Override
     public void write(SerializableData record) {
         try {
-            client.execute((new Index.Builder(record).index(indexName).type(objectType).build()));
+            client.execute((new Index.Builder(record).index(indexName).build()));
         } catch (IOException e) {
             e.printStackTrace();
         }

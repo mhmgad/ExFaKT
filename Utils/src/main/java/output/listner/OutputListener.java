@@ -5,7 +5,7 @@ import output.writers.SerializableData;
 
 import java.util.*;
 
-public class OutputListener {
+public class OutputListener<T extends SerializableData> {
 
 
 
@@ -32,11 +32,19 @@ public class OutputListener {
         outputWriters.put(name,writer);
     }
 
-    public void out(SerializableData outputObject){
+    public void out(T outputObject){
         outputWriters.values().forEach(wr-> wr.write(outputObject));
     }
 
-    public void out(Collection<SerializableData> outputObjects){
+    public void out(Collection<T> outputObjects){
         outputWriters.values().forEach(wr-> wr.write(outputObjects));
+    }
+
+    public void close() {
+        outputWriters.values().forEach(or-> or.close());
+    }
+
+    public int size() {
+        return outputWriters.size();
     }
 }

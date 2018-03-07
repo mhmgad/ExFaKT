@@ -1,14 +1,15 @@
 package extras.data.process.wikidata;
 
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.wikidata.wdtk.datamodel.helpers.Datamodel;
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
-import org.wikidata.wdtk.datamodel.json.jackson.JsonSerializer;
+import output.listner.OutputListener;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Extracts labels from wikidata dump
@@ -27,12 +28,15 @@ public class LabelsExtractor implements EntityDocumentProcessor {
      * re-serialization in JSON.
      */
     final DatamodelConverter datamodelConverter;
-    private final String outputFile;
-    private final BufferedWriter outputWriter;
+    private final OutputListener outputListener;
+    private final String inputDump;
+//    private final BufferedWriter outputWriter;
 
-    public LabelsExtractor(String outputFile) throws IOException {
+    public LabelsExtractor(String inputDump, OutputListener outputListener) throws IOException {
 
-    this.outputFile=outputFile;
+
+        this.inputDump=inputDump;
+    this.outputListener=outputListener;
     this.datamodelConverter = new DatamodelConverter(
             new JacksonObjectFactory());
     // Do not copy references at all:
@@ -48,9 +52,8 @@ public class LabelsExtractor implements EntityDocumentProcessor {
 
     this.datamodelConverter.setOptionPropertyFilter(propertyFilter);
     // Do not copy any sitelinks:
-    this.datamodelConverter.setOptionSiteLinkFilter(Collections
-            .<String> emptySet());
-         outputWriter=new BufferedWriter(new FileWriter(outputFile));
+    this.datamodelConverter.setOptionSiteLinkFilter(Collections.<String> emptySet());
+//         outputWriter=new BufferedWriter(new FileWriter(outputFile));
 
 //    OutputStream outputStream = new GzipCompressorOutputStream(
 //            new BufferedOutputStream(
@@ -63,41 +66,34 @@ public class LabelsExtractor implements EntityDocumentProcessor {
 
 
 
-    public static void main(String[] args) throws IOException {
-        Helper.configureLogging();
 
-        if(args.length<2)
-        {
-            System.out.println("usage:\nsh extract_wiki_label.sh <data_file> <outputFile.gz>");
-            System.exit(0);
-        }
 
-        String outputFile=args[1];
-        String inputFile=args[0];
-
-        LabelsExtractor jsonSerializationProcessor = new LabelsExtractor(outputFile);
-
-        Helper
-                .processEntitiesFromWikidataLocalDump(jsonSerializationProcessor,inputFile);
-        jsonSerializationProcessor.close();
-    }
+//    public static void main(String[] args) throws IOException {
+//        Helper.configureLogging();
+//
+//        if(args.length<2)
+//        {
+//            System.out.println("usage:\nsh extract_wiki_label.sh <data_file> <outputFile.gz>");
+//            System.exit(0);
+//        }
+//
+//        String outputFile=args[1];
+//        String inputFile=args[0];
+//
+//        LabelsExtractor jsonSerializationProcessor = new LabelsExtractor(outputFile);
+//
+//        Helper
+//                .processEntitiesFromWikidataLocalDump(jsonSerializationProcessor,inputFile);
+//        jsonSerializationProcessor.close();
+//    }
 
 
     @Override
     public void processItemDocument(ItemDocument itemDocument) {
-//        if (includeDocument(itemDocument)) {
-//            this.jsonSerializer.processItemDocument(this.datamodelConverter
-//                    .copy(itemDocument));
-//        }
-        //System.out.println(itemDocument.getItemId());
-//        this.jsonSerializer.processItemDocument(this.datamodelConverter
-//                    .copy(itemDocument));
+
     }
 
-//    private boolean includeDocument(ItemDocument itemDocument) {
-//
-//
-//    }
+
 
     @Override
     public void processPropertyDocument(PropertyDocument propertyDocument) {
@@ -132,10 +128,7 @@ public class LabelsExtractor implements EntityDocumentProcessor {
 
     private void output(Set<Paraphrase> paraphrases) throws IOException {
 
-        for (Paraphrase p:paraphrases) {
-            outputWriter.write(p.toJOSN());
-            outputWriter.newLine();
-        }
+    outputListener.out(paraphrases);
 
     }
 
@@ -146,10 +139,12 @@ public class LabelsExtractor implements EntityDocumentProcessor {
      * @throws IOException
      *             if there was a problem closing the output
      */
-    public void close() throws IOException {
-//        System.out.println("Serialized "
-//                + this.jsonSerializer.getEntityDocumentCount()
-//                + " item documents to JSON file " + outputFile + ".");
-//        this.jsonSerializer.close();
+    public void close()  {
+        outputListener.close();
+    }
+
+    public void run() {
+        Helper.processEntitiesFromWikidataLocalDump(this,inputDump);
+        this.close();
     }
 }

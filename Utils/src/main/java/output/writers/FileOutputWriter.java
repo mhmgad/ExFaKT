@@ -10,10 +10,15 @@ public class FileOutputWriter extends AbstractOutputChannel {
 
 
 
-    private final BufferedWriter fileWriter;
+    private  BufferedWriter fileWriter;
 
-    public FileOutputWriter(String outputFilePath, OutputFormat mode) throws FileNotFoundException {
-        this.fileWriter = FileUtils.getBufferedUTF8Writer(outputFilePath);
+    public FileOutputWriter(String outputFilePath, OutputFormat mode)  {
+        try {
+            this.fileWriter = FileUtils.getBufferedUTF8Writer(outputFilePath+'.'+mode.getFileExtension());
+        } catch (FileNotFoundException e) {
+
+            e.printStackTrace();
+        }
         this.mode=mode;
 
     }
