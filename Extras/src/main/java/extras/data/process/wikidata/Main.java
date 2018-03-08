@@ -53,7 +53,9 @@ public class Main {
         elasticSearchOp = Option.builder("elastic").longOpt("elastic_search").hasArg().desc("Output to elastic").argName("serverUrl").build();
         options.addOption(elasticSearchOp);
 
-
+//        //output to elastic
+//        elasticSearchOp = Option.builder("elastic").longOpt("elastic_search").hasArg().desc("Output to elastic").argName("serverUrl").build();
+//        options.addOption(elasticSearchOp);
 
 
     }
