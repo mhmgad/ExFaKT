@@ -18,7 +18,7 @@ public class TestElasticWriter {
         Collection<Paraphrase> records = new HashSet<>();
         records.add(p);
         records.add(p1);
-        ELasticSearchOutputWriter<Paraphrase> writer=new ELasticSearchOutputWriter("http://localhost:9200","paraphrases","paraphrase");
+        ELasticSearchOutputWriter<Paraphrase> writer=new ELasticSearchOutputWriter("http://localhost:9200","paraphrases",true,"paraphrase");
         writer.write(records);
         writer.write(p3);
     }

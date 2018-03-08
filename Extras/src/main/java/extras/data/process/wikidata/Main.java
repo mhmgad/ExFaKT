@@ -98,7 +98,7 @@ public class Main {
 
         if(cmd.hasOption(elasticSearchOp.getOpt())){
             boolean reIndex=cmd.hasOption(deleteIndexOp.getOpt());
-            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),reIndex,"paraphrases","paraphrase"));
+            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),"paraphrases",reIndex,"paraphrase"));
 
 
 
