@@ -95,7 +95,7 @@ public class Main {
 
         if(cmd.hasOption(elasticSearchOp.getOpt())){
 
-            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),"paraphrases"));
+            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),"paraphrases","paraphrase"));
 
 
 

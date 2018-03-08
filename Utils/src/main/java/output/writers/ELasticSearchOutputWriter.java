@@ -1,18 +1,22 @@
 package output.writers;
 
+
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.core.Bulk;
+import io.searchbox.core.BulkResult;
 import io.searchbox.core.Index;
 import io.searchbox.indices.CreateIndex;
+import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
 
 import java.io.IOException;
 import java.util.Collection;
 
-public class ELasticSearchOutputWriter extends AbstractOutputChannel< SerializableData>{
+public class ELasticSearchOutputWriter<T extends SerializableData> extends AbstractOutputChannel<T>{
 
+    private final String objectType;
     JestClientFactory factory = new JestClientFactory();
 
     JestClient client;
@@ -21,8 +25,9 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel< Serializab
     String indexName;
 
 
-    public ELasticSearchOutputWriter(String urlWithPort,String indexName){
+    public ELasticSearchOutputWriter(String urlWithPort,String indexName,String objectType){
 
+        this.objectType=objectType;
         factory.setHttpClientConfig(new HttpClientConfig
                 .Builder(urlWithPort)
                 .multiThreaded(true)
@@ -39,21 +44,25 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel< Serializab
             if (!indexExists) {
                 client.execute(new CreateIndex.Builder(indexName).build());
             }
+////            else{
+//                client.execute(new DeleteIndex.Builder(indexName).build());
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void write(Collection<SerializableData> records) {
+    public void write(Collection<T> records) {
         try {
             Bulk.Builder bulkIndexBuilder = new Bulk.Builder();
-            for (SerializableData record : records) {
+            for (T record : records) {
 
-                bulkIndexBuilder.addAction(new Index.Builder(record.toJSON()).index(indexName).build());
+                bulkIndexBuilder.addAction(new Index.Builder(record).index(indexName).type(objectType).build());
             }
-            client.execute(bulkIndexBuilder.build());
+            BulkResult res = client.execute(bulkIndexBuilder.build());
 
+//            System.out.println(res.getResponseCode()+" "+res.getErrorMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,9 +70,10 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel< Serializab
 
 
     @Override
-    public void write(SerializableData record) {
+    public void write(T record) {
         try {
-            client.execute(new Index.Builder(record.toJSON()).index(indexName).build());
+            Index index = new Index.Builder(record).index(indexName).type(objectType).build();
+            client.execute(index);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,11 +81,13 @@ public class ELasticSearchOutputWriter extends AbstractOutputChannel< Serializab
 
     @Override
     public boolean close() {
+
         return false;
     }
 
     @Override
     public String getName() {
-        return null;
+        return "elastic-"+indexName+"-"+objectType;
     }
+
 }

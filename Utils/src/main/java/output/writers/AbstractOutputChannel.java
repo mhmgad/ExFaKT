@@ -27,7 +27,7 @@ public abstract class AbstractOutputChannel<T extends SerializableData> {
 
 
 
-    abstract public void write(SerializableData record) ;
+    abstract public void write(T record) ;
 
     abstract public boolean close();
 
