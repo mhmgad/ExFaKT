@@ -109,9 +109,9 @@ public class LabelsExtractor implements EntityDocumentProcessor {
             System.out.println(propertyDocument.getPropertyId()+" "+labels);
 
         String id=propertyDocument.getEntityId().getId();
-        String fullId=propertyDocument.getEntityId().getSiteIri();
+        String fullId=propertyDocument.getEntityId().getSiteIri()+"/"+id;
         String label= labels.get("en").getText();
-        String readableId=id+"_"+label;
+        String readableId=id+"_"+label.replaceAll(" ","_");
         Set<Paraphrase> paraphrases=new HashSet<>();
 
         paraphrases.add(new Paraphrase(id,fullId,readableId,"label",label));
