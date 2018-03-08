@@ -23,6 +23,7 @@ public class Main {
     private Option outFileOp;
     private Option outTypeOp;
     private Option elasticSearchOp;
+    private Option deleteIndexOp;
 
 
     public Main() {
@@ -54,8 +55,8 @@ public class Main {
         options.addOption(elasticSearchOp);
 
 //        //output to elastic
-//        elasticSearchOp = Option.builder("elastic").longOpt("elastic_search").hasArg().desc("Output to elastic").argName("serverUrl").build();
-//        options.addOption(elasticSearchOp);
+        deleteIndexOp = Option.builder("delIndex").longOpt("delete index").hasArg().desc("Delete current elastic index if exists").hasArg(false).build();
+        options.addOption(deleteIndexOp);
 
 
     }
@@ -96,8 +97,8 @@ public class Main {
         }
 
         if(cmd.hasOption(elasticSearchOp.getOpt())){
-
-            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),"paraphrases","paraphrase"));
+            boolean reIndex=cmd.hasOption(deleteIndexOp.getOpt());
+            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),reIndex,"paraphrases","paraphrase"));
 
 
 

@@ -17,6 +17,7 @@ import java.util.Collection;
 public class ELasticSearchOutputWriter<T extends SerializableData> extends AbstractOutputChannel<T>{
 
     private final String objectType;
+    private final boolean reIndex;
     JestClientFactory factory = new JestClientFactory();
 
     JestClient client;
@@ -25,8 +26,9 @@ public class ELasticSearchOutputWriter<T extends SerializableData> extends Abstr
     String indexName;
 
 
-    public ELasticSearchOutputWriter(String urlWithPort,String indexName,String objectType){
+    public ELasticSearchOutputWriter(String urlWithPort,String indexName,boolean reIndex,String objectType){
 
+        this.reIndex=reIndex;
         this.objectType=objectType;
         factory.setHttpClientConfig(new HttpClientConfig
                 .Builder(urlWithPort)
@@ -41,11 +43,12 @@ public class ELasticSearchOutputWriter<T extends SerializableData> extends Abstr
         boolean indexExists = false;
         try {
             indexExists = client.execute(new IndicesExists.Builder(indexName).build()).isSucceeded();
-            if (!indexExists) {
+            if (reIndex && indexExists) {
+                client.execute(new DeleteIndex.Builder(indexName).build());
                 client.execute(new CreateIndex.Builder(indexName).build());
             }
 ////            else{
-//                client.execute(new DeleteIndex.Builder(indexName).build());
+//
 //            }
         } catch (IOException e) {
             e.printStackTrace();
