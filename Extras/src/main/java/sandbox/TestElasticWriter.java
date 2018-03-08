@@ -1,13 +1,10 @@
 package sandbox;
 
-import akka.stream.impl.fusing.Collect;
 import extras.data.process.wikidata.Paraphrase;
 import output.writers.ELasticSearchOutputWriter;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
 
 public class TestElasticWriter {
 
