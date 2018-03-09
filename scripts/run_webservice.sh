@@ -42,4 +42,5 @@ ssh -f sedna.mpi-inf.mpg.de -L 9200:localhost:9200 -N
 #run server
 cd $parent_path/WebService
 echo $PWD
+mvn clean
 mvn play2:run
