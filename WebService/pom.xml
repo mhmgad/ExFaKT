@@ -451,8 +451,8 @@ under the License.
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.plugin.version}</version>
                 <configuration>
-                    <source>1.9</source>
-                    <target>1.9</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
@@ -479,8 +479,8 @@ under the License.
                         <configuration>
                             <skipMain>true</skipMain>
                             <skip>true</skip>
-                            <source>1.9</source>
-                            <target>1.9</target>
+                            <source>1.8</source>
+                            <target>1.8</target>
                         </configuration>
                         <executions>
                             <execution>
