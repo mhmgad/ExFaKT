@@ -25,7 +25,7 @@ public class Module extends AbstractModule {
         // Set AtomicCounter as the implementation for Counter.
 //        bind(Counter.class).to(AtomicCounter.class);
 
-        //Configuration.setConfigurationFile("/home/gadelrab/ideaProjects/RuleBasedFactChecking/WebService/conf/fact_checking_rewriting.properties");
+        Configuration.setConfigurationFile("/GW/D5data-7/gadelrab/demo_data/fact_checking_rewriting.properties");
 
         bind(Configuration.class).toInstance(Configuration.getInstance());
 
