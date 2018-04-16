@@ -1,0 +1,106 @@
+@import extendedsldnf.datastructure.Explanation
+@(explan: Explanation, index: Int)
+
+<div class="card border-dark m-1">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Explanation #@{index + 1}</h5>
+            </div>
+            <div class="col-md-8">
+                <div class="btn-group btn-group-sm pull-right" role="group" aria-label="feedback">
+                    <button type="button" class="btn btn-success ">Relevant</button>
+                    <button type="button" class="btn btn-warning">Semi-Relevant</button>
+                    <button type="button" class="btn btn-danger">Irrelevant</button>
+                    <button type="button" class="btn btn-secondary">Unknown</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body ">
+
+        @*<h5 class="card-title">Explanation #@{*@
+        @*index + 1*@
+        @*}</h5>*@
+        <h6 class="card-title">This fact is true given:</h6>
+        <div class="card-text py-1 m-1" >
+            @*<p class="card-text p-y-1">@explan.toString()</p>*@
+            <div class="panel-group col-md-9">
+                <div class="panel panel-default">
+                    <div class="header-panel m-1">
+                        <h6 class="panel-title">
+                            <a data-toggle="collapse" href="#factsdiv@{index}">Facts</a>
+                        </h6>
+                    </div>
+                    <div class="panel-collapse collapse show" id="factsdiv@{index}">
+                        <div class="list-group">
+
+                        @for((node, eviIndex) <- explan.getVerificationEvidences().zipWithIndex) {
+                            @if(node.getSourceActionType().toString().startsWith("TEXT")) {
+
+                                <div class="list-group-item"><strong><em>@node.getReadableQuery().toString()</em></strong>
+                                    <a class="badge badge-pill badge-warning" data-toggle="collapse" href="#textE@{index}-@{eviIndex}">Source:Text </a>
+
+                                    <div class="panel-collapse collapse" id="textE@{index}-@{eviIndex}">
+                                        <em>Text Evidences:</em>
+                                        <lu>
+                                        @for(doc<-node.getTextResults().getEvidence().getDocuments()){
+                                            <li>(<a href="@doc.getUrl()">@doc.getTitle()</a>) @doc.getText()</li>
+
+                                        }
+                                        </lu>
+
+
+                                    </div>
+
+                                </div>
+                            }else{
+                                <div class="list-group-item"><strong><em>@node.getReadableQuery().toString()</em></strong>
+                                    <a class="badge badge-pill badge-success">Source: KG Fact</a>
+                                </div>
+                            }
+
+                        }
+                        </div>
+                    </div>
+
+
+                    <div class="header-panel m-1">
+
+
+                        @if(explan.getRulesEvidences().size()==0){
+                            <h6 class="panel-title disabled">
+                                <a data-toggle="collapse" href="#rulesdiv@{index}">No rules are used!</a>
+                            </h6>
+                            @*<div class="panel-collapse collapse" id="rulesdiv@{index}">*@
+                                @*<div class="list-group">*@
+                                    @*<div class="list-group-item"><em>No rules are used!</em>*@
+                                    @*</div>*@
+                                @*</div>*@
+                            @*</div>*@
+                        }else {
+
+                            <h6 class="panel-title">
+                                <a data-toggle="collapse" href="#rulesdiv@{index}">Rules</a>
+                            </h6>
+                            @for(node <- explan.getRulesEvidences()) {
+                                <div class="panel-collapse collapse show" id="rulesdiv@{index}">
+                                    <div class="list-group">
+                                        <div class="list-group-item"><strong><em>@node.getRule()</em></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<a href="#" class="card-link">link</a>*@
+        @*<a href="#" class="card-link">Second link</a>*@
+    </div>
+</div>

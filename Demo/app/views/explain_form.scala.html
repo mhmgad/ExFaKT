@@ -1,0 +1,79 @@
+@import data.Query
+@(query: Query)
+<div class="py-2 text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="text-center justify-content-center" method="post" action="@routes.ExplainController.explain()">
+                    <div class="py-2">
+                        @*<div class="container">*@
+                        <div class="form-row justify-content-center align-baseline">
+                            <div class="form-group col-md-3">
+                                <input name="subject" class="form-control text-center m-1" placeholder="<Albert_Einstein>" value="@query.getSubject()">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input name="predicate" class="form-control m-1 text-center" placeholder="<wasBornIn>" value="@query.getPredicate()">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <input name="object" class="form-control m-1 text-center" placeholder="<Germany>" value="@query.getObject()">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <button type="submit" class="btn btn-primary text-center btn-block m-1">Explain!</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <div id="exTab2" class="container">
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item">
+                                            <a href="#1" data-toggle="tab" class="nav-link active">Rules</a>
+                                        </li>
+                                        <li class="nav-item"><a href="#2" data-toggle="tab" class="nav-link" >
+                                            Resources</a>
+                                        </li>
+                                        <li class="nav-item"><a href="#3" data-toggle="tab" class="nav-link">
+                                            More Options</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="1">
+                                            <div class="form-group col-md-12 text-left">
+                                                <label class="col-form-label-lg">Rules</label>
+                                                <textarea name="rules" class="form-control" rows="3" placeholder="a(?x,?y):- b(?x,?z), c(?z,?y)." >@query.getRules().trim()</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="2">
+                                            <p> Options of the Text and KG and included and excluded facts</p>
+                                            <h3>Knowledge Graph</h3>
+
+                                            <h3>Text</h3>
+
+                                        </div>
+
+                                        <div class="tab-pane" id="3">
+                                            <p> Other options</p>
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    @*</div>*@
+
+
+                </form>
+                <hr>
+
+            </div>
+        </div>
+    </div>
+</div>

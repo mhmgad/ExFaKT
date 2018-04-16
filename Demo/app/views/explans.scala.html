@@ -1,0 +1,58 @@
+@import extendedsldnf.datastructure.IQueryExplanations
+@(explanations: IQueryExplanations)
+<div class="py-2">
+
+    <div class="container">
+        @if(explanations!=null) {
+            <h3>Explanations for <strong> @explanations.getQueryAsFact().toSearchableString() </strong> </h3>
+            <hr>
+        }else{
+
+        }
+
+    </div>
+
+    @if(explanations == null) {
+        <div class="py-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="alert alert-secondary" role="alert">
+                            <h4 class="alert-heading">Explain a fact!</h4>
+                            <p>Write your candidate fact, a set of rules and press explain!</p>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+} else {
+    @if(explanations.size() == 0) {
+        <div class="py-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div class="alert alert-warning" role="alert">
+                            <h4 class="alert-heading">No Explanations!</h4>
+                            <p>Add more rules, facts or or text resources!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+
+    <div class="container">
+    @for((explan, index) <- explanations.getExplanations().zipWithIndex) {
+      @explan_card(explan,index)
+    }
+    </div>
+
+}
+    </div>
