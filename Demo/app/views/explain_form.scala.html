@@ -1,11 +1,11 @@
-@import data.Query
+@import web.data.Query
 @(query: Query)
 <div class="py-2 text-center">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <form class="text-center justify-content-center" method="post" action="@routes.ExplainController.explain()">
-                    <div class="py-2">
+                    <div class="py-3 px-0">
                         @*<div class="container">*@
                         <div class="form-row justify-content-center align-baseline">
                             <div class="form-group col-md-3">
@@ -31,10 +31,7 @@
                                             <a href="#1" data-toggle="tab" class="nav-link active">Rules</a>
                                         </li>
                                         <li class="nav-item"><a href="#2" data-toggle="tab" class="nav-link" >
-                                            Resources</a>
-                                        </li>
-                                        <li class="nav-item"><a href="#3" data-toggle="tab" class="nav-link">
-                                            More Options</a>
+                                            Dictionary</a>
                                         </li>
                                     </ul>
 
@@ -46,18 +43,10 @@
                                             </div>
                                         </div>
                                         <div class="tab-pane" id="2">
-                                            <p> Options of the Text and KG and included and excluded facts</p>
-                                            <h3>Knowledge Graph</h3>
-
-                                            <h3>Text</h3>
+                                            <p> Dictionary for predicates</p>
 
                                         </div>
 
-                                        <div class="tab-pane" id="3">
-                                            <p> Other options</p>
-
-
-                                        </div>
 
                                     </div>
                                 </div>

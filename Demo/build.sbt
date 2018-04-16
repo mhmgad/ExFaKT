@@ -1,4 +1,4 @@
-name := """play-java-starter-example"""
+name := """fact-checking-demo"""
 
 version := "1.0-SNAPSHOT"
 
@@ -14,9 +14,13 @@ resolvers += "Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository
 libraryDependencies += guice
 
 libraryDependencies += "factchecking" % "api" % "1.0"
+libraryDependencies += "factchecking" % "client" % "1.0"
 
 // Test Database
 libraryDependencies += "com.h2database" % "h2" % "1.4.194"
+
+libraryDependencies += "org.webjars" % "bootstrap" % "4.0.0-beta-1"
+libraryDependencies += "org.webjars" % "font-awesome" % "5.0.2"
 
 // Testing libraries for dealing with CompletionStage...
 libraryDependencies += "org.assertj" % "assertj-core" % "3.6.2" % Test

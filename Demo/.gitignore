@@ -8,3 +8,29 @@ build
 /.settings
 /.gradle
 /RUNNING_PID
+
+# general
+*~
+*.log
+tmp
+dump
+
+# Eclipse
+.settings
+.cache
+.project
+.classpath
+.scala_dependencies
+bin
+
+# SBT
+dist
+project/boot
+
+project/plugins/target
+
+.target
+
+# Play
+
+RUNNING_PID

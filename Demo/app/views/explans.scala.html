@@ -1,12 +1,13 @@
 @import extendedsldnf.datastructure.IQueryExplanations
-@(explanations: IQueryExplanations)
-<div class="py-2">
+@import web.data.Query
+@(query:Query, explanations: IQueryExplanations)
+<div class="py-2 px-0">
 
     <div class="container">
         @if(explanations!=null) {
             <h3>Explanations for <strong> @explanations.getQueryAsFact().toSearchableString() </strong> </h3>
             <hr>
-        }else{
+            }else{
 
         }
 
@@ -49,10 +50,59 @@
 
 
     <div class="container">
-    @for((explan, index) <- explanations.getExplanations().zipWithIndex) {
-      @explan_card(explan,index)
-    }
+        <div class="row">
+           @* <div class="col-md-4">
+                <h4> Sort By: </h4>
+            </div>
+            <div class="col-md-8 pull-right">
+*@
+        <div class="col-md-12">
+            <label for="sorting-group">Sort by:</label>
+                <div id="sorting-group" class="btn-group justify-content-end" data-toggle="buttons">
+                    <label class="btn btn-light active">
+                        <input type="radio" name="generation" id="option1" autocomplete="off" checked class="sorting"> Generation
+                    </label>
+                    <label class="btn btn-light">
+                        <input type="radio" name="quality" id="option2" autocomplete="off" class="sorting"> Quality
+                    </label>
+                    <label class="btn btn-light">
+                        <input type="radio" name="length" id="option3" autocomplete="off" class="sorting"> Length
+                    </label>
+                    <label class="btn btn-light">
+                        <input type="radio" name="depth" id="option3" autocomplete="off" class="sorting"> Depth
+                    </label>
+                    <label class="btn btn-light">
+                        <input type="radio" name="cost" id="option3" autocomplete="off" class="sorting"> Cost
+                    </label>
+                </div>
+            </div>
+        </div>
+        <script>
+                $(document).ready(function() {
+                    $('input[type=radio]').change(function() {
+                        var method=this.name
+                        $(".explans").each(function(){
+                            $(this).html($(this).children('dd').sort(function(a, b){
+                                return ($(b).data(method)) < ($(a).data(method)) ? 1 : -1;
+                            }));
+                        });
+
+                    });
+                });
+
+        </script>
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="explans">
+        @for((explan, index) <- explanations.getExplanations().zipWithIndex) {
+            @explan_card(explan,index)
+        }
+            </ul>
+        </div>
+
     </div>
 
 }
     </div>
+

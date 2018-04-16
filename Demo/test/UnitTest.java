@@ -1,6 +1,4 @@
 import akka.actor.ActorSystem;
-import controllers.AsyncController;
-import controllers.CountController;
 import org.junit.Test;
 import play.mvc.Result;
 import scala.concurrent.ExecutionContextExecutor;

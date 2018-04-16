@@ -90,4 +90,24 @@ body > * {
     pointer-events:none;
     background: linear-gradient(to top, map-get($theme-colors, 'dark') 0%, transparent 100%);
   }
+
+
+
+}
+
+.row.vdivide [class*='col-']:not(:last-child):after {
+  background: #e0e0e0;
+  width: 1px;
+  content: "";
+  display:block;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  right: 0;
+  min-height: 70px;
+}
+
+
+.state-icon {
+  left: -5px;
 }

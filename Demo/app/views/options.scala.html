@@ -1,0 +1,125 @@
+@import Models.QueryOptions
+@(options:QueryOptions)
+
+
+<div class="py-1">
+    <div class="row py-3 ">
+        <div class="container">
+
+            <h6>Knowledge Graphs</h6>
+            <hr>
+            <div class="list-group">
+
+                <div class="list-group-item">   <input type="checkbox" label="Yago"> <labal>Yago</labal>
+
+                    @*<input type="checkbox" aria-label="Checkbox for following text input">*@
+                </div>
+                <div class="list-group-item"> <input type="checkbox" > <labal>Wikidata</labal>
+                    @*<input type="checkbox" aria-label="Checkbox for following text input">*@
+                </div>
+                <div class="list-group-item"> <input type="checkbox" > <labal>DBpedia</labal>
+                    @*<input type="checkbox" aria-label="Checkbox for following text input">*@
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+    <div class="row py-3">
+        <div class=" container">
+
+            <h6>Textual Resources</h6>
+            <hr>
+            <div class="list-group">
+
+                <div class="list-group-item">
+                    <div class="row align-items-center text-source">
+                        <div class="col-sm-4">
+                            <input type="checkbox" label="Yago"> <labal>Wikipedia</labal>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="slidecontainer">
+                                <input type="range" min="1" max="100" value="50" class="slider" id="wiki-quality-range">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm mb-3">
+                                <input value="50" class="form-control text-center" id="wiki-quality-val">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    @*<input type="checkbox" aria-label="Checkbox for following text input">*@
+                </div>
+                <div class="list-group-item">
+                    <div class="row align-items-center text-source">
+                        <div class="col-sm-4">
+                            <input type="checkbox" > <labal>Web</labal>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="slidecontainer">
+                                <input type="range" min="1" max="100" value="50" class="slider" id="web-quality-range">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group input-group-sm mb-3">
+                                <input value="50" class="form-control text-center" id="web-quality-val">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+    <div class="row py-3">
+        <div class=" container">
+
+            <h6>More Options</h6>
+            <hr>
+            <div class="list-group">
+
+                <div class="list-group-item">
+                    <input type="checkbox" > <labal>Search KG for the candidate</labal>
+                </div>
+
+                <div class="list-group-item">
+                    <input type="checkbox" > <labal>Search KG for the candidate</labal>
+
+                </div>
+
+                <div class="list-group-item">
+                    <input type="checkbox" > <labal>Search KG for the candidate</labal>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
