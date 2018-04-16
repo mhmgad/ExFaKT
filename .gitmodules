@@ -1,3 +1,7 @@
 [submodule "FactChecking"]
 	path = FactChecking
 	url = https://github.molgen.mpg.de/gadelrab/FactChecking.git
+
+[submodule "Demo"]
+    path = Demo
+    url = https://github.molgen.mpg.de/gadelrab/fact_checking_demo
