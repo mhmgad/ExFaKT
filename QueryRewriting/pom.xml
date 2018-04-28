@@ -16,91 +16,148 @@
 
 
     <build>
-    <plugins>
+        <plugins>
 
 
-        <plugin>
-            <groupId>com.google.code.play2-maven-plugin</groupId>
-            <artifactId>play2-maven-plugin</artifactId>
-            <version>${play2.plugin.version}</version>
-            <configuration>
-                <playVersion>${play2.version}</playVersion>
-                <runSkip>true</runSkip>
-            </configuration>
-        </plugin>
+            <plugin>
+                <groupId>com.google.code.play2-maven-plugin</groupId>
+                <artifactId>play2-maven-plugin</artifactId>
+                <version>${play2.plugin.version}</version>
+                <configuration>
+                    <playVersion>${play2.version}</playVersion>
+                    <runSkip>true</runSkip>
+                </configuration>
+            </plugin>
 
 
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${compiler.plugin.version}</version>
-            <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
-            </configuration>
-        </plugin>
-    <!--Plugin to generate running scripts-->
-    <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>appassembler-maven-plugin</artifactId>
-        <version>1.10</version>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5</version>
+                <executions>
+                    <execution>
+                        <!--<id>iris-api</id>-->
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>at.sti2.iris</groupId>
+                            <artifactId>iris-api</artifactId>
+                            <version>0.8.2</version>
+                            <packaging>jar</packaging>
+                            <file>${basedir}/libs/iris-api-0.8.2.jar</file>
+                        </configuration>
 
-        <executions>
-            <execution>
-                <phase>package</phase>
-                <goals>
-                    <goal>assemble</goal>
-                </goals>
-            </execution>
-        </executions>
-        <configuration>
-            <!-- Extra JVM arguments that will be included in the bin scripts -->
-            <extraJvmArguments>-Xms1G</extraJvmArguments>
-            <extraJvmArguments>-Xmx200G</extraJvmArguments>
-            <!-- set alternative assemble directory -->
-            <assembleDirectory>assemble</assembleDirectory>
-            <!--<generateRepository>false</generateRepository>-->
-            <binFileExtensions>
-                <unix>.sh</unix>
-            </binFileExtensions>
-            <programs>
-                <program>
-                    <mainClass>MainCLI</mainClass>
-                    <id>check_facts</id>
-                </program>
+                    </execution>
+                    <execution>
+                        <id>iris-impl</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>at.sti2.iris</groupId>
+                            <artifactId>iris-impl</artifactId>
+                            <version>0.8.2</version>
+                            <packaging>jar</packaging>
+                            <file>${basedir}/libs/iris-impl-0.8.2.jar</file>
+                        </configuration>
 
-                <program>
-                    <mainClass>experiments.DatalogProgramExecuter</mainClass>
-                    <id>create_exper</id>
-                </program>
+                    </execution>
 
-                <program>
-                    <mainClass>experiments.EvaluateLabels</mainClass>
-                    <id>eval_labels</id>
-                </program>
+                    <execution>
+                        <id>iris-parser</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>at.sti2.iris</groupId>
+                            <artifactId>iris-parser</artifactId>
+                            <version>0.8.2</version>
+                            <packaging>jar</packaging>
+                            <file>${basedir}/libs/iris-parser-0.8.2.jar</file>
+                        </configuration>
 
-                <program>
-                    <mainClass>JSON2Readable</mainClass>
-                    <id>json2readable</id>
-                </program>
+                    </execution>
 
-                <program>
-                    <mainClass>utils.RulesSyntaxChecker</mainClass>
-                    <id>check_rules</id>
-                </program>
-
-                <program>
-                    <mainClass>utils.RelativeRulesCollector</mainClass>
-                    <id>get_rules</id>
-                </program>
+                </executions>
+            </plugin>
 
 
-            </programs>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.plugin.version}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <!--Plugin to generate running scripts-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>1.10</version>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Extra JVM arguments that will be included in the bin scripts -->
+                    <extraJvmArguments>-Xms1G</extraJvmArguments>
+                    <extraJvmArguments>-Xmx200G</extraJvmArguments>
+                    <!-- set alternative assemble directory -->
+                    <assembleDirectory>assemble</assembleDirectory>
+                    <!--<generateRepository>false</generateRepository>-->
+                    <binFileExtensions>
+                        <unix>.sh</unix>
+                    </binFileExtensions>
+                    <programs>
+                        <program>
+                            <mainClass>MainCLI</mainClass>
+                            <id>check_facts</id>
+                        </program>
+
+                        <program>
+                            <mainClass>experiments.DatalogProgramExecuter</mainClass>
+                            <id>create_exper</id>
+                        </program>
+
+                        <program>
+                            <mainClass>experiments.EvaluateLabels</mainClass>
+                            <id>eval_labels</id>
+                        </program>
+
+                        <program>
+                            <mainClass>JSON2Readable</mainClass>
+                            <id>json2readable</id>
+                        </program>
+
+                        <program>
+                            <mainClass>utils.RulesSyntaxChecker</mainClass>
+                            <id>check_rules</id>
+                        </program>
+
+                        <program>
+                            <mainClass>utils.RelativeRulesCollector</mainClass>
+                            <id>get_rules</id>
+                        </program>
 
 
-        </configuration>
-    </plugin>
-</plugins>
+                    </programs>
+
+
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 
