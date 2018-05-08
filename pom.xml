@@ -13,7 +13,7 @@
         <module>Api</module>
         <module>Client</module>
         <module>Extras</module>
-        <module>FactChecking</module>
+        <module>FactSpotting</module>
 
     </modules>
     <properties>
@@ -40,8 +40,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>FactChecking</module>
-                <module>QueryRewriting</module>
+                <module>Utils</module>
+                <module>Api</module>
+                <module>Client</module>
+                <module>Extras</module>
+                <module>FactSpotting</module>
 
 
             </modules>
@@ -50,8 +53,10 @@
             <id>web</id>
             <modules>
                 <module>WebService</module>
-                <module>FactChecking</module>
-                <module>QueryRewriting</module>
+                <module>Utils</module>
+                <module>Api</module>
+                <module>Client</module>
+                <module>FactSpotting</module>
 
 
             </modules>

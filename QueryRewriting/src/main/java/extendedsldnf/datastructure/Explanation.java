@@ -4,20 +4,44 @@ import com.google.common.base.Joiner;
 import com.google.gson.annotations.JsonAdapter;
 import extendedsldnf.CostAccumulator;
 import org.deri.iris.api.basics.IQuery;
+import org.supercsv.cellprocessor.constraint.DMinMax;
+import org.supercsv.cellprocessor.constraint.LMinMax;
+import org.supercsv.cellprocessor.constraint.NotNull;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.io.ICsvListWriter;
+import org.supercsv.prefs.CsvPreference;
 import utils.StringUtils;
 import utils.json.adapters.IQueryAdapter;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import output.writers.SerializableData;
+
 /**
  * Created by gadelrab on 3/8/17.
  */
 
-public class Explanation implements Comparable<Explanation> {
+public class Explanation implements Comparable<Explanation>,SerializableData {
+
+    final static String [] HEADERS=new String[] {"id","query","explanation","genOrder","method","quality"};
+
+    private static final CellProcessor[] processors=new CellProcessor[] {
+            new NotNull(), // id
+            new NotNull(), // query
+            new NotNull(), // explanation
+            new LMinMax(0L, LMinMax.MAX_LONG) , // genOrder
+            new NotNull(), // method
+            new DMinMax(0.0, DMinMax.MAX_DOUBLE) // quality
+    };
+
 
     private final String method;
     private final int genOrder;
@@ -199,11 +223,11 @@ public class Explanation implements Comparable<Explanation> {
         StringBuilder readable=new StringBuilder("\nExplan "+genOrder+" -------");
         readable.append("\nFacts");
 
-        readable.append(StringUtils.indent("\n-"+Joiner.on("\n-").join(getVerificationEvidences().stream().map(evid-> evid.getReadableString()).collect(Collectors.toList()))));
+        readable.append(StringUtils.indent("\n-"+Joiner.on("\n-").join(getVerificationEvidences().stream().map(EvidenceNode::getReadableString).collect(Collectors.toList()))));
 
         if(usedRulesCount()>0) {
             readable.append("\nRules");
-            readable.append(StringUtils.indent("\n-"+Joiner.on("\n-").join(getRulesEvidences().stream().map(evid-> evid.getReadableString()).collect(Collectors.toList()))));
+            readable.append(StringUtils.indent("\n-"+Joiner.on("\n-").join(getRulesEvidences().stream().map(EvidenceNode::getReadableString).collect(Collectors.toList()))));
         }
 
         readable.append("\n-------");
@@ -216,10 +240,60 @@ public class Explanation implements Comparable<Explanation> {
 
     public void setQuality() {
          this.quality = getQualityScore();
-         this.getEvidenceNodes().forEach(ev->ev.setQuality());
+         this.getEvidenceNodes().forEach(EvidenceNode::setQuality);
     }
 
     public double getQuality() {
         return quality;
+    }
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
+    @Override
+    public String toTriple() {
+        return null;
+    }
+
+    @Override
+    public String toTsv() {
+        return null;
+    }
+
+    @Override
+    public String toCsv() {
+
+        String readableExplanation= getBriefReadableString();
+
+        List<Object> explanationLine = Arrays.asList(new Object[] { (id+""), readableExplanation});
+
+        ICsvListWriter listWriter ;
+        try {
+            StringWriter str= new StringWriter();
+            listWriter = new CsvListWriter(str,
+                    CsvPreference.STANDARD_PREFERENCE);
+
+//            final CellProcessor[] processors = getProcessors();
+
+            // write the customer lists
+            listWriter.write(explanationLine, processors);
+            listWriter.close();
+
+            return str.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Creates a compressed version of the explanation. This version has only the grounded facts with the first textual evidence if exists
+     * @return
+     */
+    public String getBriefReadableString() {
+     return  Joiner.on("* ").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
     }
 }

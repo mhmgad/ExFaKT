@@ -1,12 +1,15 @@
 package output.writers;
 
+
 public interface SerializableData {
 
 
-    public String toJSON();
+     String toJSON();
 
-    public String toTriple();
+     String toTriple();
 
-    public String toTsv();
+     String toTsv();
+
+     String toCsv();
 
 }

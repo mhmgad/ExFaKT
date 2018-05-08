@@ -5,13 +5,13 @@ import java.util.Collection;
 public abstract class AbstractOutputChannel<T extends SerializableData> {
 
     OutputFormat mode;
-    public enum OutputFormat {JSON("json"),TSV("tsv"),TEXT("txt"),TRIPLE("nt");
+    public enum OutputFormat {JSON("json"),TSV("tsv"),TEXT("txt"),TRIPLE("nt"), CSV("csv");
         private final String fileExtension;
 
 
 
 
-        private OutputFormat(String s) {
+        OutputFormat(String s) {
             fileExtension = s;
         }
 
@@ -22,7 +22,7 @@ public abstract class AbstractOutputChannel<T extends SerializableData> {
 
 
     public void write(Collection<T> collection){
-        collection.forEach(item->this.write(item));
+        collection.forEach(this::write);
     }
 
 
@@ -43,6 +43,8 @@ public abstract class AbstractOutputChannel<T extends SerializableData> {
                 return record.toTriple();
             case JSON:
                 return record.toJSON();
+//            case CSV:
+//                return record.toCsv();
             case TEXT:
             default:
                 return record.toString();

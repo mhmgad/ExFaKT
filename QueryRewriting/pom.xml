@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>factchecking</groupId>
+
     <version>1.0</version>
     <artifactId>query-rewriting</artifactId>
 
@@ -163,6 +163,15 @@
 
     <dependencies>
 
+
+        <dependency>
+            <groupId>factchecking</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -202,6 +211,7 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
         </dependency>
+
 
 
 
