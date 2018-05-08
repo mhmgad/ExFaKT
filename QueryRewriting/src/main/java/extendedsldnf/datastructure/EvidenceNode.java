@@ -14,6 +14,7 @@ import utils.StringUtils;
 import utils.json.adapters.ILiteralAdapter;
 import utils.json.adapters.IRuleAdapter;
 
+import javax.ws.rs.NotSupportedException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -196,6 +197,32 @@ public class EvidenceNode{
 
     public void setQuality() {
         this.quality=nodeQuality();
+    }
+
+    /**
+     * returns a brief repersentation for the
+     * @return
+     */
+    public String getBriefReadableString(){
+
+
+        if(!isVerification()){
+            throw new NotSupportedException("not yet supported");
+        }
+        if(isKGFact()){
+            try {
+                return Converter.toFact(queryLiteral).toReadableString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        if(isTextMention()){
+            return textResults.getEvidence().getDocuments().get(0).getReadableString();
+        }
+        return null;
+
     }
 
 

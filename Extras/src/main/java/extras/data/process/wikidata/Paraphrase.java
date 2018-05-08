@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.searchbox.annotations.JestId;
 import output.writers.SerializableData;
 
+import java.util.List;
 import java.util.Objects;
 public class Paraphrase implements SerializableData{
 
@@ -63,5 +64,10 @@ public class Paraphrase implements SerializableData{
     @Override
     public String toTsv() {
         return fullId+'\t'+labelType+'\t'+mention;
+    }
+
+    @Override
+    public String toCsv() {
+        return null;
     }
 }

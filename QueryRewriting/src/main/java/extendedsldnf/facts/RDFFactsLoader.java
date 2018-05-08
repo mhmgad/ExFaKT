@@ -1,7 +1,7 @@
 package extendedsldnf.facts;
 
 import config.Configuration;
-import de.mpii.utils.FactUtils;
+import de.mpii.dataprocessing.util.FactUtils;
 import extendedsldnf.datastructure.InputQuery;
 import org.deri.iris.api.basics.IAtom;
 import org.deri.iris.api.basics.ILiteral;

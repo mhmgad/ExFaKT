@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class JSON2Readable{
 
 
+
     public static void main(String[] args) {
 
     String inputFile=args[0];
