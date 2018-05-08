@@ -38,6 +38,7 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.7.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.7.3" level="project" />
     <orderEntry type="library" name="Maven: de.undercouch:bson4jackson:2.7.0" level="project" />
+    <orderEntry type="library" name="Maven: factchecking:query-rewriting:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.12.3" level="project" />
     <orderEntry type="library" name="Maven: com.typesafe.play:play-guice_2.12:2.6.2" level="project" />
     <orderEntry type="library" name="Maven: com.typesafe.play:play_2.12:2.6.2" level="project" />
