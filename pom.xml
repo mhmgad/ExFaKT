@@ -13,7 +13,7 @@
         <module>Api</module>
         <module>Client</module>
         <module>Extras</module>
-        <module>FactChecking</module>
+        <module>FactSpotting</module>
 
     </modules>
     <properties>
@@ -44,7 +44,7 @@
                 <module>Api</module>
                 <module>Client</module>
                 <module>Extras</module>
-                <module>FactChecking</module>
+                <module>FactSpotting</module>
 
 
             </modules>
