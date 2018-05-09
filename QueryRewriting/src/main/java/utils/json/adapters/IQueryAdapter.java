@@ -17,6 +17,8 @@ public class IQueryAdapter implements JsonSerializer<IQuery>,JsonDeserializer<IQ
             parser.parse(jsonElement.getAsString());
             return parser.getQueries().get(0);
         } catch (ParserException e) {
+            System.out.println(jsonElement.getAsString());
+
             e.printStackTrace();
         }
         return null;
