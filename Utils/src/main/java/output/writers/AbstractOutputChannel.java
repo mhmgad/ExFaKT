@@ -43,8 +43,8 @@ public abstract class AbstractOutputChannel<T extends SerializableData> {
                 return record.toTriple();
             case JSON:
                 return record.toJSON();
-//            case CSV:
-//                return record.toCsv();
+            case CSV:
+                return record.toCsv();
             case TEXT:
             default:
                 return record.toString();

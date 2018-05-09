@@ -36,7 +36,7 @@ public class JSONConverter {
 
 
 
-    String outputFile=inputFile.replaceAll(".json","."+outputType);
+    String outputFile=inputFile.replaceAll(".json","");
 
         OutputListener<QueryExplanations> outputListener=new OutputListener<>();
         outputListener.registerWriter(new FileOutputWriter(outputFile,outputType));
