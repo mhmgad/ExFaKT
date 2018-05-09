@@ -9,6 +9,7 @@ import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.ITuple;
 import org.deri.iris.storage.IRelation;
 import org.eclipse.collections.impl.set.sorted.mutable.TreeSortedSet;
+import output.writers.SerializableData;
 import utils.Converter;
 import utils.StringUtils;
 import utils.json.CustomGson;
@@ -20,7 +21,7 @@ import java.util.*;
  * Created by gadelrab on 3/22/17.
  */
 //TODO get red off the IRelation interface, It is useless but it is easier than implementing the whole thing form scratch
-public class QueryExplanations implements IRelation, IQueryExplanations {
+public class QueryExplanations implements IRelation, IQueryExplanations, SerializableData {
 
     private final double quality;
     private CostAccumulator costAccumulator;
@@ -231,5 +232,32 @@ public class QueryExplanations implements IRelation, IQueryExplanations {
 
     public void setSortingMethod(Sorting sortingMethod) {
         this.sortingMethod = sortingMethod;
+    }
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
+    @Override
+    public String toTriple() {
+        return null;
+    }
+
+    @Override
+    public String toTsv() {
+        return null;
+    }
+
+    @Override
+    public String toCsv() {
+        StringBuilder out=new StringBuilder();
+        for (Explanation expl: getExplanations()){
+            out.append(expl.toCsv());
+            out.append('\n');
+
+        }
+
+        return out.toString();
     }
 }

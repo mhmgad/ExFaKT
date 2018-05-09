@@ -137,8 +137,8 @@
                         </program>
 
                         <program>
-                            <mainClass>JSON2Readable</mainClass>
-                            <id>json2readable</id>
+                            <mainClass>JSONConverter</mainClass>
+                            <id>reformat</id>
                         </program>
 
                         <program>
