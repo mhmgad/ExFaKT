@@ -14,6 +14,7 @@
         <module>Client</module>
         <module>Extras</module>
         <module>FactSpotting</module>
+        <module>QueryRewriting</module>
 
     </modules>
     <properties>
@@ -45,6 +46,7 @@
                 <module>Client</module>
                 <module>Extras</module>
                 <module>FactSpotting</module>
+                <module>QueryRewriting</module>
 
 
             </modules>
@@ -57,6 +59,7 @@
                 <module>Api</module>
                 <module>Client</module>
                 <module>FactSpotting</module>
+                <module>QueryRewriting</module>
 
 
             </modules>
