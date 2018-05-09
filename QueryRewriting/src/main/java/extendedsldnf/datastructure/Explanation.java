@@ -267,7 +267,7 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
 
         String readableExplanation= getBriefReadableString();
 
-        List<Object> explanationLine = Arrays.asList(new Object[] { (id+""), readableExplanation,genOrder, method,quality});
+        List<Object> explanationLine = Arrays.asList(new Object[] { (id+""), query,readableExplanation,genOrder, method,quality});
 
         ICsvListWriter listWriter ;
         try {
