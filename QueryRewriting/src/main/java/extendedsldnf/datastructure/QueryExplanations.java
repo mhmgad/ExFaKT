@@ -251,14 +251,16 @@ public class QueryExplanations implements IRelation, IQueryExplanations, Seriali
 
     @Override
     public String toCsv() {
+
         StringBuilder out=new StringBuilder();
-        for (Explanation explanation: getExplanations()){
-            if(explanations.size()>0) {
+        if(explanations.size()>0) {
+            for (Explanation explanation : getExplanations()) {
+
                 out.append(explanation.toCsv());
-//                out.append('\n');
+                out.append('\n');
+
             }
         }
-
         return out.toString();
     }
 }
