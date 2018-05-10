@@ -2,6 +2,7 @@ package extendedsldnf.datastructure;
 
 import com.google.common.base.Joiner;
 import com.google.gson.annotations.JsonAdapter;
+import de.mpii.dataprocessing.util.FactUtils;
 import extendedsldnf.CostAccumulator;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.deri.iris.api.basics.IQuery;
@@ -310,14 +311,17 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
 
     public static void main(String[] args) {
 
-        Parser p=new Parser();
-        try {
-            p.parse("c('ss\\\'ss','f')");
-        } catch (ParserException e) {
-            e.printStackTrace();
-        }
-        System.out.println(StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml("Max-Planck-Institut' für\n jhzjhddj")));
-        System.out.println(StringEscapeUtils.escapeCsv("Max-Planck-Institut' für\n jhzjhddj"));
+        System.out.println("<testMe_Please>".replace(":"," ").replaceAll("^([a-z]{2,3})/","").replaceAll("(_\\(.+?\\))$"," ").trim().replace("_"," ").replaceAll("(?=\\p{Upper})"," ").replaceAll(" +", " "));
+        System.out.println(FactUtils.getReadablePredicateName("<testMe_Please>"));
+
+//        Parser p=new Parser();
+//        try {
+//            p.parse("c('ss\\\'ss','f')");
+//        } catch (ParserException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml("Max-Planck-Institut' für\n jhzjhddj")));
+//        System.out.println(StringEscapeUtils.escapeCsv("Max-Planck-Institut' für\n jhzjhddj"));
 
     }
 }

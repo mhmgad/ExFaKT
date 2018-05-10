@@ -219,7 +219,7 @@ public class EvidenceNode{
 
         }
         if(isTextMention()){
-            return textResults.getEvidence().getDocuments().get(0).getReadableString();
+            return textResults.getEvidence().getDocuments().get(0).getBriefReadableString();
         }
         return null;
 

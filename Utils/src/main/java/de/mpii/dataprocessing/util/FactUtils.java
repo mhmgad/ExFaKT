@@ -17,7 +17,7 @@ public class FactUtils {
             predicateName= predicateName.replace("<","").replace(">","");
 
 
-        predicateName=predicateName.replaceAll(":","_").replaceAll("\\.","_");
+//        predicateName=predicateName.replaceAll(":","_").replaceAll("\\.","_");
 
 
         predicateName=predicateName.replace(":"," ").replaceAll("^([a-z]{2,3})/","").replaceAll("(_\\(.+?\\))$"," ").trim().replace("_"," ").replaceAll("(?=\\p{Upper})"," ").replaceAll(" +", " ");
