@@ -255,7 +255,7 @@ public class QueryExplanations implements IRelation, IQueryExplanations, Seriali
         for (Explanation expl: getExplanations()){
             if(explanations.size()>0) {
                 out.append(expl.toCsv());
-                out.append('\n');
+//                out.append('\n');
             }
 
         }
