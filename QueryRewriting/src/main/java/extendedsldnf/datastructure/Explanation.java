@@ -5,6 +5,8 @@ import com.google.gson.annotations.JsonAdapter;
 import extendedsldnf.CostAccumulator;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.deri.iris.api.basics.IQuery;
+import org.deri.iris.compiler.Parser;
+import org.deri.iris.compiler.ParserException;
 import org.supercsv.cellprocessor.constraint.DMinMax;
 import org.supercsv.cellprocessor.constraint.LMinMax;
 import org.supercsv.cellprocessor.constraint.NotNull;
@@ -269,8 +271,10 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
 
         String readableExplanation= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(getBriefReadableString()));
         String readableQuery= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(Converter.toFact(query).toReadableString()));
+        String readableId= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(id));
+        String readableMethod= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(method));
 
-        List<Object> explanationLine = Arrays.asList(new Object[] { (id+""), readableQuery,readableExplanation,genOrder, method,quality});
+        List<Object> explanationLine = Arrays.asList(new Object[] { readableId, readableQuery,readableExplanation,genOrder, readableMethod,quality});
 
 
 
@@ -301,10 +305,17 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
      * @return
      */
     public String getBriefReadableString() {
-     return  Joiner.on("* \n").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
+     return  Joiner.on("\n* ").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
     }
 
     public static void main(String[] args) {
+
+        Parser p=new Parser();
+        try {
+            p.parse("c('ss\\\'ss','f')");
+        } catch (ParserException e) {
+            e.printStackTrace();
+        }
         System.out.println(StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml("Max-Planck-Institut' für\n jhzjhddj")));
         System.out.println(StringEscapeUtils.escapeCsv("Max-Planck-Institut' für\n jhzjhddj"));
 
