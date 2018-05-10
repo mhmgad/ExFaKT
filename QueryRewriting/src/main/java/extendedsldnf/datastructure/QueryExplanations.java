@@ -16,6 +16,7 @@ import utils.json.CustomGson;
 import utils.json.adapters.IQueryAdapter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by gadelrab on 3/22/17.
@@ -252,15 +253,9 @@ public class QueryExplanations implements IRelation, IQueryExplanations, Seriali
     @Override
     public String toCsv() {
 
-        StringBuilder out=new StringBuilder();
         if(explanations.size()>0) {
-            for (Explanation explanation : getExplanations()) {
-
-                out.append(explanation.toCsv());
-                out.append('\n');
-
-            }
+           return  Joiner.on('\n').join(explanations.stream().map(Explanation::toCsv).collect(Collectors.toList()));
         }
-        return out.toString();
+        return null;
     }
 }
