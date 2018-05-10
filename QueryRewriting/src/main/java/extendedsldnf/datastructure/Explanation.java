@@ -3,6 +3,7 @@ package extendedsldnf.datastructure;
 import com.google.common.base.Joiner;
 import com.google.gson.annotations.JsonAdapter;
 import extendedsldnf.CostAccumulator;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.deri.iris.api.basics.IQuery;
 import org.supercsv.cellprocessor.constraint.DMinMax;
 import org.supercsv.cellprocessor.constraint.LMinMax;
@@ -11,6 +12,7 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
 import org.supercsv.prefs.CsvPreference;
+import utils.Converter;
 import utils.StringUtils;
 import utils.json.adapters.IQueryAdapter;
 
@@ -265,9 +267,9 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
     @Override
     public String toCsv() {
 
-        String readableExplanation= getBriefReadableString();
+        String readableExplanation= StringEscapeUtils.escapeHtml(getBriefReadableString());
 
-        List<Object> explanationLine = Arrays.asList(new Object[] { (id+""), query,readableExplanation,genOrder, method,quality});
+        List<Object> explanationLine = Arrays.asList(new Object[] { (id+""), Converter.toFact(query).toReadableString(),readableExplanation,genOrder, method,quality});
 
         ICsvListWriter listWriter ;
         try {
@@ -288,6 +290,8 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
 
         return null;
     }
+
+
 
     /**
      * Creates a compressed version of the explanation. This version has only the grounded facts with the first textual evidence if exists
