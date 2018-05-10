@@ -267,28 +267,31 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
     @Override
     public String toCsv() {
 
-        String readableExplanation= StringEscapeUtils.escapeHtml(getBriefReadableString());
+        String readableExplanation= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(getBriefReadableString()));
+        String readableQuery= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(Converter.toFact(query).toReadableString()));
 
-        List<Object> explanationLine = Arrays.asList(new Object[] { (id+""), Converter.toFact(query).toReadableString(),readableExplanation,genOrder, method,quality});
+        List<Object> explanationLine = Arrays.asList(new Object[] { (id+""), readableQuery,readableExplanation,genOrder, method,quality});
 
-        ICsvListWriter listWriter ;
-        try {
-            StringWriter str= new StringWriter();
-            listWriter = new CsvListWriter(str,
-                    CsvPreference.STANDARD_PREFERENCE);
 
-//            final CellProcessor[] processors = getProcessors();
 
-            // write the customer lists
-            listWriter.write(explanationLine, processors);
-            listWriter.close();
+//        ICsvListWriter listWriter ;
+//        try {
+//            StringWriter str= new StringWriter();
+//            listWriter = new CsvListWriter(str,
+//                    CsvPreference.STANDARD_PREFERENCE);
+//
+////            final CellProcessor[] processors = getProcessors();
+//
+//            // write the customer lists
+//            listWriter.write(explanationLine, processors);
+//            listWriter.close();
+//
+//            return str.toString();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-            return str.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return Joiner.on(", ").join(explanationLine);
     }
 
 
@@ -298,6 +301,12 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
      * @return
      */
     public String getBriefReadableString() {
-     return  Joiner.on("* ").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
+     return  Joiner.on("* \n").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml("Max-Planck-Institut' für\n jhzjhddj")));
+        System.out.println(StringEscapeUtils.escapeCsv("Max-Planck-Institut' für\n jhzjhddj"));
+
     }
 }

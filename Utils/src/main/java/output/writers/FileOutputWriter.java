@@ -27,8 +27,11 @@ public class FileOutputWriter extends AbstractOutputChannel {
     @Override
     public void write(SerializableData record) {
         try {
-            fileWriter.write(formatString(record));
-            fileWriter.newLine();
+            String toWrite=formatString(record);
+            if(toWrite!=null && !toWrite.isEmpty()) {
+                fileWriter.write(toWrite);
+                fileWriter.newLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
