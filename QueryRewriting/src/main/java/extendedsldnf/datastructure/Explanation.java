@@ -306,7 +306,13 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
      * @return
      */
     public String getBriefReadableString() {
-     return  Joiner.on("\n* ").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
+        String text="";
+        if(getVerificationCount()>1){
+            text= Joiner.on("\n").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).map(st-> "*. "+st).collect(Collectors.toList()));
+        }else{
+            Joiner.on("\n").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
+        }
+     return text;
     }
 
     public static void main(String[] args) {
