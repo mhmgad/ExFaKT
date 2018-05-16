@@ -36,7 +36,7 @@ import output.writers.SerializableData;
 
 public class Explanation implements Comparable<Explanation>,SerializableData {
 
-    final static String [] HEADERS=new String[] {"id","query","explanation","genOrder","method","quality"};
+    final static String [] HEADERS=new String[] {"id","query","explanation","genOrder","method","quality","direct"};
 
     private static final CellProcessor[] processors=new CellProcessor[] {
             new NotNull(), // id
@@ -275,26 +275,10 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
         String readableId= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(id));
         String readableMethod= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(method));
 
-        List<Object> explanationLine = Arrays.asList(new Object[] { readableId, readableQuery,readableExplanation,genOrder, readableMethod,quality});
+
+        List<Object> explanationLine = Arrays.asList(new Object[] { readableId, readableQuery,readableExplanation,genOrder, readableMethod,quality, isDirectEvidence()});
 
 
-
-//        ICsvListWriter listWriter ;
-//        try {
-//            StringWriter str= new StringWriter();
-//            listWriter = new CsvListWriter(str,
-//                    CsvPreference.STANDARD_PREFERENCE);
-//
-////            final CellProcessor[] processors = getProcessors();
-//
-//            // write the customer lists
-//            listWriter.write(explanationLine, processors);
-//            listWriter.close();
-//
-//            return str.toString();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
         return Joiner.on(", ").join(explanationLine);
     }
