@@ -22,7 +22,7 @@ public class FactUtils {
 
         predicateName=predicateName.replace(":"," ").replaceAll("^([a-z]{2,3})/","").replaceAll("(_\\(.+?\\))$"," ").trim().replace("_"," ").replaceAll("(?=\\p{Upper})"," ").replaceAll(" +", " ");
 
-        return predicateName;
+        return predicateName.toLowerCase();
     }
 
     public static String getCleanName(String key) {
