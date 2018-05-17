@@ -12,6 +12,8 @@ public class IQueryAdapter implements JsonSerializer<IQuery>,JsonDeserializer<IQ
 
     @Override
     public IQuery deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+
+        System.out.println("parse: "+jsonElement.getAsString());
         Parser parser = new Parser();
         try {
             String query = jsonElement.getAsString();
