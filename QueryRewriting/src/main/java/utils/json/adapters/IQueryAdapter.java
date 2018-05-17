@@ -15,8 +15,10 @@ public class IQueryAdapter implements JsonSerializer<IQuery>,JsonDeserializer<IQ
         Parser parser = new Parser();
         try {
             String query = jsonElement.getAsString();
-            query.replaceAll("(?<=[<_\\w])\\'(?=[\\w_>])","");
-            parser.parse(query);
+            String queryFixed=query.replaceAll("(?<=[<_\\w])\\'(?=[\\w_>])","");
+            if(!queryFixed.equals(query))
+                System.out.println(query+ " => "+queryFixed);
+            parser.parse(queryFixed);
             return parser.getQueries().get(0);
         } catch (ParserException e) {
             System.out.println(jsonElement.getAsString());
@@ -33,6 +35,6 @@ public class IQueryAdapter implements JsonSerializer<IQuery>,JsonDeserializer<IQ
 
 
     public static void main(String[] args) {
-        System.out.println("<'tes'Dt'gt'_s'>".replaceAll("(?<=[<_\\w])\\'(?=[\\w_>])",""));
+        System.out.println("<'tes'Dt'gt'_s'>'".replaceAll("(?<=[<_\\w])\\'(?=[\\w_>])",""));
     }
 }
