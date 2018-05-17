@@ -36,16 +36,16 @@ import output.writers.SerializableData;
 
 public class Explanation implements Comparable<Explanation>,SerializableData {
 
-    final static String [] HEADERS=new String[] {"id","query","explanation","genOrder","method","quality","direct"};
 
-    private static final CellProcessor[] processors=new CellProcessor[] {
-            new NotNull(), // id
-            new NotNull(), // query
-            new NotNull(), // explanation
-            new LMinMax(0L, LMinMax.MAX_LONG) , // genOrder
-            new NotNull(), // method
-            new DMinMax(0.0, DMinMax.MAX_DOUBLE) // quality
-    };
+
+//    private static final CellProcessor[] processors=new CellProcessor[] {
+//            new NotNull(), // id
+//            new NotNull(), // query
+//            new NotNull(), // explanation
+//            new LMinMax(0L, LMinMax.MAX_LONG) , // genOrder
+//            new NotNull(), // method
+//            new DMinMax(0.0, DMinMax.MAX_DOUBLE) // quality
+//    };
 
 
     private final String method;
@@ -244,8 +244,8 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
     }
 
     public void setQuality() {
-         this.quality = getQualityScore();
-         this.getEvidenceNodes().forEach(EvidenceNode::setQuality);
+        this.quality = getQualityScore();
+        this.getEvidenceNodes().forEach(EvidenceNode::setQuality);
     }
 
     public double getQuality() {
@@ -267,6 +267,8 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
         return null;
     }
 
+    final static String [] HEADERS=new String[] {"id","query","explanation","genOrder","method","quality","direct","rulesNum","factsNum", "fromText", "costSteps", "CostTime"};
+
     @Override
     public String toCsv() {
 
@@ -275,9 +277,14 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
         String readableId= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(id));
         String readableMethod= StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml(method));
 
+        int rulesNum=getRulesEvidencesCount();
+        int factsNum=getVerificationCount();
+        int fromText=getTextEvidencesCount();
+        int costSteps= cost.getTotalCost();
 
-        List<Object> explanationLine = Arrays.asList(new Object[] { readableId, readableQuery,readableExplanation,genOrder, readableMethod,quality, isDirectEvidence()});
+        List<Object> explanationLine = Arrays.asList(new Object[] { readableId, readableQuery,readableExplanation,genOrder, readableMethod,quality, isDirectEvidence(),rulesNum,factsNum, fromText, costSteps});
 
+        assert(explanationLine.size()==HEADERS.length);
 
 
         return Joiner.on(", ").join(explanationLine);
@@ -296,7 +303,7 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
         }else{
             text= Joiner.on("\n").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
         }
-     return text;
+        return text;
     }
 
     public static void main(String[] args) {
