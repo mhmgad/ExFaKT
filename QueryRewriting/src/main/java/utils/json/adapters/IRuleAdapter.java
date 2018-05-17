@@ -15,7 +15,8 @@ public class IRuleAdapter implements JsonSerializer<IRule>,JsonDeserializer<IRul
     public IRule deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         Parser parser = new Parser();
         try {
-            parser.parse(jsonElement.getAsString());
+            String query=jsonElement.getAsString().replaceAll("(?<=[<_\\w])\\'(?=[\\w_>])","");
+            parser.parse(query);
             return parser.getRules().get(0);
         } catch (ParserException e) {
             e.printStackTrace();
