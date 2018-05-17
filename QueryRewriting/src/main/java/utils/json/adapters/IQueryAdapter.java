@@ -37,6 +37,6 @@ public class IQueryAdapter implements JsonSerializer<IQuery>,JsonDeserializer<IQ
 
 
     public static void main(String[] args) {
-        System.out.println("<'tes'Dt'gt'_s'>'".replaceAll("(?<=[<_\\w])\\'(?=[\\w_>])",""));
+        System.out.println("<'tes'Dt'gt'_s'>'".replaceAll("(?<=[<_\\w])\\'+(?=[\\w_>])",""));
     }
 }

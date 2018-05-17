@@ -19,7 +19,7 @@ public class ILiteralAdapter implements  JsonSerializer<ILiteral>,JsonDeserializ
 
     @Override
     public ILiteral deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        String literalQuery="?- "+jsonElement.getAsString().replaceAll("(?<=[<_\\w])\\'(?=[\\w_>])","")+".";
+        String literalQuery="?- "+jsonElement.getAsString().replaceAll("(?<=[<_\\w])\\'+(?=[\\w_>])","")+".";
         Parser parser = new Parser();
         try {
             parser.parse(literalQuery);
