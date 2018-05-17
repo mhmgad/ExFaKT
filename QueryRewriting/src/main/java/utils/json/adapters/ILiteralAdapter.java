@@ -25,6 +25,7 @@ public class ILiteralAdapter implements  JsonSerializer<ILiteral>,JsonDeserializ
             parser.parse(literalQuery);
             return parser.getQueries().get(0).getLiterals().get(0);
         } catch (ParserException e) {
+            System.out.println(literalQuery);
             e.printStackTrace();
         }
         return null;
