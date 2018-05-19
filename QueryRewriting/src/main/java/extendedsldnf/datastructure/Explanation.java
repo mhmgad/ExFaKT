@@ -282,7 +282,7 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
         int fromText=getTextEvidencesCount();
         int costSteps= cost.getTotalCost();
 
-        List<Object> explanationLine = Arrays.asList(new Object[] { readableId, readableQuery,readableExplanation,genOrder, readableMethod,quality, isDirectEvidence(),rulesNum,factsNum, fromText, costSteps});
+        List<Object> explanationLine = Arrays.asList(new Object[] { readableId, readableQuery,readableExplanation,genOrder, readableMethod,quality, isDirectEvidence(),rulesNum,factsNum, fromText, costSteps, cost.getElapsedTime()});
 
         assert(explanationLine.size()==HEADERS.length);
 
