@@ -22,7 +22,9 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
 
     public FactSpottingConnector(Configuration conf) {
         String spottingConfFile = conf.getSpottingConfFile();
+        System.out.println("Set spotting config:"+ spottingConfFile);
         de.mpii.factspotting.config.Configuration.setConfigurationFile(spottingConfFile==null? null:spottingConfFile);
+        System.out.println( "Used spotting config:"+ de.mpii.factspotting.config.Configuration.getConfigurationFile());
         spotter=FactSpotterFactory.create(conf.getSpottingMethod());
 
     }

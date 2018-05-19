@@ -156,7 +156,7 @@ static class Record {
                 continue;
 
             String ps[]=l.trim().split("\t");
-            if(!ps[rankingColumn].trim().matches("[0-9.]*")) {
+            if(!ps[rankingColumn].trim().matches("[\\-0-9.]*")) {
                 System.out.println("not a number"+ps[rankingColumn]);
                 continue;
             }
@@ -198,9 +198,11 @@ static class Record {
 
     public static void main(String[] args) throws Exception {
 
-        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/fact_spotting_data/exper2/out/rules_heursitic.out.correctness";
+//        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/fact_spotting_data/exper2/out/rules_heursitic.out.correctness";
 
-        int rankingScoreColumn=13;
+        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/factchecking_exper/output/out_/rules_text_splitq.out.correctness";
+
+        int rankingScoreColumn=7;
         int labelColumn=15;
 
 
