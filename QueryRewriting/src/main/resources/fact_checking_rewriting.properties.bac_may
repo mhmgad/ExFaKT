@@ -1,6 +1,6 @@
 
 
-factSpotting.method=BING
+factSpotting.method=ELASTIC
 #factSpotting.method=NONE
 #factSpotting.config=
 
@@ -17,5 +17,5 @@ factsFormat=RDF
 #partialBindingType=GREEDY
 evalMethod=SLD
 
-maxExplanations=1
-maxRuleNesting=1
+maxExplanations=10
+maxRuleNesting=5

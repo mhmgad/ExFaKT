@@ -12,6 +12,18 @@ public class FileOutputWriter extends AbstractOutputChannel {
 
     private  BufferedWriter fileWriter;
 
+    public FileOutputWriter(String outputFilePath, OutputFormat mode,String header)  {
+      this(outputFilePath,  mode);
+        try {
+            fileWriter.write(header);
+            fileWriter.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
     public FileOutputWriter(String outputFilePath, OutputFormat mode)  {
         try {
             this.fileWriter = FileUtils.getBufferedUTF8Writer(outputFilePath+'.'+mode.getFileExtension());
