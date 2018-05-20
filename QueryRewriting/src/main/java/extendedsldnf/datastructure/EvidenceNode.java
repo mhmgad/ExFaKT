@@ -145,7 +145,7 @@ public class EvidenceNode{
 
         if(isVariableBinding()||isRuleExpansion())
             return 0;
-        double sourceQ= isKGFact()? 1:0.5;
+        double sourceQ= isKGFact()? 1:0.75;
         return sourceQ/(Math.max(rulesDepth,1));
     }
 
