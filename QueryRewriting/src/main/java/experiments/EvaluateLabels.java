@@ -200,7 +200,7 @@ static class Record {
 
 //        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/fact_spotting_data/exper2/out/rules_heursitic.out.correctness";
 
-        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/factchecking_exper/output/out_/rules_text_splitq.out.correctness";
+        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/factchecking_exper/output/out_2018_05_20_041435/rules_text_splitq.out.correctness";
 
         int rankingScoreColumn=7;
         int labelColumn=15;
