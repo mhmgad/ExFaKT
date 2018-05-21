@@ -10,6 +10,7 @@ import org.apache.commons.cli.*;
 import org.deri.iris.EvaluationException;
 import utils.DataUtils;
 import utils.Enums;
+import utils.StringUtils;
 import utils.eval.ResultsEvaluator;
 import utils.json.CustomGson;
 
@@ -19,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
+
 
 /**
  * Created by gadelrab on 3/30/17.
@@ -147,17 +148,17 @@ public class MainCLI {
         }
 
         if(cmd.hasOption(rulesFilesOp.getOpt())) {
-            configuration.setRulesFiles(asList(cmd.getOptionValue(rulesFilesOp.getOpt(),null)));
+            configuration.setRulesFiles(StringUtils.asList(cmd.getOptionValue(rulesFilesOp.getOpt(),null)));
 
         }
 
         if(cmd.hasOption(queriesFilesOp.getOpt())) {
-            configuration.setQueriesFiles(asList(cmd.getOptionValue(queriesFilesOp.getOpt(),null)));
+            configuration.setQueriesFiles(StringUtils.asList(cmd.getOptionValue(queriesFilesOp.getOpt(),null)));
 
         }
 
         if(cmd.hasOption(factsFilesOp.getOpt())) {
-            configuration.setFactsFiles(asList(cmd.getOptionValue(factsFilesOp.getOpt(),null)));
+            configuration.setFactsFiles(StringUtils.asList(cmd.getOptionValue(factsFilesOp.getOpt(),null)));
         }
 
         if(cmd.hasOption(spottingConfFileOp.getOpt())) {
