@@ -26,15 +26,22 @@ public class EvaluateLabels {
         double accuracy;
         List<Double> scores;
 
+        boolean counted;
+        public boolean isCounted(){
+            return counted;
+        }
+
+
         public double getAccuracy() {
             return accuracy;
         }
 
-        public Group(String key, List<Integer> sortedLabels,List<Double> scores, double accuracy) {
+        public Group(String key, List<Integer> sortedLabels,List<Double> scores, double accuracy,boolean counted) {
             this.key = key;
             this.sortedLabels = sortedLabels;
             this.scores=scores;
             this.accuracy = accuracy;
+            this.counted=counted;
         }
 
         public String toString(){
@@ -97,7 +104,7 @@ static class Record {
      * @param
      * @return
      */
-    public static List<Group> evaluateRanking( Map<Record, Integer> data) {
+    public static List<Group> evaluateRanking( Map<Record, Integer> data,boolean excludeDraws) {
 
         List<Group> groups=new ArrayList<>();
         Map<String, List<Record>> groupedCorrectness = data.keySet().stream().collect(Collectors.groupingBy(Record::getGroup, LinkedHashMap::new,Collectors.toList()));
@@ -108,9 +115,16 @@ static class Record {
         for (String key: groupedCorrectness.keySet()) {
             List<Record>  gInfo = groupedCorrectness.get(key);
 
-            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(Record::getScore).reversed()).mapToInt(g -> data.get(g)).boxed().collect(Collectors.toList());
+            List<Integer> labels = gInfo.stream().sorted(Comparator.comparing(Record::getScore).reversed().thenComparing(Comparator.comparing(g->data.get(g)).reversed())).mapToInt(g -> data.get(g)).boxed().collect(Collectors.toList());
             List<Double> scores = gInfo.stream().sorted(Comparator.comparing(Record::getScore).reversed()).mapToDouble(Record::getScore).boxed().collect(Collectors.toList());
-//            System.out.print(gInfo.get(0).getGroup() + ": ");
+
+
+            boolean toCount = scores.stream().anyMatch(a -> a != 0);
+            if(excludeDraws)
+                toCount=scores.stream().distinct().count()>1;
+
+            //            System.out.print(gInfo.get(0).getGroup() + ": ");
+
 //            System.out.print(labels);
 
             long trueAlter = labels.stream().filter(l -> l.intValue() == 1).count();
@@ -129,7 +143,7 @@ static class Record {
             }
             double accuracy = (0.0 + predictionsCount) / groundTruthScore;
 
-            groups.add(new Group(key,labels,scores,accuracy));
+            groups.add(new Group(key,labels,scores,accuracy,toCount));
 
 //            System.out.println("acc: " + predictionsCount + "/" + groundTruthScore + "=" + accuracy);
             accuracyTotal += accuracy;
@@ -142,9 +156,12 @@ static class Record {
     }
 
     public static double accuracy(List<Group> groups){
-        return groups.stream().mapToDouble(Group::getAccuracy).average().getAsDouble();
+        return groups.stream().filter(Group::isCounted).mapToDouble(Group::getAccuracy).average().getAsDouble();
     }
 
+    public static double recall(List<Group> groups){
+        return groups.stream().filter(Group::isCounted).count()/(groups.size()+0.0);
+    }
 
     public static LinkedHashMap<Record,Integer> loadFile(String filePath, int rankingColumn, int gtLabelColumn) throws Exception {
         LinkedHashMap<Record,Integer> data= new LinkedHashMap<>();
@@ -163,8 +180,10 @@ static class Record {
 
             Fact f=null;
             if(ps[0].startsWith("?-"))
-            {Parser pr=new Parser();
-                pr.parse(ps[0]);
+            {
+                String queryFixed=ps[0].replaceAll("(?<=[<_\\w])\\'(?=[\\w_>])","");
+                Parser pr=new Parser();
+                pr.parse(queryFixed);
                 List<IQuery> qs=pr.getQueries();
                 f= Converter.toFact(qs.get(0).getLiterals().get(0));
             }
@@ -200,10 +219,17 @@ static class Record {
 
 //        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/fact_spotting_data/exper2/out/rules_heursitic.out.correctness";
 
-        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/factchecking_exper/output/out_2018_05_20_052522/rules_text_splitq.out.correctness";
+//        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/factchecking_exper/output/out_2018_05_21_011149/rules_text_bing.out.correctness";
+//        String inputFile="/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/checking2/output/out_2018_05_21_205439/diedIn/rules_text_splitq.out.correctness";
 
-        int rankingScoreColumn=9;
-        int labelColumn=15;
+       String inputFile="/home/gadelrab/work/factcheck_exper/verbalizedQueries.txt.label"; //3 5
+        int rankingScoreColumn=3;
+        int labelColumn=5;
+//        String inputFile="/local/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/checking2/output/out_2018_05_21_223919/rules_text_splitq.out.correctness";
+//        String inputFile="/local/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/checking2/output/out_2018_05_21_231604/wasBornIn/rules_text_splitq.out.correctness";
+//        String inputFile="/local/home/gadelrab/mpiRoot/GW/D5data-7/gadelrab/explain/checking2/output/out_2018_05_21_235219/diedIn/rules_text_splitq.out.correctness";
+//        int rankingScoreColumn=9;
+//        int labelColumn=15;
 
 
 
@@ -216,10 +242,15 @@ static class Record {
         String outputFile=inputFile+"."+rankingScoreColumn+"_"+ CorrectnessInfo.header[rankingScoreColumn]+".acc";
 
         LinkedHashMap<Record, Integer> data = loadFile(inputFile,rankingScoreColumn,labelColumn);
-        List<Group> groups=evaluateRanking(data);
+        List<Group> groups=evaluateRanking(data,false);
+        List<Group> groupsNoDraws=evaluateRanking(data,true);
+
         double accuracy=accuracy(groups);
         System.out.println(Joiner.on("\n").join(groups).toString());
-        System.out.println("Accuracy: "+accuracy);
+        System.out.println("Accuracy: "+accuracy+ " Recall: "+recall(groups));
+        System.out.println("Accuracy no draws: "+accuracy(groupsNoDraws)+" Recall: "+recall(groupsNoDraws));
+//        System.out.println();
+
         dumpGroups(groups,outputFile);
     }
 

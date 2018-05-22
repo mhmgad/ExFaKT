@@ -113,7 +113,7 @@ public class ItrSLDEvaluator extends RecSLDEvaluator {
                 // Getting sub-queries
                 List<ExtQuerySubs> subqueries = getSubQueryList(chosenQuery, selectedLiteral, costAccumulator);
                 if(subqueries.size()>1000) {
-                    System.out.println("["+getClass().getName()+"] Pool explosion with "+subqueries.size()+" subs (old-size="+pool.size()+")");
+                    System.out.println("["+getClass().getName()+"] Pool explosion with "+subqueries.size()+" subs (old-size="+pool.size()+") "+selectedLiteral);
                 }
                 logger.debug("Subqueries: " + subqueries);
                 logger.debug("Number of Subqueries: " + subqueries.size());
