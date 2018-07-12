@@ -35,7 +35,7 @@ public class Configuration extends org.deri.iris.Configuration {
 
 
     private static Configuration instance;
-    private static String configurationFile= "fact_checking_rewriting.properties.bac";
+    private static String configurationFile= "fact_checking_rewriting.properties";
     private static boolean confFileAlreadySet= false;
     /**
      * indicates whether a file is in JAR or not. once filepath is changed this variable is turned to true.
