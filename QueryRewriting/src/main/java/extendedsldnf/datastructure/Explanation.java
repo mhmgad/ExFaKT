@@ -299,7 +299,7 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
     public String getBriefReadableString() {
         String text="";
         if(getVerificationCount()>1){
-            text= Joiner.on("\n").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).map(st-> "*. "+st).collect(Collectors.toList()));
+            text= Joiner.on("\n").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).map(st-> "- "+st).collect(Collectors.toList()));
         }else{
             text= Joiner.on("\n").join(getVerificationEvidenceNodesStream().map(EvidenceNode::getBriefReadableString).collect(Collectors.toList()));
         }
