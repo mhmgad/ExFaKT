@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <modules>
-        <module>Utils</module>
+        <!--<module>Utils</module>-->
         <module>Api</module>
         <module>Client</module>
         <module>Extras</module>
@@ -41,7 +41,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>Utils</module>
+                <!--<module>Utils</module>-->
                 <module>Api</module>
                 <module>Client</module>
                 <module>Extras</module>
@@ -55,7 +55,7 @@
             <id>web</id>
             <modules>
                 <module>WebService</module>
-                <module>Utils</module>
+                <!--<module>Utils</module>-->
                 <module>Api</module>
                 <module>Client</module>
                 <module>FactSpotting</module>
@@ -206,6 +206,17 @@
     </profiles>
 
 
+    <repositories>
+        <repository>
+            <id>MyUtils-mvn-repo</id>
+            <url>https://raw.github.com/mhmgad/MyUtils/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+
+    </repositories>
 
 
 

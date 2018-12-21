@@ -164,11 +164,17 @@
     <dependencies>
 
 
+        <!--<dependency>-->
+            <!--<groupId>factchecking</groupId>-->
+            <!--<artifactId>utils</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--<scope>compile</scope>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>factchecking</groupId>
+            <groupId>de.mpii.exfakt</groupId>
             <artifactId>utils</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
 
