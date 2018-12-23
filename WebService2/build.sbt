@@ -13,7 +13,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava).settings(
 
 scalaVersion := "2.12.7"
 
-resolvers += "Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
+//resolvers += "Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
+unmanagedBase := baseDirectory.value / "libs"
 
 libraryDependencies += guice
 

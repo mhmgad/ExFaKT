@@ -10,11 +10,11 @@
     <version>1.0</version>
     <modules>
         <!--<module>Utils</module>-->
-        <module>Api</module>
-        <module>Client</module>
-        <module>Extras</module>
-        <module>FactSpotting</module>
-        <module>QueryRewriting</module>
+        <!--<module>Api</module>-->
+        <!--<module>Client</module>-->
+        <!--<module>Extras</module>-->
+        <!--<module>FactSpotting</module>-->
+        <!--<module>QueryRewriting</module>-->
 
     </modules>
     <properties>
@@ -30,6 +30,11 @@
         <play2.plugin.version>1.0.0-rc1</play2.plugin.version>
         <sbt-compiler.plugin.version>1.0.0</sbt-compiler.plugin.version>
         <compiler.plugin.version>3.5.1</compiler.plugin.version>
+        <!--<parent.dir>${project.basedir}</parent.dir>-->
+
+
+
+
     </properties>
 
 
@@ -191,6 +196,96 @@
                                 </lifecycleMappingMetadata>
                             </configuration>
                         </plugin>
+
+                    </plugins>
+
+
+
+
+                </pluginManagement>
+            </build>
+
+
+
+        </profile>
+
+        <profile>
+            <id>demo</id>
+            <modules>
+                <!--<module>WebService</module>-->
+                <!--<module>Utils</module>-->
+                <module>Api</module>
+                <module>Client</module>
+                <module>FactSpotting</module>
+                <module>QueryRewriting</module>
+
+
+            </modules>
+
+
+            <!--We need to capture the root of the project , this is tricky in maven therefore as a work around I am usring user.dir and always package from the root-->
+            <properties>
+                <main.dir>${user.dir}</main.dir>
+                <!--<main.dir>${project.parent.basedir}</main.dir>-->
+            </properties>
+
+
+
+            <build>
+                <plugins>
+
+
+
+                </plugins>
+
+                <pluginManagement>
+                    <plugins>
+
+                        <!--<plugin>-->
+                            <!--<groupId>org.apache.maven.plugins</groupId>-->
+                            <!--<artifactId>maven-jar-plugin</artifactId>-->
+                            <!--<version>3.1.1</version>-->
+                            <!--<configuration>-->
+                                <!--<outputDirectory>${main.dir}/Demo/libs</outputDirectory>-->
+                            <!--</configuration>-->
+                        <!--</plugin>-->
+
+                        <!--<plugin>-->
+                            <!--<artifactId>maven-assembly-plugin</artifactId>-->
+                            <!--<executions>-->
+                                <!--<execution>-->
+                                    <!--<phase>package</phase>-->
+                                    <!--<goals>-->
+                                        <!--<goal>single</goal>-->
+                                    <!--</goals>-->
+                                <!--</execution>-->
+                            <!--</executions>-->
+                            <!--<configuration>-->
+                                <!--<descriptorRefs>-->
+                                    <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
+                                <!--</descriptorRefs>-->
+                            <!--</configuration>-->
+                        <!--</plugin>-->
+
+                        <!--<plugin>-->
+                            <!--<groupId>org.apache.maven.plugins</groupId>-->
+                            <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                            <!--<executions>-->
+                                <!--<execution>-->
+                                    <!--<id>copy-dependencies</id>-->
+                                    <!--<phase>prepare-package</phase>-->
+                                    <!--<goals>-->
+                                        <!--<goal>copy-dependencies</goal>-->
+                                    <!--</goals>-->
+                                    <!--<configuration>-->
+                                        <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+                                        <!--<overWriteReleases>true</overWriteReleases>-->
+                                        <!--<overWriteSnapshots>true</overWriteSnapshots>-->
+                                        <!--<overWriteIfNewer>true</overWriteIfNewer>-->
+                                    <!--</configuration>-->
+                                <!--</execution>-->
+                            <!--</executions>-->
+                        <!--</plugin>-->
 
                     </plugins>
 
