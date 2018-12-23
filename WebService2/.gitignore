@@ -21,7 +21,7 @@ dump
 .project
 .classpath
 .scala_dependencies
-bin
+#bin
 
 # SBT
 dist
@@ -46,7 +46,7 @@ project/plugins/project/
 RUNNING_PID
 
 
-bin/
+#bin/
 /db
 .eclipse
 /lib/
