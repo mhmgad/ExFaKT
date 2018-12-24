@@ -22,7 +22,8 @@ import java.io.*;
 public class ExplanationExtractorClient {
 
 
-    final static String URL = "http://sedna.mpi-inf.mpg.de:9350";
+//    final static String URL = "http://sedna.mpi-inf.mpg.de:9350";
+    final static String URL = "http://localhost:9350";
 
 
     public static final ExplanationExtractorClient instance = new ExplanationExtractorClient();
