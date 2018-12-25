@@ -17,13 +17,13 @@ echo $parent_path
 
 #store a backup from current configurations
 #spotting
-mv $parent_path/FactSpotting/src/main/resources/factchecking.properties $parent_path/FactSpotting/src/main/resources/factchecking.properties.tmp
-#rewritting
-mv $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties.tmp
-
-#copy demo properties files
-cp $DEMO_DATA_FOLDER/factchecking.properties $parent_path/FactSpotting/src/main/resources/factchecking.properties
-cp $DEMO_DATA_FOLDER/fact_checking_rewriting.properties $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties
+#mv $parent_path/FactSpotting/src/main/resources/factchecking.properties $parent_path/FactSpotting/src/main/resources/factchecking.properties.tmp
+##rewritting
+#mv $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties.tmp
+#
+##copy demo properties files
+#cp $DEMO_DATA_FOLDER/factchecking.properties $parent_path/FactSpotting/src/main/resources/factchecking.properties
+#cp $DEMO_DATA_FOLDER/fact_checking_rewriting.properties $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties
 
 #install the core
 
@@ -32,11 +32,11 @@ cp $DEMO_DATA_FOLDER/fact_checking_rewriting.properties $parent_path/QueryRewrit
 
 
 
-#return the configurations
-mv $parent_path/FactSpotting/src/main/resources/factchecking.properties.tmp $parent_path/FactSpotting/src/main/resources/factchecking.properties
-mv $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties.tmp $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties
-
-
+##return the configurations
+#mv $parent_path/FactSpotting/src/main/resources/factchecking.properties.tmp $parent_path/FactSpotting/src/main/resources/factchecking.properties
+#mv $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties.tmp $parent_path/QueryRewriting/src/main/resources/fact_checking_rewriting.properties
+#
+#
 
 
 #run server
@@ -44,4 +44,8 @@ cd $parent_path/WebService2
 echo $PWD
 #mvn clean
 #mvn play2:run
+
+export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=2G -Xmx2G"
+
+
 ./sbt "run 9350"
