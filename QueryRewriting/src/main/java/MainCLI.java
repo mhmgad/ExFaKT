@@ -119,7 +119,7 @@ public class MainCLI {
 
         // set configuration file
         String configurationFile=cmd.getOptionValue(confFileOp.getOpt(),null);
-        Configuration.setConfigurationFile(configurationFile);
+        Configuration.setConfigurationFile(configurationFile,null);
 
         Configuration configuration=Configuration.getInstance();
 

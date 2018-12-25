@@ -5,6 +5,7 @@ import extendedsldnf.ExtendedSLDNFEvaluationStrategyFactory;
 import utils.Enums;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -41,6 +42,7 @@ public class Configuration extends org.deri.iris.Configuration {
      * indicates whether a file is in JAR or not. once filepath is changed this variable is turned to true.
      */
     private static boolean externalConfFile=false;
+    private static ClassLoader classLoader;
     /**
      * Extra configurations
      */
@@ -49,6 +51,8 @@ public class Configuration extends org.deri.iris.Configuration {
     private Enums.EvalMethod evaluationMethod= Enums.EvalMethod.SLD;
     private int maxExplanations=10;
     private int maxRuleNesting =3;
+    private ClassLoader spottingConfFileClassLoader;
+            ;
 
     public void setExtraProp(Properties extraProp) {
         this.extraProperties = extraProp;
@@ -62,12 +66,27 @@ public class Configuration extends org.deri.iris.Configuration {
         this.suspectsFromKG = suspectsFromKG;
     }
 
+    public void setSpottingConfFile(String spottingConfFile,ClassLoader classLoader) {
+        setSpottingConfFile(spottingConfFile);
+        setSpottingConfFileClassLoader(classLoader);
+    }
+
     public void setSpottingConfFile(String spottingConfFile) {
         this.spottingConfFile = spottingConfFile;
+
+    }
+
+
+    public void setSpottingConfFileClassLoader(ClassLoader spottingConfFileClassLoader) {
+        this.spottingConfFileClassLoader = spottingConfFileClassLoader;
     }
 
     public String getSpottingConfFile() {
         return spottingConfFile;
+    }
+
+    public ClassLoader getSpottingConfFileClassLoader(){
+        return spottingConfFileClassLoader;
     }
 
     public void setEvaluationMethod(Enums.EvalMethod evaluationMethod) {
@@ -141,67 +160,120 @@ public class Configuration extends org.deri.iris.Configuration {
         super.evaluationStrategyFactory=new ExtendedSLDNFEvaluationStrategyFactory();
     }
 
-    public static Configuration fromFile(String filename, boolean inResources) {
+    public static Configuration fromFile(String filename, boolean inResources,ClassLoader classLoader) {
+//        Configuration conf = new Configuration();
 
-        Configuration conf = new Configuration();
-        Properties prop = new Properties();
-        InputStream input = null;
+//        InputStream input = null;
 
-        try {
+        InputStream input=loadFile(filename, inResources, classLoader);
+        if (input == null) {
+            System.out.println("Sorry, unable to find " + filename);
+            return null;
+        }
+
+
+        return fromStream(input);
+
+//        try {
             // configuration file loaded in resources
-            if (inResources) {
-                input = de.mpii.factspotting.config.Configuration.class.getClassLoader().getResourceAsStream(filename);
+//            if (inResources) {
+//                input = Configuration.class.getClassLoader().getResourceAsStream(filename);
+//
+//            } else {
+//                // configuration file form user
+//                input = new FileInputStream(filename);
+//            }
+//            if (input == null) {
+//                System.out.println("Sorry, unable to find " + filename);
+//                return conf;
+//
+//            }
 
-            } else {
-                // configuration file form user
-                input = new FileInputStream(filename);
-            }
-            if (input == null) {
-                System.out.println("Sorry, unable to find " + filename);
-                return conf;
 
-            }
 
-            //load a properties file from class path, inside static method
-            prop.load(input);
-
-            //get the property value
-            conf.setSpottingMethod(FactSpotterFactory.SpottingMethod.valueOf(prop.getProperty(SPOTTING_METHOD, "NONE")));
-            conf.setRulesFiles(asList(prop.getProperty(RULES_FILES, "")));
-            conf.setFactsFiles(asList(prop.getProperty(FACTS_FILES, "")));
-            conf.setQueriesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
-            conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
-            conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE, "NONE")));
-            conf.setSuspectsFromKG(Boolean.parseBoolean(prop.getProperty(SUSPECTS_FROM_KG, "false")));
-            conf.setSpottingConfFile(prop.getProperty(FACT_SPOTTING_CONF, null));
-            conf.setEvaluationMethod(Enums.EvalMethod.valueOf(prop.getProperty(EVALUATION_METHOD, Enums.EvalMethod.SLD.name())));
-            conf.setMaxRuleNesting(Integer.valueOf(prop.getProperty(MAX_RULE_NESTING, "" + conf.getMaxRuleNesting())));
-            conf.setMaxExplanations(Integer.valueOf(prop.getProperty(MAX_EXPLANATIONS, "" + conf.getMaxExplanations())));
-            conf.setExtraProp(prop);
 
 
 //                System.out.println(conf);
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return conf;
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } finally {
+//            if (input != null) {
+//                try {
+//                    input.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//     return conf;
 
     }
 
+    public static InputStream loadFile(String filename, boolean inResources, ClassLoader classLoader)  {
+        InputStream input = null;
+        if (inResources)
+                input = Configuration.class.getClassLoader().getResourceAsStream(filename);
+            else
+                if(classLoader!=null)
+                    input=classLoader.getResourceAsStream(filename);
+                else
+                    // configuration file form user
+                {
+                    try {
+                        input = new FileInputStream(filename);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+        return input;
+    }
+
+    public static Configuration fromStream(InputStream input)  {
+        Configuration conf = new Configuration();
+        Properties prop = new Properties();
 
 
 
-    public static Configuration fromFile(String filename){
-        return fromFile(filename,!externalConfFile);
+        //load a properties file from class path, inside static method
+        try {
+            prop.load(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //get the property value
+        conf.setSpottingMethod(FactSpotterFactory.SpottingMethod.valueOf(prop.getProperty(SPOTTING_METHOD, "NONE")));
+        conf.setRulesFiles(asList(prop.getProperty(RULES_FILES, "")));
+        conf.setFactsFiles(asList(prop.getProperty(FACTS_FILES, "")));
+        conf.setQueriesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
+        conf.setFactsFormat(FactsFormat.valueOf(prop.getProperty(FACTS_FORMAT, FactsFormat.IRIS.toString())));
+        conf.setPartialBindingType(PartialBindingType.valueOf(prop.getProperty(PARTIAL_BINDING_TYPE, "NONE")));
+        conf.setSuspectsFromKG(Boolean.parseBoolean(prop.getProperty(SUSPECTS_FROM_KG, "false")));
+        conf.setSpottingConfFile(prop.getProperty(FACT_SPOTTING_CONF, null));
+        conf.setEvaluationMethod(Enums.EvalMethod.valueOf(prop.getProperty(EVALUATION_METHOD, Enums.EvalMethod.SLD.name())));
+        conf.setMaxRuleNesting(Integer.valueOf(prop.getProperty(MAX_RULE_NESTING, "" + conf.getMaxRuleNesting())));
+        conf.setMaxExplanations(Integer.valueOf(prop.getProperty(MAX_EXPLANATIONS, "" + conf.getMaxExplanations())));
+        conf.setExtraProp(prop);
+
+        if (input != null) {
+            try {
+                input.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        return conf;
+    }
+
+
+    public static Configuration fromFile(String filename)  {
+        return fromFile(filename,!externalConfFile,classLoader);
     }
 
     public synchronized static Configuration getInstance() {
@@ -214,7 +286,7 @@ public class Configuration extends org.deri.iris.Configuration {
 
 
 
-    public synchronized static boolean setConfigurationFile(String file){
+    public synchronized static boolean setConfigurationFile(String file,ClassLoader remoteClassLoader){
         if(file==null||confFileAlreadySet)
             return false;
         else
@@ -223,6 +295,7 @@ public class Configuration extends org.deri.iris.Configuration {
             configurationFile=file;
             confFileAlreadySet=true;
             externalConfFile=true;
+            classLoader=remoteClassLoader;
             return true;
         }
     }

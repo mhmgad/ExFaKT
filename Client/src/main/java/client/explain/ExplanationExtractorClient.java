@@ -22,17 +22,24 @@ import java.io.*;
 public class ExplanationExtractorClient {
 
 
-    final static String URL = "http://sedna.mpi-inf.mpg.de:9350";
+//     static String URL;
 //    final static String URL = "http://localhost:9350";
 
+    String url;
 
-    public static final ExplanationExtractorClient instance = new ExplanationExtractorClient();
+
+    public static ExplanationExtractorClient instance; //= new ExplanationExtractorClient();
 //    static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
     private ExplanationExtractorClient() {
-
+        this.url= "http://sedna.mpi-inf.mpg.de:9350";
 
     }
+
+    private ExplanationExtractorClient(String url){
+        this.url=url;
+    }
+
 
     public IQueryExplanations getExplanations(Query query) throws IOException {
         Gson gson = CustomGson.getInstance().getGson();
@@ -40,7 +47,7 @@ public class ExplanationExtractorClient {
 //
 
         QueryExplanations queryExplanations = null;
-        HttpPost p = new HttpPost(URL);
+        HttpPost p = new HttpPost(url);
 
         p.setEntity(new StringEntity(queryJson,
                 ContentType.create("application/json")));
@@ -52,28 +59,31 @@ public class ExplanationExtractorClient {
         HttpResponse response = c.execute(p);
         if (response.getStatusLine().getStatusCode() == 200) {
 
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    InputStream instream = entity.getContent();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(instream));
-                    queryExplanations = gson.fromJson(br, QueryExplanations.class);
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                InputStream instream = entity.getContent();
+                BufferedReader br = new BufferedReader(new InputStreamReader(instream));
+                queryExplanations = gson.fromJson(br, QueryExplanations.class);
 //                        System.out.println(queryExplanations);
-                }
-
             }
 
-                return queryExplanations;
-
-            }
-
-
-            public static ExplanationExtractorClient getInstance () {
-                return instance;
-            }
-
-            public static void main (String[]args) throws IOException {
-                Query exampleQ = new Query("<Albert_Einstein>", "<wasBornIn>", "<Germany>", "wasBornIn(?x,?y):- birthPlace(?x,?z), in(?z,?y).\nwasBornIn(?x,?y):-  birthPlace(?x,?z), city_in(?z,?y).");
-                ExplanationExtractorClient.getInstance().getExplanations(exampleQ);
-
-            }
         }
+
+        return queryExplanations;
+
+    }
+
+
+    public static ExplanationExtractorClient getInstance (String url) {
+        if (instance==null)
+            instance=new ExplanationExtractorClient(url);
+        return instance;
+//                return instance;
+    }
+
+    public static void main (String[]args) throws IOException {
+        Query exampleQ = new Query("<Albert_Einstein>", "<wasBornIn>", "<Germany>", "wasBornIn(?x,?y):- birthPlace(?x,?z), in(?z,?y).\nwasBornIn(?x,?y):-  birthPlace(?x,?z), city_in(?z,?y).");
+        ExplanationExtractorClient.getInstance("localhost:9400").getExplanations(exampleQ);
+
+    }
+}
