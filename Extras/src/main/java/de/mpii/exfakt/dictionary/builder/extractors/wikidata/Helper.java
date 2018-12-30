@@ -1,4 +1,4 @@
-package extras.data.process.wikidata;
+package de.mpii.exfakt.dictionary.builder.extractors.wikidata;
 
 
 
@@ -22,12 +22,10 @@ package extras.data.process.wikidata;
  * #L%
  */
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -35,7 +33,6 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocumentProcessor;
 import org.wikidata.wdtk.dumpfiles.*;
-import org.wikidata.wdtk.dumpfiles.EntityTimerProcessor.TimeoutException;
 
 /**
  * Class for sharing code that is used in many examples. It contains several
@@ -254,37 +251,6 @@ public class Helper {
     }
 
 
-    public static void processEntitiesFromWikidataLocalDump(
-            EntityDocumentProcessor entityDocumentProcessor,String dumpFileName) {
-
-        DumpProcessingController dumpProcessingController = new DumpProcessingController(
-                "wikidatawiki");
-
-        dumpProcessingController.registerEntityDocumentProcessor(
-                entityDocumentProcessor, null, true);
-        dumpProcessingController.setOfflineMode(true);
-        // Select local file (meta-data will be guessed):
-        System.out.println();
-        System.out
-                .println("Processing a local dump file");
-        System.out
-                .println("(meta-data like the date is guessed from the file name):");
-        MwLocalDumpFile mwDumpFile = new MwLocalDumpFile(dumpFileName);
-//        dumpProcessingController.processDump(mwDumpFile);
-
-//        try {
-//            System.out.println(mwDumpFile.getDumpFileReader().readLine());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        System.out.println(mwDumpFile.getDumpContentType()+" "+mwDumpFile.getPath()+" "+mwDumpFile.getDateStamp());
-
-
-        dumpProcessingController.processDump(mwDumpFile);
-
-
-    }
 
 
 }

@@ -128,6 +128,11 @@ public class QueryExplanations implements IRelation, IQueryExplanations, Seriali
     }
 
     @Override
+    public String getQueryAsReadableString() {
+       return getQueryAsFact().toReadableString();
+    }
+
+    @Override
     public Collection<Explanation> getExplanations() {
         return explanations;
     }

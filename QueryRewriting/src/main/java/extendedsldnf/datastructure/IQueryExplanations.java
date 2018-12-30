@@ -44,5 +44,7 @@ public interface IQueryExplanations {
 
     String toJsonString();
 
+    String getQueryAsReadableString();
+
 
 }

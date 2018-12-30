@@ -3,6 +3,7 @@ package extendedsldnf.datastructure;
 import com.google.common.base.Joiner;
 import com.google.gson.annotations.JsonAdapter;
 import de.mpii.dataprocessing.util.FactUtils;
+import de.mpii.datastructures.Fact;
 import extendedsldnf.CostAccumulator;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.deri.iris.api.basics.IQuery;
@@ -320,5 +321,20 @@ public class Explanation implements Comparable<Explanation>,SerializableData {
 //        System.out.println(StringEscapeUtils.escapeCsv(StringEscapeUtils.escapeHtml("Max-Planck-Institut' für\n jhzjhddj")));
 //        System.out.println(StringEscapeUtils.escapeCsv("Max-Planck-Institut' für\n jhzjhddj"));
 
+    }
+
+
+    public Fact getQueryAsFact() {
+        try {
+            return Converter.toFact(getQuery().getLiterals().get(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public String getQueryAsReadableString() {
+        return getQueryAsFact().toReadableString();
     }
 }

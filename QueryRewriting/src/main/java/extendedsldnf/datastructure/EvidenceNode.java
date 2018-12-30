@@ -3,6 +3,7 @@ package extendedsldnf.datastructure;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import de.mpii.datastructures.BinaryFact;
+import de.mpii.datastructures.Fact;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IRule;
 import org.deri.iris.api.terms.ITerm;
@@ -238,4 +239,18 @@ public class EvidenceNode{
 //            return null;
 //        }
 //    }
+
+    public Fact getQueryAsFact() {
+        try {
+            return Converter.toFact(queryLiteral);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public String getQueryAsReadableString() {
+        return getQueryAsFact().toReadableString();
+    }
 }
