@@ -13,6 +13,7 @@ public abstract class LabelsExtractor {
     private OutputListener outputListener;
     private String inputFilePath;
     private  String languageCode;
+    int count=0;
 
     public LabelsExtractor(String inputFilePath, OutputListener outputListener, String languageCode) {
         this.languageCode=languageCode;
@@ -22,11 +23,17 @@ public abstract class LabelsExtractor {
 
 
     protected void output(Set<Paraphrase> paraphrases) throws IOException {
+        count+=paraphrases.size();
         outputListener.out(paraphrases);
+        if(count%10000==0)
+            System.out.println("Index: "+count);
     }
 
     protected void output(Paraphrase paraphrase) throws IOException {
+        count++;
         outputListener.out(paraphrase);
+        if(count%10000==0)
+            System.out.println("Index: "+count);
     }
 
     /**
@@ -46,6 +53,7 @@ public abstract class LabelsExtractor {
      */
     public void run() {
         this.process();
+        System.out.println("Index: "+count);
         this.close();
     }
 

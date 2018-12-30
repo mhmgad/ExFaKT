@@ -109,7 +109,7 @@ public class ExtractorCLI {
 
         if(cmd.hasOption(elasticSearchOp.getOpt())){
             boolean reIndex=cmd.hasOption(deleteIndexOp.getOpt());
-            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),kg+"_paraphrases",reIndex,"paraphrase"));
+            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),kg.toString().toLowerCase()+"_paraphrases",reIndex,"paraphrase"));
 
         }
 
