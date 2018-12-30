@@ -90,7 +90,7 @@ public class ExtractorCLI {
 
         OutputListener<Paraphrase> outputListener = new OutputListener<Paraphrase>();
 
-        LabelsExtractor.KG kg= LabelsExtractor.KG.valueOf(cmd.getOptionValue(kgOp.getOpt().toUpperCase()));
+        LabelsExtractor.KG kg= LabelsExtractor.KG.valueOf(cmd.getOptionValue(kgOp.getOpt()).toUpperCase());
 
 
 
