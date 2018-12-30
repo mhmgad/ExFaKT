@@ -22,8 +22,8 @@ public class LabelsExtractorYago extends LabelsExtractor {
         try {
 
             for (Fact f : FactSource.from(getInputFilePath())){
-
-                if(!FactComponent.getLanguageOfString(f.getObject()).equals(getLanguageCode()))
+                String languageOfLabel=FactComponent.getLanguageOfString(f.getObject());
+                if(languageOfLabel!=null && !languageOfLabel.equals(getLanguageCode()))
                     continue;
 
                 String id=f.getSubject();
