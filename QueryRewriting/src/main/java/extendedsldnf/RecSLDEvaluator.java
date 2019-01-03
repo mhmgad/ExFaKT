@@ -298,15 +298,17 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
 
             //If it is a fact (Grounded) and was not proved check the text
             List<ExtQuerySubs> subQueries;
+            Enums.ActionType validationType=null;
             if(queryLiteralAtom.isGround()){
-                subQueries = checkFact(query, selectedLiteral,  costAccumulator);
+                subQueries = checkFact(query, selectedLiteral,  costAccumulator,validationType);
             }else{
                 subQueries= bindVariables(query, selectedLiteral, costAccumulator);
             }
             subQueryList.addAll(subQueries);
 
-            // Rules are always fired to grant reaching the whole search space
-            if(mRules.size()>0 && query.getRulesDepth()<maxRuleDepth){
+            //OLD: Rules are always fired to grant reaching the whole search space(Invalid now)
+            //Current: Rules are only used of the literal is not a KG_VALID type
+            if(validationType!=KG_VALID && mRules.size()>0 && query.getRulesDepth()<maxRuleDepth){
                 subQueries = processQueryAgainstRules(query, selectedLiteral, costAccumulator);
                 subQueryList.addAll( subQueries );
             }
@@ -345,7 +347,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
         return subQueryList;
     }
 
-    public List<ExtQuerySubs> checkFact(ExtQuerySubs query, ILiteral selectedLiteral, CostAccumulator costAccumulator) {
+    public List<ExtQuerySubs> checkFact(ExtQuerySubs query, ILiteral selectedLiteral, CostAccumulator costAccumulator, Enums.ActionType checkType) {
 
 
         List<ExtQuerySubs> subQueries=new LinkedList<>();
@@ -356,11 +358,13 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
             logger.debug("Skip KG check! Fact is suspected from KG.");
         }else {
             subQueries = processQueryAgainstFacts(query, selectedLiteral, costAccumulator);
+            checkType=KG_VALID;
         }
 
 
         if(subQueries.isEmpty()) {
             subQueries = processQueryAgainstText(query, selectedLiteral, costAccumulator);
+            checkType=TEXT_VALID;
         }
         return subQueries;
     }
