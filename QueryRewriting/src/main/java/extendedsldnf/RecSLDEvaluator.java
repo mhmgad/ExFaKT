@@ -298,13 +298,16 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
 
             //If it is a fact (Grounded) and was not proved check the text
             List<ExtQuerySubs> subQueries;
+
             Enums.ActionType validationType=null;
             if(queryLiteralAtom.isGround()){
-                subQueries = checkFact(query, selectedLiteral,  costAccumulator, validationType);
+                subQueries = checkFact(query, selectedLiteral,  costAccumulator);
+                validationType=(subQueries.isEmpty())? null:(subQueries.get(0).getSourceActionType());
             }else{
                 subQueries= bindVariables(query, selectedLiteral, costAccumulator);
             }
             subQueryList.addAll(subQueries);
+
 
             System.out.println("Validation Type " +validationType);
 
@@ -349,7 +352,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
         return subQueryList;
     }
 
-    public List<ExtQuerySubs> checkFact(ExtQuerySubs query, ILiteral selectedLiteral, CostAccumulator costAccumulator, Enums.ActionType checkType) {
+    public List<ExtQuerySubs> checkFact(ExtQuerySubs query, ILiteral selectedLiteral, CostAccumulator costAccumulator) {
 
 
         List<ExtQuerySubs> subQueries=new LinkedList<>();
@@ -360,13 +363,13 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
             logger.debug("Skip KG check! Fact is suspected from KG.");
         }else {
             subQueries = processQueryAgainstFacts(query, selectedLiteral, costAccumulator);
-            checkType=KG_VALID;
+
         }
 
 
         if(subQueries.isEmpty()) {
             subQueries = processQueryAgainstText(query, selectedLiteral, costAccumulator);
-            checkType=TEXT_VALID;
+
         }
         return subQueries;
     }
