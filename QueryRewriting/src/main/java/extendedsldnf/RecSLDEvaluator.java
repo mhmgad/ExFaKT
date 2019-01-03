@@ -49,6 +49,7 @@ import utils.Enums;
 import utils.SyncCounter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static utils.Enums.ActionType.*;
 
@@ -292,14 +293,8 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
             subQueryList.addAll( processBuiltin(query, selectedLiteral, queryLiteralAtom) );
         } else {
 
-            // Reject self-reflexive
-            Collection<ITerm> values = query.getSubstitution().values();
-            int allValues=values.size();
-            int uniqueValues=(new HashSet<>(values)).size();
-
-            if(allValues>1 && uniqueValues==1){
+            if(reflexiveLiteral(queryLiteralAtom))
                 return subQueryList;
-            }
 
             //If it is a fact (Grounded) and was not proved check the text
             List<ExtQuerySubs> subQueries;
@@ -317,6 +312,19 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
             }
         }
         return subQueryList;
+    }
+
+    private boolean reflexiveLiteral(IAtom queryLiteralAtom) {
+        // Reject self-reflexive
+        Collection<ITerm> values = queryLiteralAtom.getTuple();
+        int allValues=values.size();
+        int uniqueValues=values.stream().map(t->t.toString()).collect(Collectors.toSet()).size();
+
+        if(allValues>1 && uniqueValues==1){
+            return true;
+        }
+        else
+            return false;
     }
 
     public List<ExtQuerySubs> bindVariables(ExtQuerySubs query, ILiteral selectedLiteral, CostAccumulator costAccumulator) {
@@ -339,7 +347,9 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
 
     public List<ExtQuerySubs> checkFact(ExtQuerySubs query, ILiteral selectedLiteral, CostAccumulator costAccumulator) {
 
+
         List<ExtQuerySubs> subQueries=new LinkedList<>();
+
 //        logger.debug("Fact is suspect: "+suspectsFromKG +" Query sourceActionType: "+query.getEvidenceNode().getSourceActionType() );
         if((query.getEvidenceNode().getSourceActionType()==ORG)&&suspectsFromKG){
             // Do not check the KG if the fact is suspected from KG
