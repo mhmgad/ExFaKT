@@ -292,6 +292,15 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
             subQueryList.addAll( processBuiltin(query, selectedLiteral, queryLiteralAtom) );
         } else {
 
+            // Reject self-reflexive
+            Collection<ITerm> values = query.getSubstitution().values();
+            int allValues=values.size();
+            int uniqueValues=(new HashSet<>(values)).size();
+
+            if(allValues>1 && uniqueValues==1){
+                return subQueryList;
+            }
+
             //If it is a fact (Grounded) and was not proved check the text
             List<ExtQuerySubs> subQueries;
             if(queryLiteralAtom.isGround()){
