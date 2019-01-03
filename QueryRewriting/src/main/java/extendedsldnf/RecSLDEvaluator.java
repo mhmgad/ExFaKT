@@ -300,11 +300,13 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
             List<ExtQuerySubs> subQueries;
             Enums.ActionType validationType=null;
             if(queryLiteralAtom.isGround()){
-                subQueries = checkFact(query, selectedLiteral,  costAccumulator,validationType);
+                subQueries = checkFact(query, selectedLiteral,  costAccumulator, validationType);
             }else{
                 subQueries= bindVariables(query, selectedLiteral, costAccumulator);
             }
             subQueryList.addAll(subQueries);
+
+            System.out.println("Validation Type " +validationType);
 
             //OLD: Rules are always fired to grant reaching the whole search space(Invalid now)
             //Current: Rules are only used of the literal is not a KG_VALID type
