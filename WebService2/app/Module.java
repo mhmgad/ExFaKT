@@ -71,7 +71,7 @@ public class Module extends AbstractModule {
         System.out.println("Spotting Configuration: "+spottingConfFilePath);
 
 
-        Configuration.getInstance().setSpottingConfFile(engineConfFile,Environment.simple().classLoader());
+        Configuration.getInstance().setSpottingConfFile(spottingConfFile,Environment.simple().classLoader());
         // Bind configuration instance
         bind(Configuration.class).toInstance(Configuration.getInstance());
 
