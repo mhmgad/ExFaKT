@@ -45,7 +45,7 @@ echo $PWD
 #mvn clean
 #mvn play2:run
 
-export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=2G -Xmx2G"
+export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=100G -Xmx100G"
 
 
 ./sbt "run 9350"
