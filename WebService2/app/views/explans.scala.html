@@ -1,10 +1,11 @@
+
 @import extendedsldnf.datastructure.IQueryExplanations
 @(explanations: IQueryExplanations)
 <div class="py-2">
 
     <div class="container">
         @if(explanations!=null) {
-            <h3>Explanations for <strong> @explanations.getQueryAsFact().toSearchableString() </strong> </h3>
+            <h3>Explanations for <strong>@explanations.getQueryAsFact().toSearchableString() </strong> </h3>
             <hr>
         }else{
 

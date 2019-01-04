@@ -27,6 +27,7 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
         System.out.println( "Used spotting config:"+ de.mpii.factspotting.config.Configuration.getConfigurationFile());
         spotter=FactSpotterFactory.create(conf.getSpottingMethod());
 
+
     }
 
 
