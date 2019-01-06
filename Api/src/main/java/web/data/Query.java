@@ -5,7 +5,8 @@ import com.google.gson.Gson;
 
 public class Query /*extends QueryExplanations*/{
 
-    String id;
+    String name;
+    int id;
 
 //    ExplanationsExtractor explanationsExtractor=ExplanationsExtractor.getInstance();
 
@@ -15,6 +16,8 @@ public class Query /*extends QueryExplanations*/{
     String predicate;
     String object;
     String rules;
+
+
 
 
 
@@ -31,6 +34,13 @@ public class Query /*extends QueryExplanations*/{
 //    }
 
     public Query(String subject, String predicate, String object, String rules) {
+        this(-1, (subject+" "+predicate+" "+object),subject,  predicate,  object,  rules);
+
+    }
+
+    public Query(int id, String name, String subject, String predicate, String object, String rules) {
+        this.id=id;
+        this.name=name;
         this.subject = subject;
         this.predicate = predicate;
         this.object = object;
@@ -87,7 +97,15 @@ public class Query /*extends QueryExplanations*/{
         return new Gson().toJson(this);
     }
 
-//    public List<IRule> getRulesAsIRIS(){
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    //    public List<IRule> getRulesAsIRIS(){
 //        Parser parser=new Parser();
 //
 //        try {
