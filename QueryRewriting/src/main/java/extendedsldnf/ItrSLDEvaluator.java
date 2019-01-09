@@ -3,6 +3,7 @@ package extendedsldnf;
 import config.Configuration;
 import extendedsldnf.datastructure.*;
 
+import extendedsldnf.viewing.ExecutionTree;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IQuery;
@@ -64,6 +65,8 @@ public class ItrSLDEvaluator extends RecSLDEvaluator {
         //logger.debug("Relation " + relation);
         logger.debug("Original Query: " + query);
         logger.debug("Solutions: " + solutions);
+
+
 
         return returnedSolution;
     }
@@ -139,10 +142,11 @@ public class ItrSLDEvaluator extends RecSLDEvaluator {
         Explanation solution = new Explanation(orgQuery, getClass().getName()+"-"+compareMethod,generationOrder);
 
         for (ExtQuerySubs currentQuery = query; currentQuery != null; currentQuery = currentQuery.getParent()) {
-            if (currentQuery.getEvidenceNode().getSourceActionType() != ORG) {
+//            if (currentQuery.getEvidenceNode().getSourceActionType() != ORG) {
                 solution.add(currentQuery.getEvidenceNode());
-            }
+//            }
         }
+
 
         solution.setCost(costAccumulator.clone());
         return solution;

@@ -127,16 +127,17 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
      * @return
      */
     public List<IRule> getOrderedRules(List<IRule> rules) {
-        List<IRule> tmpRules = new LinkedList<>();
-        ReOrderLiteralsOptimiser rolo = new ReOrderLiteralsOptimiser();
-
-        for (IRule rule : rules) {
-            tmpRules.add(rolo.optimise(rule));
-        }
-
-        SimpleReOrdering sro = new SimpleReOrdering();
-        tmpRules = sro.reOrder(tmpRules);
-        return tmpRules;
+//        List<IRule> tmpRules = new LinkedList<>();
+//        ReOrderLiteralsOptimiser rolo = new ReOrderLiteralsOptimiser();
+//
+//        for (IRule rule : rules) {
+//            tmpRules.add(rolo.optimise(rule));
+//        }
+//
+//        SimpleReOrdering sro = new SimpleReOrdering();
+//        tmpRules = sro.reOrder(tmpRules);
+//        return tmpRules;
+        return rules;
     }
 
     /**
