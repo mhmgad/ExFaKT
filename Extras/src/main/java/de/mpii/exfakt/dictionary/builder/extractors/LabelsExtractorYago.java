@@ -3,8 +3,8 @@ package de.mpii.exfakt.dictionary.builder.extractors;
 import basics.Fact;
 import basics.FactComponent;
 import basics.FactSource;
-import de.mpii.exfakt.dictionary.data.Paraphrase;
 import output.listner.OutputListener;
+import web.data.Paraphrase;
 
 public class LabelsExtractorYago extends LabelsExtractor {
 

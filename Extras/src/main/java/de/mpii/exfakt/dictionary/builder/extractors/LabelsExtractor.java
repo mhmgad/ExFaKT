@@ -1,7 +1,8 @@
 package de.mpii.exfakt.dictionary.builder.extractors;
 
-import de.mpii.exfakt.dictionary.data.Paraphrase;
+
 import output.listner.OutputListener;
+import web.data.Paraphrase;
 
 import java.io.IOException;
 import java.util.Set;
