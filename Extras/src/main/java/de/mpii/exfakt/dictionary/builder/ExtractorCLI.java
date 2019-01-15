@@ -6,12 +6,12 @@ import de.mpii.exfakt.dictionary.builder.extractors.LabelsExtractor;
 import de.mpii.exfakt.dictionary.builder.extractors.LabelsExtractorYago;
 import de.mpii.exfakt.dictionary.builder.extractors.LabelsExtractorWikidata;
 import de.mpii.exfakt.dictionary.builder.extractors.wikidata.Helper;
-import de.mpii.exfakt.dictionary.data.Paraphrase;
 import org.apache.commons.cli.*;
 import output.listner.OutputListener;
 import output.writers.AbstractOutputChannel;
 import output.writers.ELasticSearchOutputWriter;
 import output.writers.FileOutputWriter;
+import web.data.Paraphrase;
 
 import java.util.Arrays;
 import java.util.HashSet;
