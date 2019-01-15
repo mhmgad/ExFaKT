@@ -1,13 +1,14 @@
 package de.mpii.exfakt.dictionary.builder.extractors;
 
 //import de.mpii.exfakt.dictionary.builder.extractors.wikidata.Helper;
-import de.mpii.exfakt.dictionary.data.Paraphrase;
+
 import org.wikidata.wdtk.datamodel.helpers.DatamodelConverter;
 import org.wikidata.wdtk.datamodel.interfaces.*;
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonObjectFactory;
 import org.wikidata.wdtk.dumpfiles.DumpProcessingController;
 import org.wikidata.wdtk.dumpfiles.MwLocalDumpFile;
 import output.listner.OutputListener;
+import web.data.Paraphrase;
 
 import java.io.IOException;
 import java.util.Collections;
