@@ -4,3 +4,6 @@
 [submodule "FactSpotting"]
 	path = FactSpotting
 	url = https://github.molgen.mpg.de/gadelrab/FactSpotting
+[submodule "Utils"]
+	path = Utils
+	url = https://github.com/mhmgad/MyUtils.git

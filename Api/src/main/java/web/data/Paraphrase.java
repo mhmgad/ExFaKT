@@ -8,20 +8,21 @@ import java.util.Objects;
 public class Paraphrase implements SerializableData{
 
      String predicate;
-    @JestId
-    String id;
+//    @JestId
+//    String id;
+    String entity;
     String fullId;
     String readableId;
     String labelType;
     String mention;
     String lang;
 
-    public Paraphrase(String id, String fullId, String readableId,String labelType, String mention, String predicate) {
+    public Paraphrase(String entity, String fullId, String readableId,String labelType, String mention, String predicate) {
         this.fullId = fullId;
         this.labelType = labelType;
         this.mention = mention;
         this.readableId=readableId;
-        this.id=id;
+        this.entity=entity;
         this.predicate=predicate;
     }
 
@@ -30,19 +31,19 @@ public class Paraphrase implements SerializableData{
         if (this == o) return true;
         if (!(o instanceof Paraphrase)) return false;
         Paraphrase that = (Paraphrase) o;
-        return Objects.equals(id, that.id) &&
+        return Objects.equals(entity, that.entity) &&
                 Objects.equals(mention, that.mention);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, mention);
+        return Objects.hash(entity, mention);
     }
 
     @Override
     public String toString() {
         return "Paraphrase{" +
-                "id='" + id + '\'' +
+                "id='" + entity + '\'' +
                 ", fullId='" + fullId + '\'' +
                 ", readableId='" + readableId + '\'' +
                 ", labelType='" + labelType + '\'' +

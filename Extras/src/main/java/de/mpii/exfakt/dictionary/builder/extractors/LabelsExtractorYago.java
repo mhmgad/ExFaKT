@@ -32,7 +32,7 @@ public class LabelsExtractorYago extends LabelsExtractor {
                 String readableId=FactComponent.stripBrackets(f.getSubject());
                 String predicate=f.getRelation();
 
-                String type=(predicate.equals("skos:prefLabel"))? "label":"alis";
+                String type=(predicate.equals("skos:prefLabel"))? "label":"alias";
                 Paraphrase pr=new Paraphrase( id,  fullId,  readableId, type,  label,predicate);
                 output(pr);
             }

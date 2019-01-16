@@ -46,12 +46,13 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <!--<module>Utils</module>-->
+                <module>Utils</module>
                 <module>Api</module>
                 <module>Client</module>
                 <module>Extras</module>
                 <module>FactSpotting</module>
                 <module>QueryRewriting</module>
+
 
 
             </modules>
@@ -60,7 +61,7 @@
             <id>web</id>
             <modules>
                 <module>WebService</module>
-                <!--<module>Utils</module>-->
+                <module>Utils</module>
                 <module>Api</module>
                 <module>Client</module>
                 <module>FactSpotting</module>
@@ -213,7 +214,7 @@
             <id>demo</id>
             <modules>
                 <!--<module>WebService</module>-->
-                <!--<module>Utils</module>-->
+                <module>Utils</module>
                 <module>Api</module>
                 <module>Client</module>
                 <module>FactSpotting</module>
@@ -301,17 +302,17 @@
     </profiles>
 
 
-    <repositories>
-        <repository>
-            <id>MyUtils-mvn-repo</id>
-            <url>https://raw.github.com/mhmgad/MyUtils/mvn-repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
+    <!--<repositories>-->
+        <!--<repository>-->
+            <!--<id>MyUtils-mvn-repo</id>-->
+            <!--<url>https://raw.github.com/mhmgad/MyUtils/mvn-repo/</url>-->
+            <!--<snapshots>-->
+                <!--<enabled>true</enabled>-->
+                <!--<updatePolicy>always</updatePolicy>-->
+            <!--</snapshots>-->
+        <!--</repository>-->
 
-    </repositories>
+    <!--</repositories>-->
 
 
 

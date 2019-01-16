@@ -9,7 +9,7 @@ import de.mpii.exfakt.dictionary.builder.extractors.wikidata.Helper;
 import org.apache.commons.cli.*;
 import output.listner.OutputListener;
 import output.writers.AbstractOutputChannel;
-import output.writers.ELasticSearchOutputWriter;
+import output.writers.ElasticSearchOutputWriter;
 import output.writers.FileOutputWriter;
 import web.data.Paraphrase;
 
@@ -109,7 +109,7 @@ public class ExtractorCLI {
 
         if(cmd.hasOption(elasticSearchOp.getOpt())){
             boolean reIndex=cmd.hasOption(deleteIndexOp.getOpt());
-            outputListener.registerWriter(new ELasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),kg.toString().toLowerCase()+"_paraphrases",reIndex,"paraphrase"));
+            outputListener.registerWriter(new ElasticSearchOutputWriter(cmd.getOptionValue(elasticSearchOp.getOpt()),kg.toString().toLowerCase()+"_dict",reIndex,"paraphrase"));
 
         }
 
