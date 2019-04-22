@@ -33,16 +33,12 @@ import org.deri.iris.builtins.EqualBuiltin;
 import org.deri.iris.builtins.ExactEqualBuiltin;
 import org.deri.iris.evaluation.topdown.*;
 import org.deri.iris.factory.Factory;
-import org.deri.iris.facts.IFacts;
 import org.deri.iris.rules.RuleManipulator;
-import org.deri.iris.rules.optimisation.ReOrderLiteralsOptimiser;
-import org.deri.iris.rules.ordering.SimpleReOrdering;
 import org.deri.iris.storage.IRelation;
 import org.deri.iris.storage.simple.SimpleRelationFactory;
 import org.deri.iris.utils.TermMatchingAndSubstitution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import text.FactSpottingConnector;
 import text.FactSpottingResult;
 import text.ITextConnector;
 import utils.Enums;
@@ -66,18 +62,18 @@ import static utils.Enums.ActionType.*;
  * @author gigi
  *
  */
-public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator {
+public class RecSLDEvaluator {// implements ITopDownEvaluator, IExplanationGenerator {
 
     private  int maxExplanations;
     private boolean suspectsFromKG;
-    private  ITextConnector textConnector;
+    private  List<ITextConnector> textConnectors;
     private  Configuration.PartialBindingType partialBindingType;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     protected static final int _MAX_NESTING_LEVEL = 5;
 
 
-    private IExtendedFacts mFacts;
+    private List<IExtendedFacts> mFacts;
     private List<IRule> mRules;
 
 
@@ -94,7 +90,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
      * @param facts one or many facts
      * @param rules list of rules
      */
-    public RecSLDEvaluator(IExtendedFacts facts, List<IRule> rules) {
+    public RecSLDEvaluator(List<IExtendedFacts> facts, List<IRule> rules) {
         this(facts,rules,null, Configuration.PartialBindingType.NONE,false,Integer.MAX_VALUE,10);
     }
 
@@ -105,13 +101,13 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
      * @param facts one or many facts
      * @param rules list of rules
      */
-    public RecSLDEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG,int maxExplanations,int maxRuleDepth) {
+    public RecSLDEvaluator(List<IExtendedFacts> facts, List<IRule> rules, List<ITextConnector> textConnectors, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, int maxExplanations, int maxRuleDepth) {
         mFacts = facts;
         mRules = getOrderedRules(rules);
 
 
         // Text connector
-        this.textConnector=textConnector;
+        this.textConnectors = textConnectors;
         this.partialBindingType=partialBindingType;
         this.suspectsFromKG=suspectsFromKG;
         this.maxExplanations=maxExplanations;
@@ -390,7 +386,15 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
         // Check text
         FactSpottingResult result = null;
         try {
-            result = textConnector.queryText(queryLiteral);
+            // Check textual sources in order and skip if it was found
+            //TODO combine results from different sources.
+            for (ITextConnector textConnector:textConnectors){
+                result = textConnector.queryText(queryLiteral);
+
+                if(result.found()){
+                    break;
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -430,7 +434,17 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
      */
     public List<ExtQuerySubs> bindFromKGAggressively(ExtQuerySubs query, ILiteral queryLiteral, CostAccumulator costAccumulator) {
 
-        IRelation factRelation=mFacts.getHypotheticalBindings(queryLiteral);
+        // with only one source
+        IRelation factRelation = null;
+        if(!mFacts.isEmpty()) {
+             factRelation = mFacts.get(0).getHypotheticalBindings(queryLiteral);
+             for (int i=1;i<mFacts.size();i++){
+                 factRelation.addAll(mFacts.get(i).getHypotheticalBindings(queryLiteral));
+             }
+
+
+        }
+
         logger.debug(queryLiteral+" Hypothetical Bindings "+factRelation.size());
 
         List<Map<IVariable, ITerm>> variableMapList=new LinkedList<>();
@@ -526,7 +540,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
 
 
         List<Map<IVariable, ITerm>> variableMapList = new LinkedList<Map<IVariable,ITerm>>();
-        if ( FactsUtils.getMatchingFacts( queryLiteral, variableMapList,mFacts  ) ) {
+        if ( FactsUtils.getMatchingFacts( queryLiteral, variableMapList, mFacts  ) ) {
             boolean removePredicate=true;
 //            EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, EvidenceNode.Type.KG_VALID):new EvidenceNode(queryLiteral, EvidenceNode.Type.VAR_BIND);
             EvidenceNode evidenceNode=(queryLiteral.getAtom().isGround())? new EvidenceNode(queryLiteral, Enums.ActionType.KG_VALID):new EvidenceNode(queryLiteral, Enums.ActionType.KG_BIND);
@@ -759,7 +773,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
         return debugPrefix;
     }
 
-    @Override
+//    @Override
     public IQueryExplanations getExplanation(IQuery query) throws EvaluationException {
         return (IQueryExplanations) evaluate(query);
     }
@@ -789,7 +803,7 @@ public class RecSLDEvaluator implements ITopDownEvaluator, IExplanationGenerator
         this.maxRuleDepth = maxRuleDepth;
     }
 
-    public IFacts getFacts() {
+    public List<IExtendedFacts> getFacts() {
         return mFacts;
     }
 }

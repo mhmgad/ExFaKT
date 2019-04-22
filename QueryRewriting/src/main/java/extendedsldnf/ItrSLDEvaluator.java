@@ -3,7 +3,6 @@ package extendedsldnf;
 import config.Configuration;
 import extendedsldnf.datastructure.*;
 
-import extendedsldnf.viewing.ExecutionTree;
 import org.deri.iris.EvaluationException;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IQuery;
@@ -38,8 +37,8 @@ public class ItrSLDEvaluator extends RecSLDEvaluator {
 //        this.compareMethod=compareMethod;
 //    }
 
-    public ItrSLDEvaluator(IExtendedFacts facts, List<IRule> rules, ITextConnector textConnector, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, AbstractQueriesPool.ComparisionMethod compareMethod, int maxExplanations, int maxRuleDepth) {
-        super(facts, rules, textConnector, partialBindingType, suspectsFromKG, maxExplanations, maxRuleDepth);
+    public ItrSLDEvaluator(List<IExtendedFacts> facts, List<IRule> rules, List<ITextConnector> textConnectors, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, AbstractQueriesPool.ComparisionMethod compareMethod, int maxExplanations, int maxRuleDepth) {
+        super(facts, rules, textConnectors, partialBindingType, suspectsFromKG, maxExplanations, maxRuleDepth);
         this.compareMethod = compareMethod;
 
     }

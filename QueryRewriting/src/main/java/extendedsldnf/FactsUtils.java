@@ -1,5 +1,6 @@
 package extendedsldnf;
 
+import extendedsldnf.datastructure.IExtendedFacts;
 import org.deri.iris.api.basics.ILiteral;
 import org.deri.iris.api.basics.IPredicate;
 import org.deri.iris.api.basics.ITuple;
@@ -16,6 +17,29 @@ import java.util.List;
 import java.util.Map;
 
 public class FactsUtils {
+
+
+     /**
+     * Tries to find a fact that matches the given query.
+     * The variableMap will be populated if a matching fact was found.
+     * @param queryLiteral the given query
+     *
+     * @return true if a matching fact is found, false otherwise
+     */
+    public static boolean getMatchingFacts(ILiteral queryLiteral, List<Map<IVariable, ITerm>> variableMapList, List<IExtendedFacts> factsSources){
+
+        for(IFacts factsSource:factsSources){
+            getMatchingFacts( queryLiteral, variableMapList, factsSource);
+        }
+
+        if (variableMapList.isEmpty())
+            return false; // No fact found
+
+        return true;
+
+    }
+
+
 
     /**
      * Tries to find a fact that matches the given query.

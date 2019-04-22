@@ -15,6 +15,8 @@ import org.deri.iris.compiler.ParserException;
 import org.deri.iris.evaluation.IEvaluationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import text.FactSpottingConnector;
+import text.ITextConnector;
 import utils.DataUtils;
 
 import javax.inject.Singleton;
@@ -48,7 +50,7 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
      * Facts  (iris facts)
      */
 //    private Map<IPredicate,IRelation> factsMap;
-    private IExtendedFacts facts;
+    private List<IExtendedFacts> facts;
 
 
     /**
@@ -97,7 +99,8 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 
 
         // Load facts
-        facts= DataUtils.loadFacts(config);
+        //TODO create loader for several KGS
+        facts= Arrays.asList(DataUtils.loadFacts(config));
         //logger.debug(facts.toString());
         // Checks if there external data sources
 //        if (config.externalDataSources.size() > 0)
@@ -151,13 +154,24 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 
             RecSLDEvaluator evaluator ;
             EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
-            evaluator = evaluatorFactory.getEvaluator(facts, rules);
+            List<IExtendedFacts> usedFactSources = getUsedFactResources(Arrays.asList("yago", "dbpedia"));
+            List<ITextConnector> usedTextualResources = getUsedTextualResources(Arrays.asList("wiki", "bing"));
+//            evaluator = evaluatorFactory.getEvaluator(facts, rules);
+            evaluator = evaluatorFactory.getEvaluator(usedFactSources, usedTextualResources, rules);
             IQueryExplanations relation = evaluator.getExplanation(query.getIQuery());
             return  relation;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private List<ITextConnector> getUsedTextualResources(List<String> strings) {
+        return Arrays.asList(new FactSpottingConnector(config));
+    }
+
+    private List<IExtendedFacts> getUsedFactResources(List<String> strings) {
+        return facts;
     }
 //
 //    @Override
