@@ -17,6 +17,8 @@ public class Query /*extends QueryExplanations*/{
     String object;
     String rules;
 
+    
+
 
 
 
