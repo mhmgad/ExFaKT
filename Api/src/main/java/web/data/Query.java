@@ -3,6 +3,9 @@ package web.data;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Query /*extends QueryExplanations*/{
 
     String name;
@@ -17,11 +20,60 @@ public class Query /*extends QueryExplanations*/{
     String object;
     String rules;
 
-    
+    List<String> kgs=new ArrayList<>();
+    List<String> text=new ArrayList<>();
+    List<String> textWeight=new ArrayList<>();
 
+    int numOfRules=5;
+    int numOfexplan=5;
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public void setKgs(List<String> kgs) {
+        this.kgs = kgs;
+    }
+
+    public void setText(List<String> text) {
+        this.text = text;
+    }
+
+    public void setTextWeight(List<String> textWeight) {
+        this.textWeight = textWeight;
+    }
+
+    public void setNumOfRules(int numOfRules) {
+        this.numOfRules = numOfRules;
+    }
+
+    public void setNumOfexplan(int numOfexplan) {
+        this.numOfexplan = numOfexplan;
+    }
+
+    public List<String> getKgs() {
+        return kgs;
+    }
+
+    public List<String> getText() {
+        return text;
+    }
+
+    public List<String> getTextWeight() {
+        return textWeight;
+    }
+
+    public int getNumOfRules() {
+        return numOfRules;
+    }
+
+    public int getNumOfexplan() {
+        return numOfexplan;
+    }
 
 //    @Override
 //    public String getQuery() {
@@ -47,6 +99,8 @@ public class Query /*extends QueryExplanations*/{
         this.predicate = predicate;
         this.object = object;
         this.rules = rules;
+
+
 
     }
 
