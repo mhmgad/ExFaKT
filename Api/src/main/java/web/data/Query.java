@@ -21,8 +21,8 @@ public class Query /*extends QueryExplanations*/{
     String rules;
 
     List<String> kgs=new ArrayList<>();
-    List<String> text=new ArrayList<>();
-    List<String> textWeight=new ArrayList<>();
+    List<TextualSource> textualSources=new ArrayList<>();
+
 
     int numOfRules=5;
     int numOfexplan=5;
@@ -39,13 +39,11 @@ public class Query /*extends QueryExplanations*/{
         this.kgs = kgs;
     }
 
-    public void setText(List<String> text) {
-        this.text = text;
-    }
 
-    public void setTextWeight(List<String> textWeight) {
-        this.textWeight = textWeight;
-    }
+
+//    public void setTextWeight(List<String> textWeight) {
+//        this.textWeight = textWeight;
+//    }
 
     public void setNumOfRules(int numOfRules) {
         this.numOfRules = numOfRules;
@@ -59,13 +57,18 @@ public class Query /*extends QueryExplanations*/{
         return kgs;
     }
 
-    public List<String> getText() {
-        return text;
+
+    public void setTextualSources(List<TextualSource> textualSources) {
+        this.textualSources = textualSources;
     }
 
-    public List<String> getTextWeight() {
-        return textWeight;
+    public List<TextualSource> getTextualSources() {
+        return textualSources;
     }
+
+//    public List<String> getTextWeight() {
+//        return textWeight;
+//    }
 
     public int getNumOfRules() {
         return numOfRules;
@@ -102,6 +105,14 @@ public class Query /*extends QueryExplanations*/{
 
 
 
+    }
+
+    public void addKg(String kgName){
+        kgs.add(kgName);
+    }
+
+    public void addTextualSource(TextualSource textualSource){
+        textualSources.add(textualSource);
     }
 
     public Query() {
