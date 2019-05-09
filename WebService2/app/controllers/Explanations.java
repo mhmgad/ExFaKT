@@ -70,6 +70,9 @@ public class Explanations extends Controller {
 
         // parseRulesAs
 
+
+
+
         Parser parser=new Parser();
 
         List<IRule> ruleList=null;
@@ -81,8 +84,13 @@ public class Explanations extends Controller {
             e.printStackTrace();
         }
 
+        InputQuery inputQuery=new InputQuery(new BinaryFact(q.getSubject(),q.getPredicate(),q.getObject()),0,0);
 
-        IQueryExplanations explanations = explanationsExtractor.check( new InputQuery(new BinaryFact(q.getSubject(),q.getPredicate(),q.getObject()),0,0),ruleList);
+        inputQuery.setTextualSources(q.getTextualSources());
+        inputQuery.setKg(q.getKg());
+
+
+        IQueryExplanations explanations = explanationsExtractor.check( inputQuery,ruleList);
         System.out.println(explanations);
         Gson gson=CustomGson.getInstance().getGson();
 

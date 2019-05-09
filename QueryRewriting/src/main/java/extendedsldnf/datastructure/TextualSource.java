@@ -1,4 +1,4 @@
-package web.data;
+package extendedsldnf.datastructure;
 
 public class TextualSource {
 

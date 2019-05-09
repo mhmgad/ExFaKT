@@ -7,6 +7,7 @@ import extendedsldnf.RecSLDEvaluator;
 import extendedsldnf.datastructure.IExtendedFacts;
 import extendedsldnf.datastructure.IQueryExplanations;
 import extendedsldnf.datastructure.InputQuery;
+import extendedsldnf.datastructure.TextualSource;
 import org.deri.iris.ConfigurationThreadLocalStorage;
 import org.deri.iris.api.basics.IQuery;
 import org.deri.iris.api.basics.IRule;
@@ -122,8 +123,9 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 
     }
 
-
-
+    public static synchronized ExplanationsExtractor getInstance(){
+        return explanationsExtractor;
+    }
 
     @Override
     public IQueryExplanations check(InputQuery query) {
@@ -154,8 +156,8 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 
             RecSLDEvaluator evaluator ;
             EvaluatorFactory evaluatorFactory=new EvaluatorFactory(config);
-            List<IExtendedFacts> usedFactSources = getUsedFactResources(Arrays.asList("yago", "dbpedia"));
-            List<ITextConnector> usedTextualResources = getUsedTextualResources(Arrays.asList("wiki", "bing"));
+            List<IExtendedFacts> usedFactSources = getUsedFactResources(query.getKgs());//getUsedFactResources(Arrays.asList("yago", "dbpedia"));
+            List<ITextConnector> usedTextualResources = getUsedTextualResources(query.getTextualSources());//getUsedTextualResources(Arrays.asList("wiki", "bing"));
 //            evaluator = evaluatorFactory.getEvaluator(facts, rules);
             evaluator = evaluatorFactory.getEvaluator(usedFactSources, usedTextualResources, rules);
             IQueryExplanations relation = evaluator.getExplanation(query.getIQuery());
@@ -166,12 +168,8 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
         return null;
     }
 
-    private List<ITextConnector> getUsedTextualResources(List<String> strings) {
+    private List<ITextConnector> getUsedTextualResources(List<TextualSource> textualSources) {
         return Arrays.asList(new FactSpottingConnector(config));
-    }
-
-    private List<IExtendedFacts> getUsedFactResources(List<String> strings) {
-        return facts;
     }
 //
 //    @Override
@@ -196,9 +194,8 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 //
 //    }
 
-
-    public static synchronized ExplanationsExtractor getInstance(){
-        return explanationsExtractor;
+    private List<IExtendedFacts> getUsedFactResources(List<String> strings) {
+        return facts;
     }
 
 

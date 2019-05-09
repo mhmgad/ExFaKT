@@ -2,6 +2,7 @@ package web.data;
 
 
 import com.google.gson.Gson;
+import extendedsldnf.datastructure.TextualSource;
 
 import java.util.ArrayList;
 import java.util.List;
