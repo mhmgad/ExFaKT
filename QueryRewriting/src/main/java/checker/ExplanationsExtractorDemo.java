@@ -17,16 +17,18 @@ import text.ITextConnector;
 import utils.DataUtils;
 
 import javax.inject.Singleton;
+import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by gadelrab on 3/22/17.
  */
 @Singleton
-public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
+public class ExplanationsExtractorDemo implements IDeepChecker/*<InputQuery>*/ {
 
 
-    private static final ExplanationsExtractor explanationsExtractor=new ExplanationsExtractor();
+    private static final ExplanationsExtractorDemo explanationsExtractor=new ExplanationsExtractorDemo();
 
     private IEvaluationStrategy evaluationStrategy;
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -47,7 +49,7 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
      * Facts  (iris facts)
      */
 //    private Map<IPredicate,IRelation> factsMap;
-    private List<IExtendedFacts> facts;
+    private HashMap<String,IExtendedFacts> factSources;
 
 
     /**
@@ -66,11 +68,15 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
             // Evalautor
 
 
+    /**
+     * textual sources interface
+     */
+    private HashMap<TextualSource,ITextConnector> textualSource=new HashMap<>();
 
 
 
 
-    private ExplanationsExtractor() {
+    private ExplanationsExtractorDemo() {
         // load Config
         config= Configuration.getInstance();
         // Store the configuration object against the current thread.
@@ -96,13 +102,13 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 
 
         // Load facts
-        //TODO create loader for several KGS
-        facts= Arrays.asList(DataUtils.loadFacts(config));
-        //logger.debug(facts.toString());
-        // Checks if there external data sources
-//        if (config.externalDataSources.size() > 0)
-//            facts = new FactsWithExternalData(facts,
-//                    config.externalDataSources);
+        //TODO create loader for several KGS (done but to be refactored)
+        factSources.put("yago",DataUtils.loadFacts(config,config.getKgsDirectory()+ File.separator+"yago.tsv"));
+
+
+
+
+
 
 
 
@@ -119,7 +125,7 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 
     }
 
-    public static synchronized ExplanationsExtractor getInstance(){
+    public static synchronized ExplanationsExtractorDemo getInstance(){
         return explanationsExtractor;
     }
 
@@ -155,7 +161,7 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
             List<IExtendedFacts> usedFactSources = getUsedFactResources(query.getKgs());//getUsedFactResources(Arrays.asList("yago", "dbpedia"));
             List<ITextConnector> usedTextualResources = getUsedTextualResources(query.getTextualSources());//getUsedTextualResources(Arrays.asList("wiki", "bing"));
 //            evaluator = evaluatorFactory.getEvaluator(facts, rules);
-            evaluator = evaluatorFactory.getEvaluator(usedFactSources, usedTextualResources, rules);
+            evaluator = evaluatorFactory.getEvaluator(usedFactSources, usedTextualResources, rules, query.getMaxExplanations(),query.getMaxRules());
             IQueryExplanations relation = evaluator.getExplanation(query.getIQuery());
             return  relation;
         } catch (Exception e) {
@@ -190,8 +196,9 @@ public class ExplanationsExtractor implements IDeepChecker/*<InputQuery>*/ {
 //
 //    }
 
-    private List<IExtendedFacts> getUsedFactResources(List<String> strings) {
-        return facts;
+    private List<IExtendedFacts> getUsedFactResources(List<String> kgs) {
+        return kgs.stream().map(s-> factSources.get(s)).collect(Collectors.toList());
+
     }
 
 

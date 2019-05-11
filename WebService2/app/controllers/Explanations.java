@@ -87,7 +87,10 @@ public class Explanations extends Controller {
         InputQuery inputQuery=new InputQuery(new BinaryFact(q.getSubject(),q.getPredicate(),q.getObject()),0,0);
 
         inputQuery.setTextualSources(q.getTextualSources());
-        inputQuery.setKg(q.getKg());
+        inputQuery.setKgs(q.getKgs());
+        inputQuery.setMaxExplanations(q.getNumOfexplan());
+        inputQuery.setMaxRules(q.getNumOfRules());
+
 
 
         IQueryExplanations explanations = explanationsExtractor.check( inputQuery,ruleList);
