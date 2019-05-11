@@ -29,10 +29,14 @@ public class Configuration extends org.deri.iris.Configuration {
     private static final String FACTS_FORMAT = "factsFormat";
     private static final String PARTIAL_BINDING_TYPE = "partialBindingType";
     private static final String SUSPECTS_FROM_KG = "suspectsFromKG";
-    public static final String FACT_SPOTTING_CONF = "factSpotting.config";
+    private static final String FACT_SPOTTING_CONF = "factSpotting.config";
     private static final String EVALUATION_METHOD = "evalMethod";
     private static final String MAX_EXPLANATIONS="maxExplanations";
     private static final String MAX_RULE_NESTING="maxRuleNesting";
+    private static final String KGS_DIR="kgsDir";
+
+
+
 
 
     private static Configuration instance;
@@ -44,6 +48,10 @@ public class Configuration extends org.deri.iris.Configuration {
     private static boolean externalConfFile=false;
     private static ClassLoader classLoader;
     /**
+     * FactSpotting Method
+     */
+    FactSpotterFactory.SpottingMethod spottingMethod= FactSpotterFactory.SpottingMethod.NONE;
+    /**
      * Extra configurations
      */
     private Properties extraProperties;
@@ -52,83 +60,11 @@ public class Configuration extends org.deri.iris.Configuration {
     private int maxExplanations=10;
     private int maxRuleNesting =3;
     private ClassLoader spottingConfFileClassLoader;
-            ;
-
-    public void setExtraProp(Properties extraProp) {
-        this.extraProperties = extraProp;
-    }
-
-    public boolean isSuspectsFromKG() {
-        return suspectsFromKG;
-    }
-
-    public void setSuspectsFromKG(boolean suspectsFromKG) {
-        this.suspectsFromKG = suspectsFromKG;
-    }
-
-    public void setSpottingConfFile(String spottingConfFile,ClassLoader classLoader) {
-        setSpottingConfFile(spottingConfFile);
-        setSpottingConfFileClassLoader(classLoader);
-    }
-
-    public void setSpottingConfFile(String spottingConfFile) {
-        this.spottingConfFile = spottingConfFile;
-
-    }
-
-
-    public void setSpottingConfFileClassLoader(ClassLoader spottingConfFileClassLoader) {
-        this.spottingConfFileClassLoader = spottingConfFileClassLoader;
-    }
-
-    public String getSpottingConfFile() {
-        return spottingConfFile;
-    }
-
-    public ClassLoader getSpottingConfFileClassLoader(){
-        return spottingConfFileClassLoader;
-    }
-
-    public void setEvaluationMethod(Enums.EvalMethod evaluationMethod) {
-        this.evaluationMethod = evaluationMethod;
-    }
-
-    public Enums.EvalMethod getEvaluationMethod() {
-        return evaluationMethod;
-    }
-
-    public int getMaxExplanations() {
-        return maxExplanations;
-    }
-
-    public int getMaxRuleNesting() {
-        return maxRuleNesting;
-    }
-
-    public void setMaxExplanations(int maxExplanations) {
-        this.maxExplanations = maxExplanations;
-    }
-
-    public void setMaxRuleNesting(int maxRuleNesting) {
-        this.maxRuleNesting = maxRuleNesting;
-    }
-
-
-    public enum PartialBindingType {GREEDY,TEXT,NONE}
-
-    public enum FactsFormat {RDF, IRIS;}
-
-    //public enum TextCheckingMode{GROUNDED, PARTIAL, NONE, KG_BIND;}
-    /**
-     * FactSpotting Method
-     */
-    FactSpotterFactory.SpottingMethod spottingMethod= FactSpotterFactory.SpottingMethod.NONE;
-
+    private  String kgsDirectory;
     /**
      * Files containing rules
      */
     private List<String> rulesFiles;
-
     /**
      * Files containing facts
      */
@@ -137,22 +73,18 @@ public class Configuration extends org.deri.iris.Configuration {
      * Files containing queries
      */
     private List<String> queriesFiles;
-
     /**
      * The format of the input fact, either RDF triples or IRIS facts
      */
     private FactsFormat factsFormat;
-
     /**
      * The allowed facts to check, either fully grounded or partially
      */
     private PartialBindingType partialBindingType;
-
     /**
      * suspected in the KG so remove them from KG
      */
     private boolean suspectsFromKG=false;
-
 
 
     public Configuration(){
@@ -175,7 +107,7 @@ public class Configuration extends org.deri.iris.Configuration {
         return fromStream(input);
 
 //        try {
-            // configuration file loaded in resources
+        // configuration file loaded in resources
 //            if (inResources) {
 //                input = Configuration.class.getClassLoader().getResourceAsStream(filename);
 //
@@ -214,19 +146,19 @@ public class Configuration extends org.deri.iris.Configuration {
     public static InputStream loadFile(String filename, boolean inResources, ClassLoader classLoader)  {
         InputStream input = null;
         if (inResources)
-                input = Configuration.class.getClassLoader().getResourceAsStream(filename);
-            else
-                if(classLoader!=null)
-                    input=classLoader.getResourceAsStream(filename);
-                else
-                    // configuration file form user
-                {
-                    try {
-                        input = new FileInputStream(filename);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
+            input = Configuration.class.getClassLoader().getResourceAsStream(filename);
+        else
+        if(classLoader!=null)
+            input=classLoader.getResourceAsStream(filename);
+        else
+        // configuration file form user
+        {
+            try {
+                input = new FileInputStream(filename);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         return input;
@@ -247,6 +179,7 @@ public class Configuration extends org.deri.iris.Configuration {
 
         //get the property value
         conf.setSpottingMethod(FactSpotterFactory.SpottingMethod.valueOf(prop.getProperty(SPOTTING_METHOD, "NONE")));
+        conf.setKgsDirectory(prop.getProperty(SPOTTING_METHOD, "kgs"));
         conf.setRulesFiles(asList(prop.getProperty(RULES_FILES, "")));
         conf.setFactsFiles(asList(prop.getProperty(FACTS_FILES, "")));
         conf.setQueriesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
@@ -271,7 +204,6 @@ public class Configuration extends org.deri.iris.Configuration {
         return conf;
     }
 
-
     public static Configuration fromFile(String filename)  {
         return fromFile(filename,!externalConfFile,classLoader);
     }
@@ -282,9 +214,6 @@ public class Configuration extends org.deri.iris.Configuration {
 
         return instance;
     }
-
-
-
 
     public synchronized static boolean setConfigurationFile(String file,ClassLoader remoteClassLoader){
         if(file==null||confFileAlreadySet)
@@ -300,17 +229,84 @@ public class Configuration extends org.deri.iris.Configuration {
         }
     }
 
-
-    public void setSpottingMethod(FactSpotterFactory.SpottingMethod spottingMethod) {
-        this.spottingMethod = spottingMethod;
+    public static String getConfigurationFile() {
+        return configurationFile;
     }
 
-    public void setRulesFiles(List<String> rulesFiles) {
-        this.rulesFiles = rulesFiles;
+    public String getKgsDirectory() {
+        return kgsDirectory;
+    }
+
+    public void setKgsDirectory(String kgsDirectory) {
+        this.kgsDirectory = kgsDirectory;
+    }
+
+    public void setExtraProp(Properties extraProp) {
+        this.extraProperties = extraProp;
+    }
+
+    //public enum TextCheckingMode{GROUNDED, PARTIAL, NONE, KG_BIND;}
+
+    public boolean isSuspectsFromKG() {
+        return suspectsFromKG;
+    }
+
+    public void setSuspectsFromKG(boolean suspectsFromKG) {
+        this.suspectsFromKG = suspectsFromKG;
+    }
+
+    public void setSpottingConfFile(String spottingConfFile,ClassLoader classLoader) {
+        setSpottingConfFile(spottingConfFile);
+        setSpottingConfFileClassLoader(classLoader);
+    }
+
+    public String getSpottingConfFile() {
+        return spottingConfFile;
+    }
+
+    public void setSpottingConfFile(String spottingConfFile) {
+        this.spottingConfFile = spottingConfFile;
+
+    }
+
+    public ClassLoader getSpottingConfFileClassLoader(){
+        return spottingConfFileClassLoader;
+    }
+
+    public void setSpottingConfFileClassLoader(ClassLoader spottingConfFileClassLoader) {
+        this.spottingConfFileClassLoader = spottingConfFileClassLoader;
+    }
+
+    public Enums.EvalMethod getEvaluationMethod() {
+        return evaluationMethod;
+    }
+
+    public void setEvaluationMethod(Enums.EvalMethod evaluationMethod) {
+        this.evaluationMethod = evaluationMethod;
+    }
+
+    public int getMaxExplanations() {
+        return maxExplanations;
+    }
+
+    public void setMaxExplanations(int maxExplanations) {
+        this.maxExplanations = maxExplanations;
+    }
+
+    public int getMaxRuleNesting() {
+        return maxRuleNesting;
+    }
+
+    public void setMaxRuleNesting(int maxRuleNesting) {
+        this.maxRuleNesting = maxRuleNesting;
     }
 
     public List<String> getRulesFiles() {
         return rulesFiles;
+    }
+
+    public void setRulesFiles(List<String> rulesFiles) {
+        this.rulesFiles = rulesFiles;
     }
 
     public List<String> getFactsFiles() {
@@ -321,32 +317,36 @@ public class Configuration extends org.deri.iris.Configuration {
         this.factsFiles = factsFiles;
     }
 
-    public void setQueriesFiles(List<String> queriesFiles) {
-        this.queriesFiles = queriesFiles;
+    public FactsFormat getFactsFormat() {
+        return factsFormat;
     }
 
     public void setFactsFormat(FactsFormat factsFormat) {
         this.factsFormat = factsFormat;
     }
 
-    public FactsFormat getFactsFormat() {
-        return factsFormat;
-    }
-
     public FactSpotterFactory.SpottingMethod getSpottingMethod() {
         return spottingMethod;
+    }
+
+    public void setSpottingMethod(FactSpotterFactory.SpottingMethod spottingMethod) {
+        this.spottingMethod = spottingMethod;
     }
 
     public List<String> getQueriesFiles() {
         return queriesFiles;
     }
 
-    public void setPartialBindingType(PartialBindingType partialBindingType) {
-        this.partialBindingType = partialBindingType;
+    public void setQueriesFiles(List<String> queriesFiles) {
+        this.queriesFiles = queriesFiles;
     }
 
     public PartialBindingType getPartialBindingType() {
         return partialBindingType;
+    }
+
+    public void setPartialBindingType(PartialBindingType partialBindingType) {
+        this.partialBindingType = partialBindingType;
     }
 
     public boolean hasProperty(String prop){
@@ -356,11 +356,6 @@ public class Configuration extends org.deri.iris.Configuration {
     public Object getProperty(String prop){
         return extraProperties.getProperty(prop,null);
     }
-
-    public static String getConfigurationFile() {
-        return configurationFile;
-    }
-
 
     @Override
     public String toString() {
@@ -379,4 +374,9 @@ public class Configuration extends org.deri.iris.Configuration {
                 ", suspectsFromKG=" + suspectsFromKG +'\n'+
                 '}';
     }
+
+    public enum PartialBindingType {GREEDY,TEXT,NONE}
+
+
+    public enum FactsFormat {RDF, IRIS;}
 }

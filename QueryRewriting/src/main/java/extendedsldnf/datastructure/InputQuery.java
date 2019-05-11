@@ -8,17 +8,14 @@ import java.util.List;
 
 public class InputQuery {
 
-    private BinaryFact ntQuery;
-    private  IQuery iQuery;
     int order;
     int label;
-
-
+    int maxRules;
+    int maxExplanations;
     List<TextualSource> textualSources;
     List<String> kgs;
-
-
-
+    private BinaryFact ntQuery;
+    private  IQuery iQuery;
 
     public InputQuery(IQuery query, int order,int label) {
 
@@ -35,6 +32,21 @@ public class InputQuery {
         this.label=label;
     }
 
+    public int getMaxRules() {
+        return maxRules;
+    }
+
+    public void setMaxRules(int maxRules) {
+        this.maxRules = maxRules;
+    }
+
+    public int getMaxExplanations() {
+        return maxExplanations;
+    }
+
+    public void setMaxExplanations(int maxExplanations) {
+        this.maxExplanations = maxExplanations;
+    }
 
     public IQuery getIQuery() {
         return iQuery;
@@ -44,8 +56,16 @@ public class InputQuery {
         return order;
     }
 
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
     public int getLabel() {
         return label;
+    }
+
+    public void setLabel(int label) {
+        this.label = label;
     }
 
     public BinaryFact getNtQuery() {
@@ -62,14 +82,6 @@ public class InputQuery {
 
     public void setiQuery(IQuery iQuery) {
         this.iQuery = iQuery;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    public void setLabel(int label) {
-        this.label = label;
     }
 
     public List<TextualSource> getTextualSources() {

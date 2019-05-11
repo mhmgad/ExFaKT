@@ -21,11 +21,17 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     public FactSpottingConnector(Configuration conf) {
+        this(conf.getSpottingMethod(),conf);
+
+
+    }
+
+    public FactSpottingConnector(FactSpotterFactory.SpottingMethod spottingMethod, Configuration conf) {
         String spottingConfFile = conf.getSpottingConfFile();
-        System.out.println("Set spotting config:"+ spottingConfFile);
+        logger.info("Set spotting config:"+ spottingConfFile);
         de.mpii.factspotting.config.Configuration.setConfigurationFile(spottingConfFile==null? null:spottingConfFile,conf.getSpottingConfFileClassLoader());
-        System.out.println( "Used spotting config:"+ de.mpii.factspotting.config.Configuration.getConfigurationFile());
-        spotter=FactSpotterFactory.create(conf.getSpottingMethod());
+        logger.info("Used spotting config:"+ de.mpii.factspotting.config.Configuration.getConfigurationFile());
+        spotter=FactSpotterFactory.create(spottingMethod);
 
 
     }

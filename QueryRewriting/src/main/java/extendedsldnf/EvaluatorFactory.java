@@ -30,20 +30,27 @@ public class EvaluatorFactory {
 
     public RecSLDEvaluator getEvaluator(List<IExtendedFacts> facts, List<ITextConnector> uncertainResources,List<IRule> rules) {
 //       return getEvaluator(config.getEvaluationMethod(),facts,rules,new FactSpottingConnector(config),config.getPartialBindingType(),config.isSuspectsFromKG() );
-        return getEvaluator(config.getEvaluationMethod(),facts,rules,uncertainResources,config.getPartialBindingType(),config.isSuspectsFromKG() );
+        return getEvaluator(config.getEvaluationMethod(),facts,rules,uncertainResources,config.getPartialBindingType(),config.isSuspectsFromKG(), config.getMaxExplanations(), config.getMaxRuleNesting() );
 
     }
 
-    public RecSLDEvaluator getEvaluator(Enums.EvalMethod evalMethod, List<IExtendedFacts> facts, List<IRule> rules, List<ITextConnector> factSpottingConnectors, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG) {
+
+    public RecSLDEvaluator getEvaluator(List<IExtendedFacts> facts, List<ITextConnector> uncertainResources,List<IRule> rules, int maxExplanations, int maxRules) {
+//       return getEvaluator(config.getEvaluationMethod(),facts,rules,new FactSpottingConnector(config),config.getPartialBindingType(),config.isSuspectsFromKG() );
+        return getEvaluator(config.getEvaluationMethod(),facts,rules,uncertainResources,config.getPartialBindingType(),config.isSuspectsFromKG(), maxExplanations,maxRules );
+
+    }
+
+    public RecSLDEvaluator getEvaluator(Enums.EvalMethod evalMethod, List<IExtendedFacts> facts, List<IRule> rules, List<ITextConnector> factSpottingConnectors, Configuration.PartialBindingType partialBindingType, boolean suspectsFromKG, int maxExplanations, int maxRules){
         switch (evalMethod){
 
             case SLD_ITR:
-                return new ItrSLDEvaluator(facts, rules,factSpottingConnectors,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.DFS,config.getMaxExplanations(),config.getMaxRuleNesting() );
+                return new ItrSLDEvaluator(facts, rules,factSpottingConnectors,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.DFS,maxExplanations,maxRules);
             case HEURISTIC:
-                return new ItrSLDEvaluator(facts, rules,factSpottingConnectors,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.HEURISTIC,config.getMaxExplanations(),config.getMaxRuleNesting()  );
+                return new ItrSLDEvaluator(facts, rules,factSpottingConnectors,partialBindingType,suspectsFromKG, AbstractQueriesPool.ComparisionMethod.HEURISTIC,maxExplanations,maxRules );
             case SLD:
             default:
-                return new RecSLDEvaluator(facts, rules,factSpottingConnectors,partialBindingType,suspectsFromKG,config.getMaxExplanations(),config.getMaxRuleNesting() );
+                return new RecSLDEvaluator(facts, rules,factSpottingConnectors,partialBindingType,suspectsFromKG,maxExplanations,maxRules );
 
         }
 

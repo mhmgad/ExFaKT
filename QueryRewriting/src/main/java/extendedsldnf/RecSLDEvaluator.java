@@ -1,25 +1,4 @@
-/*
- * Integrated Rule Inference System (IRIS):
- * An extensible rule inference system for datalog with extensions.
- * 
- * Copyright (C) 2008 Semantic Technology Institute (STI) Innsbruck, 
- * University of Innsbruck, Technikerstrasse 21a, 6020 Innsbruck, Austria.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
- * MA  02110-1301, USA.
- */
+
 package extendedsldnf;
 
 import config.Configuration;
@@ -49,19 +28,13 @@ import java.util.stream.Collectors;
 
 import static utils.Enums.ActionType.*;
 
-//import text.ITextResult;
-
 /**
- * Implementation of the SLDNF evaluator. Please keep in mind that
- * SLDNF evaluation is not capable of any tabling and can get trapped
- * in an infinite loop.
+ * This code follows IRIS Reasoner
  *
- * For details see 'Deduktive Datenbanken' by Cremers, Griefahn
- * and Hinze (ISBN 978-3528047009).
- *
- * @author gigi
- *
+ * @author Mohamed Gadelrab
  */
+
+//TODO this class should be a template that would have subtypes.
 public class RecSLDEvaluator {// implements ITopDownEvaluator, IExplanationGenerator {
 
     private  int maxExplanations;

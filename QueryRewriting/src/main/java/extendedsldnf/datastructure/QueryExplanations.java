@@ -25,19 +25,14 @@ import java.util.stream.Collectors;
 public class QueryExplanations implements IRelation, IQueryExplanations, SerializableData {
 
     private final double quality;
+    IQueryExplanations.Sorting sortingMethod=Sorting.Generation;
     private CostAccumulator costAccumulator;
-
-
     /**
      * successful rewriting paths
      */
     private SortedSet<Explanation> explanations;
-
-
     @JsonAdapter(IQueryAdapter.class)
     private IQuery query;
-
-    IQueryExplanations.Sorting sortingMethod=Sorting.Generation;
 
 
     public QueryExplanations() {
@@ -117,6 +112,10 @@ public class QueryExplanations implements IRelation, IQueryExplanations, Seriali
         return this.query;
     }
 
+    public void setQuery(IQuery query) {
+        this.query = query;
+    }
+
     @Override
     public Fact getQueryAsFact() {
         try {
@@ -135,6 +134,10 @@ public class QueryExplanations implements IRelation, IQueryExplanations, Seriali
     @Override
     public Collection<Explanation> getExplanations() {
         return explanations;
+    }
+
+    public void setExplanations(SortedSet<Explanation> explanations) {
+        this.explanations = explanations;
     }
 
     @Override
@@ -166,24 +169,16 @@ public class QueryExplanations implements IRelation, IQueryExplanations, Seriali
         return costAccumulator;
     }
 
+    public void setCostAccumulator(CostAccumulator costAccumulator) {
+        this.costAccumulator = costAccumulator;
+    }
+
     /**
      * count the number of documents retrieved. It sums from all explanations. However, only representative if it is a direct spotting.
      * @return
      */
     public int documentLevelCount(){
             return explanations.stream().flatMap(Explanation::getTextEvidencesStream).mapToInt(EvidenceNode::getRetrievedDocsCount).sum();
-    }
-
-    public void setCostAccumulator(CostAccumulator costAccumulator) {
-        this.costAccumulator = costAccumulator;
-    }
-
-    public void setExplanations(SortedSet<Explanation> explanations) {
-        this.explanations = explanations;
-    }
-
-    public void setQuery(IQuery query) {
-        this.query = query;
     }
 
     @Override
@@ -230,14 +225,14 @@ public class QueryExplanations implements IRelation, IQueryExplanations, Seriali
         return sortingMethod;
     }
 
+    public void setSortingMethod(Sorting sortingMethod) {
+        this.sortingMethod = sortingMethod;
+    }
+
     @Override
     public String toJsonString() {
         Gson gson= CustomGson.getInstance().getGson();
         return gson.toJson(this);
-    }
-
-    public void setSortingMethod(Sorting sortingMethod) {
-        this.sortingMethod = sortingMethod;
     }
 
     @Override
