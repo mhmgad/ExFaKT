@@ -25,5 +25,22 @@ public class TextualSource {
     public int hashCode() {
         return Objects.hash(sourceName);
     }
+
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
 }
 

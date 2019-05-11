@@ -1,6 +1,7 @@
 package checker;
 
 import config.Configuration;
+import de.mpii.factspotting.FactSpotterFactory;
 import extendedsldnf.EvaluatorFactory;
 import extendedsldnf.RecSLDEvaluator;
 import extendedsldnf.datastructure.IExtendedFacts;
@@ -171,7 +172,16 @@ public class ExplanationsExtractorDemo implements IDeepChecker/*<InputQuery>*/ {
     }
 
     private List<ITextConnector> getUsedTextualResources(List<TextualSource> textualSources) {
-        return Arrays.asList(new FactSpottingConnector(config));
+        List<ITextConnector> connectors=new ArrayList<>();
+
+        if(textualSources.isEmpty()){
+            connectors.add(new FactSpottingConnector(FactSpotterFactory.SpottingMethod.NONE,config));
+        }
+        else
+        {
+            textualSources.forEach(ts-> connectors.add(new FactSpottingConnector(FactSpotterFactory.SpottingMethod.valueOf(ts.getSourceName().toUpperCase()),config)));
+        }
+        return connectors;
     }
 //
 //    @Override
