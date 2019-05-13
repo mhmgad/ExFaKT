@@ -24,39 +24,43 @@ import java.util.Objects;
  */
 public class EvidenceNode{
 
+//    @JsonAdapter(ILiteralAdapter.class)
+    ILiteral queryLiteral;
+    Enums.ActionType sourceActionType = Enums.ActionType.ORG;
     //    @JsonAdapter(IRuleAdapter.class)
     private IRule rule;
     //TODO to be fixed later
     //@Expose(deserialize = false)
     //private Map<IVariable, ITerm> variableBindingMap;
     private FactSpottingResult textResults;
-
-//    @JsonAdapter(ILiteralAdapter.class)
-    ILiteral queryLiteral;
-    Enums.ActionType sourceActionType = Enums.ActionType.ORG;
     private int treeDepth;
     private int rulesDepth;
     private double quality;
 
-    public IRule getRule() {
-        return rule;
+    public EvidenceNode(ILiteral queryLiteral, Enums.ActionType sourceActionType) {
+        this.queryLiteral = queryLiteral;
+        this.sourceActionType = sourceActionType;
     }
 
-    public FactSpottingResult getTextResults() {
-        return textResults;
+    public IRule getRule() {
+        return rule;
     }
 
     public void setRule(IRule rule) {
         this.rule = rule;
     }
 
-    public void setVariableBindingMap(Map<IVariable, ITerm> variableBindingMap) {
-        //this.variableBindingMap = variableBindingMap;
+    public FactSpottingResult getTextResults() {
+        return textResults;
     }
 
-    public EvidenceNode(ILiteral queryLiteral, Enums.ActionType sourceActionType) {
-        this.queryLiteral = queryLiteral;
-        this.sourceActionType = sourceActionType;
+    public void setTextResults(FactSpottingResult textResults){
+        this.textResults=textResults;
+
+    }
+
+    public void setVariableBindingMap(Map<IVariable, ITerm> variableBindingMap) {
+        //this.variableBindingMap = variableBindingMap;
     }
 
     public ILiteral getQueryLiteral() {
@@ -73,11 +77,6 @@ public class EvidenceNode{
 
     public void setSourceActionType(Enums.ActionType sourceActionType) {
         this.sourceActionType = sourceActionType;
-    }
-
-    public void setTextResults(FactSpottingResult textResults){
-        this.textResults=textResults;
-
     }
 
     @Override

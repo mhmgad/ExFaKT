@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
+SERVER_ELASTIC=$1
+PORT=$2
 #connect to server hosting ELASTIC
-ssh -f sedna.mpi-inf.mpg.de -L 9200:localhost:9200 -N
+ssh -f $SERVER_ELASTIC -L ${PORT}:localhost:${PORT} -N
 
 # we need locations of data and configurations
-DEMO_DATA_FOLDER=$1
+DEMO_DATA_FOLDER=$3
 
 echo $DEMO_DATA_FOLDER
 
