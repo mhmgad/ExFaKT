@@ -179,7 +179,6 @@ public class Configuration extends org.deri.iris.Configuration {
 
         //get the property value
         conf.setSpottingMethod(FactSpotterFactory.SpottingMethod.valueOf(prop.getProperty(SPOTTING_METHOD, "NONE")));
-        conf.setKgsDirectory(prop.getProperty(SPOTTING_METHOD, "kgs"));
         conf.setRulesFiles(asList(prop.getProperty(RULES_FILES, "")));
         conf.setFactsFiles(asList(prop.getProperty(FACTS_FILES, "")));
         conf.setQueriesFiles(asList(prop.getProperty(QUERIES_FILES, "")));
@@ -190,6 +189,7 @@ public class Configuration extends org.deri.iris.Configuration {
         conf.setEvaluationMethod(Enums.EvalMethod.valueOf(prop.getProperty(EVALUATION_METHOD, Enums.EvalMethod.SLD.name())));
         conf.setMaxRuleNesting(Integer.valueOf(prop.getProperty(MAX_RULE_NESTING, "" + conf.getMaxRuleNesting())));
         conf.setMaxExplanations(Integer.valueOf(prop.getProperty(MAX_EXPLANATIONS, "" + conf.getMaxExplanations())));
+        conf.setKgsDirectory(prop.getProperty(KGS_DIR));
         conf.setExtraProp(prop);
 
         if (input != null) {
