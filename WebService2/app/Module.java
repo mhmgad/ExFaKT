@@ -1,4 +1,5 @@
 import checker.ExplanationsExtractor;
+import checker.ExplanationsExtractorDemo;
 import com.google.inject.AbstractModule;
 import config.Configuration;
 import play.Environment;
@@ -76,7 +77,7 @@ public class Module extends AbstractModule {
         bind(Configuration.class).toInstance(Configuration.getInstance());
 
         //bind extractor instance
-       bind(ExplanationsExtractor.class).toInstance(ExplanationsExtractor.getInstance());
+       bind(ExplanationsExtractorDemo.class).toInstance(ExplanationsExtractorDemo.getInstance().getInstance());
 
         // bind the provider as eager singleton
 //        bind(EbeanServer.class).toProvider(EbeanServerProvider.class).asEagerSingleton();
