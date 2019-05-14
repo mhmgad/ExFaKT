@@ -50,7 +50,7 @@ public class ExplanationsExtractorDemo implements IDeepChecker/*<InputQuery>*/ {
      * Facts  (iris facts)
      */
 //    private Map<IPredicate,IRelation> factsMap;
-    private HashMap<String,IExtendedFacts> factSources;
+    private HashMap<String,IExtendedFacts> factSources=new HashMap<>();
 
 
     /**

@@ -1,6 +1,7 @@
 package controllers;
 
 import checker.ExplanationsExtractor;
+import checker.ExplanationsExtractorDemo;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
 import de.mpii.datastructures.BinaryFact;
@@ -27,7 +28,7 @@ public class Explanations extends Controller {
 
 
 
-    private final ExplanationsExtractor explanationsExtractor;
+    private final ExplanationsExtractorDemo explanationsExtractor;
 
     private final FormFactory formFactory;
 
@@ -35,7 +36,7 @@ public class Explanations extends Controller {
 
 
     @Inject
-    public Explanations(final FormFactory formFactory,ExplanationsExtractor explanationsExtractor ) {
+    public Explanations(final FormFactory formFactory,ExplanationsExtractorDemo explanationsExtractor ) {
         this.formFactory = formFactory;
         this.explanationsExtractor=explanationsExtractor;
 
