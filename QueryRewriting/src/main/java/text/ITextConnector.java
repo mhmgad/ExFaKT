@@ -9,6 +9,10 @@ import org.deri.iris.api.basics.ILiteral;
 public interface ITextConnector {
 
 
-    public FactSpottingResult queryText(ILiteral queryLiteral) throws Exception;
+    FactSpottingResult queryText(ILiteral queryLiteral) throws Exception;
+
+    double getWeight();
+
+    void setWeight(double weight);
 
 }

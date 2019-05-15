@@ -175,11 +175,11 @@ public class ExplanationsExtractorDemo implements IDeepChecker/*<InputQuery>*/ {
         List<ITextConnector> connectors=new ArrayList<>();
 
         if(textualSources.isEmpty()){
-            connectors.add(new FactSpottingConnector(FactSpotterFactory.SpottingMethod.NONE,config));
+            connectors.add(new FactSpottingConnector(FactSpotterFactory.SpottingMethod.NONE,0.5,config));
         }
         else
         {
-            textualSources.forEach(ts-> connectors.add(new FactSpottingConnector(FactSpotterFactory.SpottingMethod.valueOf(ts.getSourceName().toUpperCase()),config)));
+            textualSources.forEach(ts-> connectors.add(new FactSpottingConnector(FactSpotterFactory.SpottingMethod.valueOf(ts.getSourceName().toUpperCase()),ts.getWeight(),config)));
         }
         return connectors;
     }
