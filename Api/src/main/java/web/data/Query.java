@@ -25,19 +25,28 @@ public class Query /*extends QueryExplanations*/{
     List<TextualSource> textualSources=new ArrayList<>();
 
 
-    int numOfRules=5;
-    int numOfexplan=5;
+    int numOfRules=3;
+    int numOfExplan=5;
 
-    public void setName(String name) {
-        this.name = name;
+    public Query(String subject, String predicate, String object, String rules) {
+        this(-1, (subject+" "+predicate+" "+object),new ArrayList<>(), new ArrayList<>(),subject,  predicate,  object,  rules);
+
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Query(int id, String name,List<String> kgs, List<TextualSource> textualSources,String subject, String predicate, String object, String rules) {
+        this.id=id;
+        this.name=name;
+        this.subject = subject;
+        this.predicate = predicate;
+        this.object = object;
+        this.rules = rules;
+        this.kgs=kgs;
+        this.textualSources=textualSources;
+
+
     }
 
-    public void setKgs(List<String> kgs) {
-        this.kgs = kgs;
+    public Query() {
     }
 
 
@@ -46,37 +55,36 @@ public class Query /*extends QueryExplanations*/{
 //        this.textWeight = textWeight;
 //    }
 
-    public void setNumOfRules(int numOfRules) {
-        this.numOfRules = numOfRules;
-    }
-
-    public void setNumOfexplan(int numOfexplan) {
-        this.numOfexplan = numOfexplan;
-    }
-
     public List<String> getKgs() {
         return kgs;
     }
 
-
-    public void setTextualSources(List<TextualSource> textualSources) {
-        this.textualSources = textualSources;
+    public void setKgs(List<String> kgs) {
+        this.kgs = kgs;
     }
 
     public List<TextualSource> getTextualSources() {
         return textualSources;
     }
 
-//    public List<String> getTextWeight() {
-//        return textWeight;
-//    }
+    public void setTextualSources(List<TextualSource> textualSources) {
+        this.textualSources = textualSources;
+    }
 
     public int getNumOfRules() {
         return numOfRules;
     }
 
-    public int getNumOfexplan() {
-        return numOfexplan;
+//    public List<String> getTextWeight() {
+//        return textWeight;
+//    }
+
+    public void setNumOfRules(int numOfRules) {
+        this.numOfRules = numOfRules;
+    }
+
+    public int getNumOfExplan() {
+        return numOfExplan;
     }
 
 //    @Override
@@ -91,21 +99,8 @@ public class Query /*extends QueryExplanations*/{
 //        return this;
 //    }
 
-    public Query(String subject, String predicate, String object, String rules) {
-        this(-1, (subject+" "+predicate+" "+object),subject,  predicate,  object,  rules);
-
-    }
-
-    public Query(int id, String name, String subject, String predicate, String object, String rules) {
-        this.id=id;
-        this.name=name;
-        this.subject = subject;
-        this.predicate = predicate;
-        this.object = object;
-        this.rules = rules;
-
-
-
+    public void setNumOfExplan(int numOfexplan) {
+        this.numOfExplan = numOfexplan;
     }
 
     public void addKg(String kgName){
@@ -114,9 +109,6 @@ public class Query /*extends QueryExplanations*/{
 
     public void addTextualSource(TextualSource textualSource){
         textualSources.add(textualSource);
-    }
-
-    public Query() {
     }
 
     @Override
@@ -169,13 +161,37 @@ public class Query /*extends QueryExplanations*/{
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean hasTextualSource(String textualSource){
+        return textualSources.stream().anyMatch(ts-> ts.getSourceName().equals(textualSource));
+    }
+
+    public boolean hasKg(String kg){
+        return kgs.stream().anyMatch(k-> k.equals(kg));
+    }
+
+    public double getTextualSourceWeight(String textualSource){
+
+//        if(hasTextualSource(textualSource))
+            return textualSources.stream().filter(ts -> ts.getSourceName().equals(textualSource)).findFirst().orElse(new TextualSource("Dummy",0.1)).getWeight();
+
+    }
+
+
     //    public List<IRule> getRulesAsIRIS(){
 //        Parser parser=new Parser();
-//
+//number
 //        try {
 //            parser.parse(rules);
 //        } catch (ParserException e) {
