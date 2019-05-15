@@ -46,7 +46,7 @@ public class FactSpottingConnector<T extends IFact> implements ITextConnector{
         Fact f= Converter.toFact(queryLiteral);
 
         ISpottedEvidence evidence=spotter.spot(f);
-        return new FactSpottingResult(evidence,queryLiteral);
+        return new FactSpottingResult(evidence,queryLiteral,this.getWeight());
 
 
 

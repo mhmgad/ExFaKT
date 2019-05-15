@@ -24,9 +24,20 @@ public class FactSpottingResult/* extends ITextResult*/{
     ILiteral query;
     ISpottedEvidence evidence;
 
-    public FactSpottingResult(ISpottedEvidence evidence,ILiteral query) {
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    double weight;
+
+    public FactSpottingResult(ISpottedEvidence evidence,ILiteral query,double weight) {
         this.evidence = evidence;
         this.query=query;
+        this.weight=weight;
     }
 
     public ISpottedEvidence getEvidence() {
