@@ -89,7 +89,7 @@ public class Explanations extends Controller {
 
         inputQuery.setTextualSources(q.getTextualSources());
         inputQuery.setKgs(q.getKgs());
-        inputQuery.setMaxExplanations(q.getNumOfexplan());
+        inputQuery.setMaxExplanations(q.getNumOfExplan());
         inputQuery.setMaxRules(q.getNumOfRules());
 
 
