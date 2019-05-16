@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class Entities{
 
 
-    static Entities instance=new Entities();
+    static Entities instance;
 
 private String url="http://localhost:9200";
     private  int resultSize=20;
@@ -32,7 +32,8 @@ private String url="http://localhost:9200";
     JestClient client;
 
 
-    public Entities() {
+    public Entities(String url) {
+        this.url=url;
         factory.setHttpClientConfig(new HttpClientConfig
                 .Builder(url)
                 .multiThreaded(true)
@@ -42,8 +43,8 @@ private String url="http://localhost:9200";
         client = factory.getObject();
     }
 
-    public Entities(String indexName,int resultSize) {
-        this();
+    public Entities(String url, String indexName,int resultSize) {
+        this(url);
         this.indexName = indexName;
         this.resultSize=resultSize;
     }
@@ -79,12 +80,15 @@ private String url="http://localhost:9200";
     }
 
 
-    public static Entities getInstance(){
-        return instance;
-    }
+//    public static Entities getInstance(){
+//        return instance;
+//    }
 
     public static Entities getInstance(String url){
-        instance.setURL(url);
+//        instance.setURL(url);
+        if(instance==null){
+            instance=new Entities(url);
+        }
         return instance;
     }
 
@@ -95,7 +99,7 @@ private String url="http://localhost:9200";
 
     public static void main(String[] args) {
 
-        System.out.println( getInstance().suggestEntities("albert"));
+        System.out.println( getInstance("http://localhost:9200").suggestEntities("albert"));
 
     }
 }
