@@ -310,6 +310,10 @@ public class RecSLDEvaluator {// implements ITopDownEvaluator, IExplanationGener
         // Bind from KG
         subQueryList.addAll(processQueryAgainstFacts(query, selectedLiteral, costAccumulator));
 
+        if(!subQueryList.isEmpty()){
+            return subQueryList;
+        }
+
         //If it is partially grounded and it is allowed to get bindings from text
         switch (partialBindingType){
             case TEXT:
