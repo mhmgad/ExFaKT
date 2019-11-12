@@ -32,6 +32,12 @@ This project depends on 2 other projects:
  
  Sample of the configurations can be find in '/src/main/resources/sample_conf' folders. Most of the paramters can be overritten  by the CLI arguments.
  
+ ## Run as webservice (for the demo)##
+ 
+ 1. Run elasticsearch with the data
+ 2. use `sh ./scripts/run_webservice2.sh elasticsearch_host eleasticsearch_port`
+ 
+ 
  ## Run ##
  
  The main running scripts are generated into queryrewriting/assembler/bin folder.
