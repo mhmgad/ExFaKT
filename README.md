@@ -1,7 +1,11 @@
-# Rule-based Fact Checking #
+# ExFaKT #
 
 This program takes as input candidate facts, Knowledge Graph (KG), set of Horn rules and Text corpus and finds the set of evidences supporting or refuting the candidate facts.
 
+This is source code for   
+***ExFaKT: A framework for explaining facts over knowledge graphs and text**,   
+Mohamed Gad-Elrab, Daria Stepanova, Jacopo Urbani, Gerhard Weikum  
+In 12th International Conference on Web Search and Data Mining, 87-95, ACM 2019*.
 
 ## Installation ##
 
@@ -34,11 +38,28 @@ This project depends on 2 other projects:
  
  ## Run as webservice (for the demo) ##
  
- 1. Run elasticsearch with the data
- 2. use `sh ./scripts/run_webservice2.sh elasticsearch_host eleasticsearch_port`
+ ### Start the Webserver ###
  
+1. clone with git clone --recurse-submodules https://github.molgen.mpg.de/gadelrab/ExFaK
+2. Download Elasticsearch 5.3 https://www.elastic.co/downloads/past-releases/elasticsearch-5-3-1
+3. Download Elasticsearch indexed data and extract them:http://resources.mpi-inf.mpg.de/d5/exfakt/esData.tar.gz  
+this includes Yago related index and Wikipedia_sentences
+4. change "path.data:" in the folder elasticsearch-5.3.1/config/elasticsearch.yml to the extracted esData folder
+`path.data:<path>/esData`
+5. start Elasticsearch `./<elasticsearch_path>/bin/elasticsearch`
+
+6. Then you can directly run the webservice using
+`sh ./scripts/run_webservice2.sh elasticsearch_host eleasticsearch_port`
+
+Note: the script assumes that Elasticsearch is running on a different machine and initiate a ssh tunnel, you can skip it if both are on the same machine.
+
+### Java Client ###
+
+You can use the java client to call explanation API.
+
+https://github.molgen.mpg.de/gadelrab/ExFaKT/blob/master/Client/src/main/java/client/explain/ExplanationExtractorClient.java
  
- ## Run ##
+ ## Run CLI ##
  
  The main running scripts are generated into queryrewriting/assembler/bin folder.
  
