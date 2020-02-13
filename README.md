@@ -38,7 +38,7 @@ This project depends on 2 other projects:
  
  ## Run as webservice (for the demo) ##
  
- ### Start the Webserver ###
+ ### Start the Web Service ###
  
 1. clone with git clone --recurse-submodules https://github.molgen.mpg.de/gadelrab/ExFaK
 2. Download Elasticsearch 5.3 https://www.elastic.co/downloads/past-releases/elasticsearch-5-3-1
