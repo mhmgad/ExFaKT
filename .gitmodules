@@ -6,4 +6,4 @@
 	url = https://github.com/mhmgad/FactSpotting
 [submodule "Utils"]
 	path = Utils
-	url = https://github.com/mhmgad/MyUtils.git
+	url = https://github.com/mhmgad/MyUtils
