@@ -1,9 +1,9 @@
 [submodule "Demo"]
     path = Demo
-    url = https://github.molgen.mpg.de/gadelrab/fact_checking_demo
+    url = https://github.com/mhmgad/Tracy
 [submodule "FactSpotting"]
 	path = FactSpotting
-	url = https://github.molgen.mpg.de/gadelrab/FactSpotting
+	url = https://github.com/mhmgad/FactSpotting
 [submodule "Utils"]
 	path = Utils
 	url = https://github.com/mhmgad/MyUtils.git
