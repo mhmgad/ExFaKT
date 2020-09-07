@@ -302,17 +302,17 @@
     </profiles>
 
 
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>MyUtils-mvn-repo</id>-->
-            <!--<url>https://github.com/mhmgad/KGUtils/mvn-repo/</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-                <!--<updatePolicy>always</updatePolicy>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
+    <repositories>
+        <repository>
+            <id>MyUtils-mvn-repo</id>
+            <url>https://github.com/mhmgad/KGUtils/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
 
-    <!--</repositories>-->
+    </repositories>
 
 
 
