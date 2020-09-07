@@ -4,6 +4,6 @@
 [submodule "FactSpotting"]
 	path = FactSpotting
 	url = https://github.com/mhmgad/FactSpotting
-[submodule "Utils"]
+[submodule "KGUtils"]
 	path = Utils
-	url = https://github.com/mhmgad/MyUtils
+	url = https://github.com/mhmgad/KGUtils
