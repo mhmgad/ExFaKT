@@ -40,10 +40,15 @@ This project depends on 2 other projects:
  
  ### Start the Web Service ###
  
-1. clone with git clone --recurse-submodules https://github.com/mhmgad/ExFaKT
-2. Download Elasticsearch 5.3 https://www.elastic.co/downloads/past-releases/elasticsearch-5-3-1
-3. Download Elasticsearch indexed data and extract them:http://resources.mpi-inf.mpg.de/d5/exfakt/esData.tar.gz  
+1. clone with `git clone --recurse-submodules https://github.com/mhmgad/ExFaKT`
+2. Download and install or extract [Elasticsearch 5.3](https://www.elastic.co/downloads/past-releases/elasticsearch-5-3-1)
+3. Download Elasticsearch indexed data and extract them
+```
+wget http://resources.mpi-inf.mpg.de/d5/exfakt/esData.tar.gz
+tar xvzf esData.tar.gz
+```
 this includes Yago related index and Wikipedia_sentences
+
 4. change "path.data:" in the folder elasticsearch-5.3.1/config/elasticsearch.yml to the extracted esData folder
 `path.data:<path>/esData`
 5. start Elasticsearch `./<elasticsearch_path>/bin/elasticsearch`
