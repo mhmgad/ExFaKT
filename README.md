@@ -40,7 +40,7 @@ This project depends on 2 other projects:
  
  ### Start the Web Service ###
  
-1. clone with git clone --recurse-submodules https://github.com/mhmgad/ExFaK
+1. clone with git clone --recurse-submodules https://github.com/mhmgad/ExFaKT
 2. Download Elasticsearch 5.3 https://www.elastic.co/downloads/past-releases/elasticsearch-5-3-1
 3. Download Elasticsearch indexed data and extract them:http://resources.mpi-inf.mpg.de/d5/exfakt/esData.tar.gz  
 this includes Yago related index and Wikipedia_sentences
