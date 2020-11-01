@@ -46,7 +46,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>Utils</module>
+<!--                 <module>Utils</module> -->
                 <module>Api</module>
                 <module>Client</module>
                 <module>Extras</module>
@@ -61,7 +61,7 @@
             <id>web</id>
             <modules>
                 <module>WebService</module>
-                <module>Utils</module>
+<!--                 <module>Utils</module> -->
                 <module>Api</module>
                 <module>Client</module>
                 <module>FactSpotting</module>
