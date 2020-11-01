@@ -29,7 +29,7 @@ echo $parent_path
 
 #install the core
 
-(cd $parent_path && mvn clean && mvn install -U)
+(cd $parent_path && mvn clean && mvn initialize && mvn install -U)
 #echo $PWD
 
 

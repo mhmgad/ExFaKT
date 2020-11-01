@@ -6,7 +6,6 @@ import mpi.tools.javatools.util.FileUtils;
 import utils.Converter;
 import utils.DataUtils;
 
-import javax.xml.soap.Text;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
