@@ -5,5 +5,5 @@
 	path = FactSpotting
 	url = https://github.com/mhmgad/FactSpotting
 [submodule "KGUtils"]
-	path = Utils
+	path = KGUtils
 	url = https://github.com/mhmgad/KGUtils
