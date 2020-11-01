@@ -55,9 +55,7 @@ Note: the script assumes that Elasticsearch is running on a different machine an
 
 ### Java Client ###
 
-You can use the java client to call explanation API.
-
-https://github.com/mhmgad/ExFaKT/blob/master/Client/src/main/java/client/explain/ExplanationExtractorClient.java
+You can use the java client to call explanation API in ./Client/src/main/java/client/explain/ExplanationExtractorClient.java
  
  ## Run CLI ##
  
