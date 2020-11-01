@@ -40,7 +40,7 @@ This project depends on 2 other projects:
  
  ### Start the Web Service ###
  
-1. clone with git clone --recurse-submodules https://github.molgen.mpg.de/gadelrab/ExFaK
+1. clone with git clone --recurse-submodules https://github.com/mhmgad/ExFaK
 2. Download Elasticsearch 5.3 https://www.elastic.co/downloads/past-releases/elasticsearch-5-3-1
 3. Download Elasticsearch indexed data and extract them:http://resources.mpi-inf.mpg.de/d5/exfakt/esData.tar.gz  
 this includes Yago related index and Wikipedia_sentences
@@ -57,7 +57,7 @@ Note: the script assumes that Elasticsearch is running on a different machine an
 
 You can use the java client to call explanation API.
 
-https://github.molgen.mpg.de/gadelrab/ExFaKT/blob/master/Client/src/main/java/client/explain/ExplanationExtractorClient.java
+https://github.com/mhmgad/ExFaKT/blob/master/Client/src/main/java/client/explain/ExplanationExtractorClient.java
  
  ## Run CLI ##
  
