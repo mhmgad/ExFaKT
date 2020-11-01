@@ -214,7 +214,7 @@
             <id>demo</id>
             <modules>
                 <!--<module>WebService</module>-->
-                <module>Utils</module>
+<!--                 <module>Utils</module> -->
                 <module>Api</module>
                 <module>Client</module>
                 <module>FactSpotting</module>
