@@ -14,7 +14,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava).settings(
 scalaVersion := "2.12.7"
 
 resolvers += "Local Maven" at Path.userHome.asFile.toURI.toURL + ".m2/repository"
-resolvers += Resolver.url("utils-repo", url("https://raw.github.com/mhmgad/MyUtils/mvn-repo/"))
+resolvers += Resolver.url("utils-repo", url("http://people.mpi-inf.mpg.de/~gadelrab/downloads/repo/"))
 //unmanagedBase := baseDirectory.value / "libs"
 
 libraryDependencies += guice
