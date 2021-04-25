@@ -9,9 +9,11 @@ In 12th International Conference on Web Search and Data Mining, 87-95, ACM 2019*
 
 ## Installation ##
 
+After cloning the project using `git clone --recurse-submodules https://github.com/mhmgad/ExFaKT`, apply the following steps to install dependencies.
+
 ### Dependencies ###
 
-This project depends on 2 other projects:
+This project depends on 2 other projects that are not available as maven repos:
   * FactChecking:  The code is included
   * IRIS-Reasoner: we use libs files built from https://github.com/NICTA/iris-reasoner
   
@@ -25,6 +27,7 @@ This project depends on 2 other projects:
  
  ```
  mvn clean
+ mvn initialize
  mvn package -Dmaven.test.skip=true
  mvn install -Dmaven.test.skip=true
  ```
